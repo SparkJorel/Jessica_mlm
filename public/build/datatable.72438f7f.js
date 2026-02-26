@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["datatable"],{x5RX:function(a,n,t){"use strict";t.r(n),function(a){t("kgcc");t("aBAq"),a("#table-info").dataTable({aoColumnDefs:[{bSortable:!1,aTargets:[0]}],aaSorting:[[1,"asc"]]})}.call(this,t("EVdn"))}},[["x5RX","runtime",0,5]]]);

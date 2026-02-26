@@ -1,0 +1,192 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/app.ffa1265d.js"
+      ],
+      "css": [
+        "/build/app.c2242210.css"
+      ]
+    },
+    "genealogy": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/4.ce4ab894.js",
+        "/build/genealogy.dfbfdbeb.js"
+      ],
+      "css": [
+        "/build/4.3e82848c.css"
+      ]
+    },
+    "datatable": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/5.aedc13db.js",
+        "/build/datatable.72438f7f.js"
+      ],
+      "css": [
+        "/build/5.e5245e15.css"
+      ]
+    },
+    "validate": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/3.4739cc40.js",
+        "/build/validate.7dcb272b.js"
+      ]
+    },
+    "fieldset": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/3.4739cc40.js",
+        "/build/fieldset.16a54694.js"
+      ],
+      "css": [
+        "/build/fieldset.567686a9.css"
+      ]
+    },
+    "autocomplete": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/autocomplete.acd93000.js"
+      ],
+      "css": [
+        "/build/autocomplete.c26930a7.css"
+      ]
+    },
+    "add_product": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/add_product.c09ce2be.js"
+      ],
+      "css": [
+        "/build/add_product.c26930a7.css"
+      ]
+    },
+    "activate_user": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/activate_user.cfb2643a.js"
+      ]
+    },
+    "paid_bonus_ap": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/paid_bonus_ap.9828769b.js"
+      ]
+    },
+    "bonus_sponsoring_paid": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/bonus_sponsoring_paid.9286127e.js"
+      ]
+    },
+    "update_price": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/update_price.a45a4494.js"
+      ]
+    },
+    "add_bg": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/add_bg.9e91a55b.js"
+      ]
+    },
+    "collection": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/collection.a5858b64.js"
+      ]
+    },
+    "toggle_checkbox": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/toggle_checkbox.3af101b3.js"
+      ],
+      "css": [
+        "/build/toggle_checkbox.a7ba9a4b.css"
+      ]
+    },
+    "toggle_boolean_button": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/toggle_boolean_button.e444ed16.js"
+      ],
+      "css": [
+        "/build/toggle_boolean_button.a7ba9a4b.css"
+      ]
+    },
+    "check_username": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/1.519bc8af.js",
+        "/build/2.85eb72e2.js",
+        "/build/check_username.9147af18.js"
+      ],
+      "css": [
+        "/build/check_username.51c3a518.css"
+      ]
+    },
+    "cart-subscription": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/1.519bc8af.js",
+        "/build/2.85eb72e2.js",
+        "/build/cart-subscription.61c849e6.js"
+      ]
+    },
+    "cart": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/1.519bc8af.js",
+        "/build/2.85eb72e2.js",
+        "/build/cart.0049ed11.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.cf60d32b.js",
+        "/build/1.519bc8af.js",
+        "/build/login.a72140a1.js"
+      ],
+      "css": [
+        "/build/login.c2242210.css"
+      ]
+    },
+    "page_product": {
+      "js": [
+        "/build/runtime.d94b3b43.js"
+      ],
+      "css": [
+        "/build/page_product.3a6a0660.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["genealogy"],{d2ue:function(n,e,t){"use strict";t.r(e);t("vM12"),t("nAvE"),t("3XqU"),t("PObr");var a=t("LTtw");document.addEventListener("DOMContentLoaded",(function(){document.getElementById("ul-data").style.display="none";new a.a({chartContainer:"#chart-container",data:"#ul-data"})}))}},[["d2ue","runtime",4]]]);
