@@ -50,25 +50,23 @@ COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first (for Docker cache)
-COPY composer.json composer.json
-
 # Copy project files
 COPY . .
 
-# Allow Composer plugins and install PHP dependencies
+# Install PHP dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer config --no-plugins allow-plugins.symfony/flex true \
     && composer config --no-plugins allow-plugins.ocramius/package-versions true \
-    && composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
+    && composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \
     && chown -R www-data:www-data var/ public/uploads/ \
     && chmod -R 775 var/ public/uploads/
 
-# Warm up Symfony cache
-RUN php bin/console cache:clear --env=prod --no-debug \
-    && chown -R www-data:www-data var/
+# Entrypoint
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
+ENTRYPOINT ["entrypoint.sh"]
