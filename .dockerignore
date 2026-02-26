@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env.local
+.env.local.php.bak
+.env.prod
+docker/init-db
+node_modules
+var/cache
+var/log
+var/sessions
+*.md
+src.zip
