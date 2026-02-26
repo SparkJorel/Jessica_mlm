@@ -1,0 +1,137 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %}
+    JTWC - Liste des services offerts par RACS Health Global
+{% endblock %}
+{% block main %}
+    <h3>
+        <i class="fa fa-angle-right"></i>Liste des services offerts</h3>
+    <div class="row mb">
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <a href="{{ path('service_new') }}">
+                <button type="button" class="btn btn-primary">
+                    <span class="fa fa-plus-circle"></span>Ajouter un service</button>
+            </a>
+        {% endif %}
+        <div class="content-panel">
+            <div class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Code</th>
+                        <th>Statut</th>
+                        <th>Description</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for service in services %}
+                        <tr>
+                            <td>{{ service.type }}</td>
+                            <td>{{ service.code }}</td>
+                            <td>
+                                {% if service.status == true %}
+                                    Activé
+                                {% else %}
+                                    Désactivé
+                                {% endif %}
+                            </td>
+                            <td>{{ service.description }}</td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                                <td>
+                                    {% if service.status == true %}
+                                        <button
+                                                type="button"
+                                                class="btn btn-primary btn-xs"
+                                                title="Disabled"
+                                                data-toggle="modal"
+                                                data-target="#serviceDisabledDialog{{service.id}}">
+                                            <span class="fa fa-ban"></span>
+                                        </button>
+                                        <div
+                                                class="modal fade"
+                                                id="serviceDisabledDialog{{service.id}}"
+                                                tabindex="-1"
+                                                role="dialog"
+                                                aria-labelledby="myModalLabel"
+                                                aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Voulez vous vraiment désactiver ce service ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Abandonner</button>
+                                                        <a href="{{ path('service_disabled', {'id': service.id}) }}" class="btn btn-danger">Confirmer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    {% endif %}
+                                    <a href="{{ path('service_edit', {'id': service.id})}}" title="Edit" class="btn btn-info btn-xs">
+                                        <span class="fa fa-edit"></span>
+                                    </a>
+                                    <button
+                                            type="button"
+                                            class="btn btn-danger btn-xs"
+                                            title="Delete"
+                                            data-toggle="modal"
+                                            data-target="#serviceDeleteDialog{{service.id}}">
+                                        <span class="fa fa-remove"></span>
+                                    </button>
+                                    <div
+                                            class="modal fade"
+                                            id="serviceDeleteDialog{{service.id}}"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="myModalLabel"
+                                            aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Voulez vous vraiment supprimer ce service ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                    <form action="{{ path('service_delete', {'id': service.id }) }}" method="post">
+                                                        <button type="button" class="btn btn-danger">Confirmer</button>
+                                                        <input type="hidden" name="_jtwc_service_token" value="{{ csrf_token('jtwc_service-delete'~service.id) }}"/>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="4" {% else %} colspan="3" {% endif %}>Pas services enregistrés pour l'instant
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

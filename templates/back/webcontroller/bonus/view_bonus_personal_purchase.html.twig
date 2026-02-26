@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Bonus Achat personnel {% endblock %}
+{% block page_title %} Bonus Achat personnel {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+        <div class="content-panel">
+            <section id="unseen">
+                <table class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Date Commande</th>
+                        <th>SV AP</th>
+                        <th>Coût</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for command in userCommands %}
+                        <tr>
+                            <td>{{ command.code }}</td>
+                            <td>{{ command.dateCommand|date('d/m/Y H:i:s') }}</td>
+                            <td>{{ svPersonalPurchases[command.code] }}</td>
+                            <td>{{ svCosts[command.code] }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">Vous n'avez effectué aucun achat au cours de ce cycle</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="text-right" colspan="3">Total</td>
+                        <td class="text-center">{{ total }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

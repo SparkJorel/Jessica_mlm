@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Nos produits
+{% endblock %}
+
+{% block page_title %}
+	Nos produits 
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">
+		<div class="content-panel">
+		    {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+			<h4>
+				{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+					<a href="{{ path('product_new') }}">
+						<button type="button" class="btn btn-primary">
+							<span class="fa fa-plus-circle"></span>Ajouter un produit
+						</button>
+					</a>
+				{% endif %}
+            </h4>
+			<section id="unseen">
+				<table class="table table-bordered table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Nom</th>
+							<th class="numeric">Prix distributeur(XAF)</th>
+							<th class="numeric">Prix client(XAF)</th>
+							<th class="numeric">SV Binaire</th>
+							<th class="numeric">SV AP</th>
+							<th class="numeric">Quote</th>
+							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+								<th>Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for product in products %}
+							<tr>
+								<td>{{ product.code }}</td>
+								<td>{{ product.name }}</td>
+								<td class="numeric">{{ product.distributorPrice|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ product.clientPrice|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ product.productSV|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ product.productSVBPA|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ product.productCote|number_format(2, ',', ' ') }}</td>
+								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+									<td>
+										<a href="{{ path('product_edit', {'id': product.id})}}" title="Edit" class="btn btn-info btn-xs">
+											<span class="fa fa-edit"></span>
+										</a>
+										{% if is_granted('ROLE_JTWC_ADMIN') %}
+											<button
+												type="button"
+												class="btn btn-danger btn-xs"
+												title="Delete"
+												data-toggle="modal"
+												data-target="#productDeleteDialog{{product.id}}">
+												<span class="fa fa-remove"></span>
+											</button>
+											<div
+												class="modal fade"
+												id="productDeleteDialog{{product.id}}"
+												tabindex="-1"
+												role="dialog"
+												aria-labelledby="myModalLabel"
+												aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+															<h4 class="modal-title" id="myModalLabel">Confirmation requise</h4>
+														</div>
+														<div class="modal-body">
+															Voulez vous vraiment supprimer ce produit ?
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+															<form action="{{ path('product_delete', {'id': product.id }) }}" method="post">
+																<button type="button" class="btn btn-danger">Confirmer</button>
+																<input type="hidden" name="_jtwc_product_token" value="{{ csrf_token('jtwc_product-delete'~product.id) }}"/>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
+									</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</div>
+{% endblock %}

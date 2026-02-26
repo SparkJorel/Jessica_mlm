@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Bonus de groupe {% endblock %}
+{% block page_title %} Bonus de groupe {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+        <div class="content-panel">
+            <section id="unseen">
+                <table class="display table table-bordered">
+                    <thead>
+                    <tr>
+                        <th colspan="3">AG</th>
+                        <th colspan="3">AD</th>
+                        <th rowspan="2">ACO</th>
+                        <th rowspan="2">{% if side == 'left' %}AG{% else %}AD{% endif %}+ACO</th>
+                        <th rowspan="2">NCO</th>
+                        <th rowspan="2">Bin</th>
+                        <th rowspan="2">Gain</th>
+                    </tr>
+                    <tr>
+                        <th>P</th>
+                        <th>AC</th>
+                        <th>TAG</th>
+                        <th>P</th>
+                        <th>AC</th>
+                        <th>TAD</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ results['pl'] }}</td>
+                            <td>{{ results['al'] }}</td>
+                            <td>{{ results['tl'] }}</td>
+                            <td>{{ results['pr'] }}</td>
+                            <td>{{ results['ar'] }}</td>
+                            <td>{{ results['tr'] }}</td>
+                            <td>{{ results['a_co'] }}</td>
+                            <td>{{ results['bm'] }}</td>
+                            <td>{{ results['n_co'] }}</td>
+                            <td>{{ results['binaire'] }}</td>
+                            <td>{{ results['gain'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        <section>
+            <table class="display table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2">LEGENDE</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>AG</th>
+                    <td>Activité Gauche</td>
+                </tr>
+                <tr>
+                    <th>AD</th>
+                    <td>Activité Droite</td>
+                </tr>
+                <tr>
+                    <th>ACO</th>
+                    <td>Ancien Carry Over</td>
+                </tr>
+                <tr>
+                    <th>NCO</th>
+                    <td>Nouveau Carry Over</td>
+                </tr>
+                <tr>
+                    <th>Bin</th>
+                    <td>Binaire</td>
+                </tr>
+                <tr>
+                    <th>P</th>
+                    <td>Parrainage</td>
+                </tr>
+                <tr>
+                    <th>AC</th>
+                    <td>Achat</td>
+                </tr>
+                <tr>
+                    <th>TAG</th>
+                    <td>Total Activité Gauche</td>
+                </tr>
+                <tr>
+                    <th>TAD</th>
+                    <td>Total Activité Droite</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'dashboard.html.twig' %}
+{% block menu %}
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        <ul class="sidebar-menu" id="nav-accordion">
+            <p class="centered"><a href="#">
+                    <img src=""{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="{{ app.user.username }}" class="img-circle" width="80"></a></p>
+            <h5 class="centered">{{ app.user.fullname }}</h5>
+            <li class="mt">
+                <a class="active" href="#">
+                    <i class="fa fa-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="#">
+                    <i class="fa fa-tree"></i>
+                    <span>Downline</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('genealogy_tree') }}">Genealogy</a></li>
+                    <li><a href="{{ path('user_list') }}">Downline List</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="{{ path('user_new_from_known_sponsor') }}">
+                    <i class="fa fa-user-plus"></i>
+                    <span>Ajouter un nouveau membre</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="#">
+                    <i class="fa fa-gift"></i>
+                    <span>Bonus</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="#">Bonus Parrainage</a></li>
+                </ul>
+            </li>
+        </ul>
+        <!-- sidebar menu end-->
+    </div>
+{% endblock %}

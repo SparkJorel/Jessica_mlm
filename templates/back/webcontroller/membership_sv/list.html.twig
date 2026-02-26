@@ -1,0 +1,74 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} JTWC - Liste des volumes de SV des packages {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Liste des volumes de SV de chaque package de la plateforme</h3>
+    <div class="row mb">
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <a href="{{ path('membership_sv_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+        {% endif %}
+        <div class="content-panel">
+            <div class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Membership</th>
+                        <th>Volume SV Groupe</th>
+                        <th>Volume SV Produit</th>
+                        <th>Statut</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for mbship_sv in mbship_svs %}
+                        <tr>
+                            <td>{{ mbship_sv.membership.name }}</td>
+                            <td>{{ mbship_sv.svGroupe }}</td>
+                            <td>{{ mbship_sv.svProduct }}</td>
+                            <td>{% if mbship_sv.state %} Activé {% else %} Désactivé {% endif %}</td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <td>
+                                <a href="{{ path('membership_sv_edit', {'id': mbship_sv.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#membershipSVDeleteDialog{{mbship_sv.id}}"><span class="fa fa-remove"></span>
+                                </button>
+                                <div class="modal fade" id="membershipSVDeleteDialog{{mbship_sv.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                Voulez vous vraiment supprimer cette valeur ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                <form action="{{ path('membership_sv_delete', {'id': mbship_sv.id }) }}" method="post">
+                                                    <button type="button" class="btn btn-danger">Confirmer</button>
+                                                    <input type="hidden" name="_jtwc_membership_sv_token"  value="{{ csrf_token('jtwc_membership_sv-delete'~mbship_sv.id) }}" />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="4" {% else %} colspan="3" {% endif %}>Pas de volume sv enregistré pour l'instant</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

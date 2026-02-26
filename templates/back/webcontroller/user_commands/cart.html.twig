@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Panier
+{% endblock %}
+{% block page_title %}
+	Votre panier
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">
+		{% for type, messages in app.session.flashbag.all() %}
+			{% for message in messages %}
+				<div class="alert alert-{{type}}">{{message}}</div>
+			{% endfor %}
+		{% endfor %}
+		{% if cart.products.count > 0 %}
+			<div class="row mt-4">
+				<!-- List of items -->
+				<div class="col-md-8" style="height: 50rem;">
+					{{form_start(form)}}
+					<div class="card">
+						<div class="card-header bg-dark text-white d-flex">
+							<h5>Vos produits</h5>
+							<div class="ml-auto">
+								{{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
+								{{ form_widget(form.clear, {'attr': {'class': 'btn btn-light'}}) }}
+							</div>
+						</div>
+						<ul class="list-group list-group-flush">
+							{% for productForm in form.products %}
+								<li class="list-group-item d-flex">
+									<div class="flex-fill mr-2">
+										<img src="{{ vich_uploader_asset(productForm.vars.data.product, 'imageFile')|imagine_filter('reduc_cart') }}" width="128" alt="{{ productForm.vars.data.product.name }}">
+									</div>
+									<div class="flex-fill mr-2">
+										<h5 class="mt-0 mb-0">{{ productForm.vars.data.product.name }}</h5>
+										<small>{{ productForm.vars.data.product.description[:50]|raw }}...</small>
+										<div class="form-inline mt-2">
+											<div class="form-group mb-0 mr-2">
+												{{ form_widget(productForm.quantity, {
+                                                    'attr': {
+                                                        'class': 'form-control form-control-sm '~ (productForm.quantity.vars.valid ? '' : 'is-invalid')
+                                                    }
+                                                }) }}
+												<div class="invalid-feedback">
+													{{ form_errors(productForm.quantity) }}
+												</div>
+											</div>
+											{{form_widget(productForm.remove, {'attr': {'class': 'btn btn-danger btn-sm'}})}}
+											{{form_widget(productForm.update, {'attr': {'class': 'btn btn-info btn-sm'}})}}
+										</div>
+									</div>
+									<div class="flex-fill mr-2 text-right">
+										<b>{{ productForm.vars.data.product.distributorPrice }} FCFA</b>
+									</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+					{{form_end(form)}}
+				</div>
+				<!-- Summary -->
+				<div class="col-md-4">
+					<div class="card mt-4 mt-md-0">
+						<h5 class="card-header bg-dark text-white">Récapitulatif</h5>
+						<ul class="list-group">
+							{% for productForm in form.products %}
+								<li class="list-group-item d-flex justify-content-between align-items-center">
+									{{ productForm.vars.data.product.name }} (FCFA {{ productForm.vars.data.product.distributorPrice }})
+									<span class="badge badge-primary badge-pill">{{ productForm.quantity.vars.value }}</span>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item d-flex justify-content-between">
+							<div>
+								<b>Total</b>
+							</div>
+							<span>
+								<b>{{ cart.totalDistributorWithoutShippingCost }} FCFA</b>
+							</span>
+						</li>
+					</ul>
+					<div class="card-body">
+						<button style="margin-bottom: 10px;" class="btn btn-warning w-200 mb-3">Payer par:</button>
+						<p style="text-align: center;" class="payment">
+							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 1, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/MTN-Mobile-Money.png') }}" /></a>
+							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 2, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/orange-money.jpg') }}" /></a>
+							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 3, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/logoeu.jpg') }}" /></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div class="alert alert-info">
+				
+				<a href="{{ path('products_all') }}">Votre panier est vide. Consulter nos produits</a>
+			</div>
+		{% endif %}
+
+	</div>
+{% endblock %}

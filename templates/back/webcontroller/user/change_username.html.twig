@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Modification du code d'authentification {% endblock %}
+{% block page_title %} Modification du code d'authentification {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+        {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div id="user_id" class="form-group" data-id="{{id_user}}">
+                {{ form_label(form.username, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_widget(form.username, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+                <div class="col-lg-offset-2 col-lg-10">
+                    <div class="small">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-10 col-lg-2">
+                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+                </div>
+            </div>
+        {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('check_username') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('check_username') }}
+{% endblock %}

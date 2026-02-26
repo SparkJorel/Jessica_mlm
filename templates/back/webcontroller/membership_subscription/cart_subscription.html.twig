@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Les packs de souscription commandés
+{% endblock %}
+{% block page_title %}
+	Les packs de souscription commandés
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">		
+		{% for type, messages in app.session.flashbag.all() %}
+			{% for message in messages %}
+				<div class="alert alert-{{type}}">{{message}}</div>
+			{% endfor %}
+		{% endfor %}
+        <div class="row mt-4">
+            <!-- List of items -->
+            <div class="col-md-8">
+                <div class="card table-responsive" style="height:25rem;">
+                    <div class="card-header bg-dark text-white d-flex">
+                        <h5>Les packs commandés</h5>
+                    </div>
+
+                    <table class="table table-condensed table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Pack de souscription</th>
+                                <th>Quantité</th>
+                                <th>Prix</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th colspan="2">Total</th>
+                            <th class="info">{{total}}</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for packName, summary in summaries %}
+                                <tr>
+                                    <td>{{packName}}</td>
+                                    <td>{{summary['quantity']}}</td>
+                                    <td>{{summary['price']}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Summary -->
+            <div class="col-md-4">
+                <div class="card-body">
+                    <button style="margin-bottom: 10px;" class="btn btn-warning w-200 mb-3">Payer par:</button>
+                    <p style="text-align: center;" class="payment">
+                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 1}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/MTN-Mobile-Money.png') }}" /></a>
+                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 2}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/orange-money.jpg') }}" /></a>
+                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 3}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/logoeu.jpg') }}" /></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+	</div>
+{% endblock %}

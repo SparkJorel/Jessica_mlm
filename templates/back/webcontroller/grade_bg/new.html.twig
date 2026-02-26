@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% block title %} JTWC - Enregistrement des bonus générationnels lié à un Grade {% endblock %}
+{% block page_title %} Enregistrement des bonus générationnels lié à un Grade {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.grade, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.grade) }}
+                    {{ form_widget(form.grade, { 'attr':  {
+                        'class': 'form-control' ~ (form.grade.vars.valid ? '' : 'is-invalid')
+                    }}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.grade) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.lvl, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.lvl) }}
+                    {{ form_widget(form.lvl, { 'attr':  {
+                        'class': 'form-control' ~ (form.lvl.vars.valid ? '' : 'is-invalid')
+                    }}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.lvl) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.name, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.name) }}
+                    {{ form_widget(form.name, { 'attr':  {
+                        'class': 'form-control' ~ (form.name.vars.valid ? '' : 'is-invalid')
+                    }}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.name) }}
+                    </div>                                        
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.value, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.value) }}
+                    {{ form_widget(form.value, { 'attr':  {
+                        'class': 'form-control' ~ (form.value.vars.valid ? '' : 'is-invalid')
+                    }}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.value) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-10 col-lg-2">
+                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('validate') }}
+{% endblock %}

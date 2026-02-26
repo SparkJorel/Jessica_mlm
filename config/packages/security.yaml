@@ -1,0 +1,54 @@
+security:
+    encoders:
+        encoded_admin:
+            algorithm: argon2i
+            memory_cost: 2048
+            time_cost: 4
+        encoded_user:
+            algorithm: bcrypt
+            cost: 15
+    providers:
+        users:
+            entity:
+                class: App\Entity\User
+                property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            pattern: ^/
+            provider: users
+            logout:
+                path: jtwc_app_logout
+                target: jtwc_app_login
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            user_checker: App\Security\UserChecker
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                token_provider: 'Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider'
+
+    role_hierarchy:
+        ROLE_JTWC_ADMIN: 
+            - ROLE_JTWC_USER_SECRET
+            - ROLE_JTWC_USER
+        ROLE_JTWC_USER_SECRET : ROLE_JTWC_USER
+
+    access_control:
+         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/order-product/notify$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/order-product/validate$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/payment-product/success$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/payment-product/fail$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/payment-subscription/success$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/payment-subscription/fail$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/order-membership-subscription/notify$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/admin/order-membership/validate$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#         - { path: ^/admin, roles: ROLE_JTWC_ADMIN }
+#         - { path: ^/profile, roles: ROLE_JTWC_USER }
+         - { path: ^/, roles: ROLE_JTWC_USER }

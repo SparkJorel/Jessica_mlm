@@ -1,0 +1,18 @@
+<div class="container">
+    <h1>Informations détaillées</h1>
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+        <a href="{{ path('product_cp_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+    {% endif %}
+    {% if product_cp is defined %}
+        <table>
+            <tr><th>Produit</th><th>Prix client</th><th>View</th></tr>
+            <tr>
+                <td>{{ product_cp.product.name }}</td>
+                <td>{{ product_cp.value }}</td>
+                <td></td>
+            </tr>
+        </table>
+    {% else %}
+        <p>Le prix client du produit sélectionné a été supprimé</p>
+    {% endif %}
+</div>

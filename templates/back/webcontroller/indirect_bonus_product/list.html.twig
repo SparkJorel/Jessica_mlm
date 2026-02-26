@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Indirect Bonus : Les pourcentages sur les produits
+{% endblock %}
+
+{% block page_title %}
+	Indirect Bonus : Les pourcentages sur les produits
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">
+		<div class="content-panel">
+		    {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+			<h4>
+				{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+					<a href="{{ path('indirect_bonus_product_new') }}">
+						<button type="button" class="btn btn-primary">
+							<span class="fa fa-plus-circle"></span>Paramétrer les pourcentages sur les produits 
+						</button>
+					</a>
+				{% endif %}
+            </h4>
+			<section id="unseen">
+				<table class="table table-bordered table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Générations</th>
+							<th>Valeurs</th>
+							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+								<th>Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for code, indBoProducts in indirectBonusProducts %}
+							<tr>
+								<td {% if indBoProducts|length > 1 %}
+                                    rowspan="{{indBoProducts|length}}"
+                                {% endif %} >{{ code }}</td>
+								<td>{{ indBoProducts[0]['lvl'] }}</td>
+								<td>{{ indBoProducts[0]['value'] }}</td>
+								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+									<td>
+										<a href="{{ path('indirect_bonus_product_edit', {'id': indBoProducts[0]['id']})}}" title="Edit" class="btn btn-info btn-xs">
+											<span class="fa fa-edit"></span>
+										</a>
+										<button
+											type="button"
+											class="btn btn-danger btn-xs"
+											title="Delete"
+											data-toggle="modal"
+											data-target="#membershipDeleteDialog{{indBoProducts[0]['id']}}">
+											<span class="fa fa-remove"></span>
+										</button>
+										<div
+											class="modal fade"
+											id="membershipDeleteDialog{{indBoProducts[0]['id']}}"
+											tabindex="-1"
+											role="dialog"
+											aria-labelledby="myModalLabel"
+											aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+														<h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+													</div>
+													<div class="modal-body">
+														Voulez vous vraiment supprimer cette valeur ?
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+														<form action="{{ path('indirect_bonus_product_delete', {'id': indBoProducts[0]['id'] }) }}" method="post">
+															<input type="hidden" name="_method" value="DELETE">															
+															<button type="button" class="btn btn-danger">Confirmer</button>
+															<input type="hidden" name="_jtwc_indirect_bonus_token" value="{{ csrf_token('jtwc_indirect_bonus-delete'~indBoProducts[0]['id']) }}"/>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+								{% endif %}
+							</tr>
+                            {% if indBoProducts|length > 1 %}
+                                {% for indBoProduct in indBoProducts|slice(1, indBoProducts|length) %}
+                                    <tr>
+                                        <td>{{ indBoProduct['lvl'] }}</td>
+                                        <td>{{ indBoProduct['value'] }}</td>
+                                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                                            <td>
+                                                <a href="{{ path('indirect_bonus_product_edit', {'id': indBoProduct['id']})}}" title="Edit" class="btn btn-info btn-xs">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-xs"
+                                                    title="Delete"
+                                                    data-toggle="modal"
+                                                    data-target="#membershipDeleteDialog{{indBoProduct['id']}}">
+                                                    <span class="fa fa-remove"></span>
+                                                </button>
+                                                <div
+                                                    class="modal fade"
+                                                    id="membershipDeleteDialog{{indBoProduct['id']}}"
+                                                    tabindex="-1"
+                                                    role="dialog"
+                                                    aria-labelledby="myModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Voulez vous vraiment supprimer cette valeur ?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                                <form action="{{ path('indirect_bonus_product_delete', {'id': indBoProduct['id'] }) }}" method="post">
+                                                                    <input type="hidden" name="_method" value="DELETE">
+																	<button type="button" class="btn btn-danger">Confirmer</button>
+                                                                    <input type="hidden" name="_jtwc_indirect_bonus_token" value="{{ csrf_token('jtwc_indirect_bonus-delete'~indBoProduct['id']) }}"/>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+						{% else %}
+                            <tr>
+                                <td colspan="4">Aucune valeur définie pour l'instant</td>
+                            </tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</div>
+{% endblock %}

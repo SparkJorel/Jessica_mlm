@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Jessica Total Wellness Concept - Rapport du cycle
+{% endblock %}
+{% block page_title %}
+    Rapport du cycle
+{% endblock %}
+
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="content-panel">
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed" id="table-info">
+                    <tbody>
+                        <tr>
+                           <th rowspan="2">Chiffre Affaire</th>
+                            <th>Achats</th>
+                            <th>Parranaiges</th>
+                            <th colspan="2">Total</th>
+                        </tr>
+                        <tr>
+                            <th>{{ turn_over['purchase'] }}</th>
+                            <th>{{ turn_over['sponsorship'] }}</th>
+                            <th colspan="2">{{ turn_over['turn_over'] }}</th>
+                        </tr>
+                        <tr>
+                           <th rowspan="2">Volume SV Binaire</th>
+                            <th>Achats</th>
+                            <th>Parranaiges</th>
+                            <th>Total SV</th>
+                            <th>Montant</th>
+                        </tr>
+                        <tr>
+                            <th>{{ turn_over['purchase_sv'] }}</th>
+                            <th>{{ turn_over['sponsorship_sv'] }}</th>
+                            <th>{{ turn_over['sv_binaire'] }}</th>
+                            <th>{{ turn_over['cout_sv_binaire'] }}</th>
+                        </tr>
+                        <tr>
+                           <th rowspan="2">Redistribution</th>
+                            <th>Actifs</th>
+                            <th>Passifs</th>
+                            <th colspan="2">Total</th>
+                        </tr>
+                        <tr>
+                            <th>{{ turn_over['recap']['actif'] }}</th>
+                            <th>{{ turn_over['recap']['passif'] }}</th>
+                            <th colspan="2">{{ turn_over['recap']['total'] }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

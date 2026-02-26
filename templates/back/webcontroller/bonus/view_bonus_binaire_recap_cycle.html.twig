@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Bonus Binaire d'un Cycle {% endblock %}
+{% block page_title %} Bonus Binaire d'un Cycle {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+        <div id="content-panel" class="content-panel" data-url="{{app.request.attributes.get('_route')}}">
+            <h4>
+                {% if closed and not paid %}
+                    <button style="margin: 0 5px 10px 5px; box-shadow: 4px 4px 2px gray" class="btn btn-theme" type="button" name="paid" id="paid">Payé</button>
+                {% endif %}
+            </h4>
+            <section id="adv-table" class="adv-table" data-month="{{month}}" data-year="{{year}}" data-startedAt="{{startedAt}}" data-endedAt="{{endedAt}}">
+                <table data-message="Binaire" class="display table table-bordered table-condensed" id="table-info">
+                    <thead>
+                    <tr>
+                        {% if closed and not paid %}
+                            <th>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="check_all">
+                                    <label class="form-check-label" for="check_all">Tout cocher</label>
+                                </div>
+                            </th>
+                        {% endif %}
+                        <th>Bénéficiaire</th>
+                        <th>Montant</th>
+                        <th>SV Gain</th>
+                        <th>CO</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+{#                    {{ dump(bonus_binaire_cycles) }}#}
+                        {% for bonus_binaire_cycle in bonus_binaire_cycles %}
+                                <tr>
+                                    {% if closed and not paid %}
+                                        <td>
+                                            {% if not bonus_binaire_cycle.status %}
+                                                <div class="form-check">
+                                                    <input type="checkbox"
+                                                           class="form-check-input check_item"
+                                                           value="{{bonus_binaire_cycle.user.id}}" />
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>{{ bonus_binaire_cycle.user.fullname }}</td>
+                                    <td>{{ bonus_binaire_cycle['gain'] }}</td>
+                                    <td>{{ bonus_binaire_cycle['binaire'] }}</td>
+                                    <td>{{ bonus_binaire_cycle['n_co'] }}</td>
+                                    <td>{% if bonus_binaire_cycle.status %} Payé {% else %} Non payé {% endif %}</td>
+                                </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">Aucun achat ou parrainage réalisé au cours de ce cycle</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('paid_bonus_ap') }}
+{% endblock %}

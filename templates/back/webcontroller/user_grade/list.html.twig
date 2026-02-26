@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - {{ title }} {% endblock %}
+{% block page_title %} {{ title }} {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="content-panel">
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>{{ knp_pagination_sortable(user_grades, 'Utilisateur', 'u.fullname') }}</th>
+                        <th>Grade</th>
+                        <th>Status</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user_grade in user_grades %}
+                        <tr>
+                            <td>{{ user_grade.user.fullname }}</td>
+                            <td>{{ user_grade.grade.commercialName }}</td>
+                            <td>{% if user_grade.status %} Activé {% else %} Désactivé {% endif %}</td>
+                            <td>{{ user_grade.startedAt|date('d/m/Y H:i:s') }}</td>
+                            <td>{% if user_grade.endedAt is defined %} {{ user_grade.endedAt|date('d/m/Y H:i:s') }} {% else %} En cours {% endif %}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5">Aucun changement de grade disponible pour l'instant</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            <div class="navigation text-center">
+                {{ knp_pagination_render(user_grades) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

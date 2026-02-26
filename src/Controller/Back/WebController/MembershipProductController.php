@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Controller\Back\WebController;
+
+use App\Entity\Membership;
+use App\Entity\MembershipProduct;
+use App\Services\ModelHandlers\MembershipProductHandler;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\Annotation\Route;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
+class MembershipProductController
+{
+    /**
+     * @var MembershipProductHandler $membershipProductHandler
+     */
+    private $membershipProductHandler;
+
+    public function __construct(MembershipProductHandler $membershipProductHandler)
+    {
+        $this->membershipProductHandler = $membershipProductHandler;
+    }
+
+    /**
+     * @Route("/membership-product/{code}/list", requirements={"code"="[a-zA-Z]+"}, name="membership_product_list", methods={"GET"})
+     * @return Response
+     */
+    public function list(Membership $membership)
+    {
+        $membershipProduct = (new MembershipProduct())
+                                ->setMembership($membership);
+
+        return $this->membershipProductHandler->setEntity($membershipProduct)->list();
+    }
+
+    /**
+     * @Security("is_granted('ROLE_JTWC_ADMIN')")
+     * @Route("/membership-product/{code}/create", name="membership_product_new",
+     * requirements={"code"="[a-zA-Z]+"}, methods={"GET", "POST"})
+     * @param Request $request
+     * @param Membership $membership
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function create(Request $request, Membership $membership)
+    {
+        $membershipProduct = (new MembershipProduct())
+                                            ->setMembership($membership);
+
+        return  $this->membershipProductHandler->setEntity($membershipProduct)->save($request);
+    }
+
+    /**
+     * @Security("is_granted('ROLE_JTWC_ADMIN')")
+     * @Route("/membership-product/{id}/edit", name="membership_product_edit", methods={"GET", "POST"})
+     * @param Request $request
+     * @param MembershipProduct $membershipProduct
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function edit(Request $request, MembershipProduct $membershipProduct)
+    {
+        return  $this->membershipProductHandler->setEntity($membershipProduct)->save($request);
+    }
+
+    /**
+     * @Route("/membership-product/{id}/show", name="membership_product_show", methods={"GET"},
+     * requirements={
+     * "id": "\d+"
+     * })
+     * @param MembershipProduct $membershipProduct
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function show(MembershipProduct $membershipProduct)
+    {
+        return $this->membershipProductHandler->setEntity($membershipProduct)->show();
+    }
+
+    /**
+     * @Security("is_granted('ROLE_JTWC_ADMIN')")
+     * @Route("/membership-product/{id}/delete", name="membership_product_delete",
+     *     methods="DELETE", requirements={"id": "\d+"}
+     * )
+     * @param Request $request
+     * @param CsrfTokenManagerInterface $csrf
+     * @param MembershipProduct $membershipProduct
+     * @return RedirectResponse
+     */
+    public function remove(Request $request, CsrfTokenManagerInterface $csrf, MembershipProduct $membershipProduct)
+    {
+        return  $this
+                    ->membershipProductHandler
+                    ->setEntity($membershipProduct)
+                    ->remove($request, $csrf);
+    }
+}

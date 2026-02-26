@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Bonus Générationnel {% endblock %}
+{% block page_title %} Bonus Générationnel {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+        <div class="content-panel">
+            <section id="unseen">
+                <table class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th colspan="2">{% if results is not null %}{{ results['grade'] }}{% else %}Néant{% endif %}</th>
+                        <th colspan="2">Gain</th>
+                        <th>{% if results is not null %}{{ results['gain'] }}{% else %}Néant{% endif %}</th>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Génération</th>
+                        <th>Position</th>
+                        <th>Binaire</th>
+                        <th>Pourcentage</th>
+                        <th>Gain</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                        {% if result is iterable %}
+                        <tr>
+                            <td>{{ result['nom'] }}</td>
+                            <td>{{ result['generation'] }}</td>
+                            <td>{{ result['position'] }}</td>
+                            <td>{{ result['binaire'] }}</td>
+                            <td>{{ result['pourcentage'] }}</td>
+                            <td>{{ result['gain'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Vous n'êtes pas encore elligible au bonus générationnel</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

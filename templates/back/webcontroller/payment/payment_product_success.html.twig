@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	JTWC - Confirmation du paiement de votre commande
+{% endblock %}
+{% block page_title %}
+    Confirmation du paiement de votre commande
+{% endblock %}
+{% block main %}
+	<div class="col-lg-12">
+        <div class="alert alert-success">
+            <h1>{{message}}</h1>
+            <a href="{{path('user_command_list')}}">Consulter les achats de votre réseau</a>
+        </div>
+	</div>
+{% endblock %}

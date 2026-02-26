@@ -1,0 +1,19 @@
+<div class="container">
+    <h1>Informations détaillées</h1>
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+        <a href="{{ path('membership_cost_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+    {% endif %}
+    {% if mbship_cost is defined %}
+        <table>
+            <tr><th>Membership</th><th>Coût</th><th>Statut</th><th>View</th></tr>
+            <tr>
+                <td>{{ mbship_cost.membership.name }}</td>
+                <td>{{ mbship_cost.value }}</td>
+                <td>{% if mbship_cost.state %} Activé {% else %} Désactivé {% endif %}</td>
+                <td></td>
+            </tr>
+        </table>
+    {% else %}
+        <p>Le prix client du produit sélectionné a été supprimé</p>
+    {% endif %}
+</div>

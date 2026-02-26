@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Les Cycles {% endblock %}
+{% block page_title %} Les cycles {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="content-panel">
+            <h4>
+                {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                    <a href="{{ path('cycle_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter un cycle</button></a>
+                {% endif %}
+            </h4>
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th class="numeric">N°</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for cycle in cycles %}
+                            <tr>
+                                <td class="numeric">{{ cycle.id }}</td>
+                                <td>{{ cycle.startedAt|date('d/m/Y H:i:s') }}</td>
+                                <td>{{ cycle.endedAt|date('d/m/Y H:i:s') }}</td>
+                                <td>{% if cycle.weekly %} Cycle hebdomadaire {% else %} Cycle mensuel {% endif %}</td>
+                                <td>{% if cycle.active %} En cours {% else %} Clôturé {% endif %}</td>
+                                {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                                    <td>
+                                        <a href="{{ path('cycle_edit', {'id': cycle.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        <!-- /content-panel -->
+    </div>
+{% endblock %}

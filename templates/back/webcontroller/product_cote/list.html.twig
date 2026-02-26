@@ -1,0 +1,108 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Liste des volumes des SV des produits
+{% endblock %}
+{% block main %}
+	<h3>
+		<i class="fa fa-angle-right"></i>Liste des côtes des produits</h3>
+	<div class="row mb">
+		{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+			<a href="{{ path('product_cote_new') }}">
+				<button type="button" class="btn btn-primary">
+					<span class="fa fa-plus-circle"></span>Ajouter</button>
+			</a>
+		{% endif %}
+		<div class="content-panel">
+			<div class="adv-table">
+				<table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+					<thead>
+						<tr>
+							<th>Produit</th>
+							<th>Côte</th>
+							<th>Statut</th>
+							<th>Début</th>
+							<th>Fin</th>
+							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+								<th>Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for cote in cotes %}
+							<tr>
+								<td>{{ cote.product.name }}</td>
+								<td>{{ cote.value }}</td>
+								<td>
+									{% if cote.state == true %}
+										Activé
+									{% else %}
+										Désactivé
+									{% endif %}
+								</td>
+								<td>{{ cote.startedAt|date('d/m/Y') }}</td>
+								<td>
+									{% if cote.state == false %}
+										{{ cote.endedAt|date('d/m/Y') }}
+									{% endif %}
+								</td>
+								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+									<td>
+										<a href="{{ path('product_cote_edit', {'id': cote.id})}}" title="Edit" class="btn btn-info btn-xs">
+											<span class="fa fa-edit"></span>
+										</a>
+										<button
+											type="button"
+											class="btn btn-danger btn-xs"
+											title="Delete"
+											data-toggle="modal"
+											data-target="#productCoteDeleteDialog{{cote.id}}">
+											<span class="fa fa-remove"></span>
+										</button>
+										<div
+											class="modal fade"
+											id="productCoteDeleteDialog{{cote.id}}"
+											tabindex="-1"
+											role="dialog"
+											aria-labelledby="myModalLabel"
+											aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+														<h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+													</div>
+													<div class="modal-body">
+														Voulez vous vraiment supprimer cette valeur ?
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+														<form action="{{ path('product_cote_delete', {'id': cote.id }) }}" method="post">
+															<button type="button" class="btn btn-danger">Confirmer</button>
+															<input type="hidden" name="_jtwc_product_cote_token" value="{{ csrf_token('jtwc_product_cote-delete'~cote.id) }}"/>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+								{% endif %}
+							</tr>
+						{% else %}
+							<tr>
+								<td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="3" {% else %} colspan="2" {% endif %}>Pas de côte des produits enregistré pour l'instant</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('datatable') }}
+{% endblock %}

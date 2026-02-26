@@ -1,0 +1,72 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Liste des volumes totaux des commisions de chaque pack {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Volume totaux de commissions </h3>
+    <div class="row mb">
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <a href="{{ path('membership_tvc_create') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+        {% endif %}
+        <div class="content-panel">
+            <div class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Membership</th>
+                        <th>Valeur (%)</th>
+                        <th>Statut</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for tvc in tvcs %}
+                        <tr>
+                            <td>{{ tvc.membership.name }}</td>
+                            <td>{{ tvc.value }}</td>
+                            <td>{% if tvc.status %} Activé {% else %} Désactivé {% endif %}</td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <td>
+                                <a href="{{ path('membership_tvc_edit', {'id': tvc.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#membershipDeleteDialog{{tvc.id}}"><span class="fa fa-remove"></span>
+                                </button>
+                                <div class="modal fade" id="membershipDeleteDialog{{tvc.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                Voulez vous vraiment supprimer cette valeur ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                <form action="{{ path('membership_tvc_delete', {'id': tvc.id }) }}" method="post">
+                                                    <button type="button" class="btn btn-danger">Confirmer</button>
+                                                    <input type="hidden" name="_jtwc_membership_cost_token"  value="{{ csrf_token('jtwc_membership_cost-delete'~tvc.id) }}" />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="4" {% else %} colspan="3" {% endif %}>Pas de volume commission disponible</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

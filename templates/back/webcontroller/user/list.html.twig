@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Jessica Total Wellness Concept - Liste des utilisateurs du réseau
+{% endblock %}
+{% block page_title %} Liste des utilisateurs du réseau {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                {% include "back/webcontroller/search_user.html.twig" with {'form': formSearch} %}
+            </form>
+        </div>
+        <div class="content-panel">
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <h4>
+                {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                    <a href="{{ path('user_new_from_known_sponsor') }}">
+                        <button type="button" class="btn btn-primary">
+                            <span class="fa fa-plus"></span>Ajouter un membre
+                        </button>
+                    </a>&nbsp;&nbsp;
+                    <a href="{{ path('users_generate_code') }}">
+                        <button type="button" class="btn btn-primary">
+                            <span class="fa fa-plus"></span>Générer code distributeur
+                        </button>
+                    </a>
+                {% endif %}
+                {% if not activated %}
+                        <button style="margin: 0 5px 10px 5px; box-shadow: 4px 4px 2px gray" class="btn btn-theme" type="button" name="validate_activation" id="validate_activation">Activer</button>
+                {% endif %}
+            </h4>
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        {% if not activated %}
+                            <th>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="check_all">
+                                    <label class="form-check-label" for="check_all">Tout cocher</label>
+                                </div>
+                            </th>
+                        {% endif %}
+                        <th>{{ knp_pagination_sortable(users, 'Nom & Prénoms', 'u.fullname') }}</th>
+                        <th>Position</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Upline</th>
+                        <th>Sponsor</th>
+                        <th>Pack</th>
+                        <th>Ville</th>
+                        <th>Pays</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                {% if not activated %}
+                                    <td>
+                                        {% if not user.activated %}
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input check_item" value="{{user.id}}">
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                                <td>{{ user.fullname }}</td>
+                                <td>{{ user.position }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.mobilePhone }}</td>
+                                <td>
+                                    {% if user.upline %}
+                                        {{ user.upline.fullname }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.sponsor %}
+                                        {{ user.sponsor.fullname }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.membership.code }}</td>
+                                <td>{{ user.city }}</td>
+                                <td>{{ user.country }}</td>
+                                <td>
+                                    <a href="{{ path('user_edit', {'id': user.id})}}" title="Edit" class="btn btn-info btn-xs">
+                                        <span class="fa fa-edit"></span>
+                                    </a>
+                                    {% if not user.activated %}
+                                        <button type="button" class="btn btn-outline-info btn-xs" title="Activate" data-toggle="modal" data-target="#userActivateDialog{{user.id}}">
+                                            <span class="fa fa-toggle-on"></span>
+                                        </button>
+                                        <div class="modal fade" id="userActivateDialog{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Voulez vous activer ce membre ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                        <a href="{{ path('user_activated', {'id': user.id}) }}" class="btn btn-danger">Confirmer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <button type="button" class="btn btn-info btn-xs" title="Activated">
+                                            <span class="fa fa-check-circle"></span>
+                                        </button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#userDeleteDialog{{user.id}}">
+                                        <span class="fa fa-remove"></span>
+                                    </button>
+                                    <div class="modal fade" id="userDeleteDialog{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Voulez vous vraiment supprimer ce membre ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                    <form action="{{ path('user_delete', {'id': user.id}) }}" method="post">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_jtwc_user_token" value="{{ csrf_token('jtwc_user-delete'~user.id) }}"/>
+                                                        <button type="submit" class="btn btn-danger">Confirmer</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="navigation align-self-end">
+                    {{ knp_pagination_render(users) }}
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('activate_user') }}
+{% endblock %}

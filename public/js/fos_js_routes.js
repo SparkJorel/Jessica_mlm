@@ -1,0 +1,1 @@
+fos.Router.setData({"base_url":"","routes":{"sponsor_autocomplete":{"tokens":[["text","\/admin\/admin\/sponsor\/autocomplete"]],"defaults":[],"requirements":[],"hosttokens":[],"methods":["GET","POST"],"schemes":[]}},"prefix":"","host":"localhost","port":"","scheme":"http","locale":[]});

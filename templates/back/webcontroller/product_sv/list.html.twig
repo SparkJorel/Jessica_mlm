@@ -1,0 +1,74 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Liste des volumes des SV des produits {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Liste des volumes des SV des produits</h3>
+    <div class="row mb">
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <a href="{{ path('product_sv_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+        {% endif %}
+        <div class="content-panel">
+            <div class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>SV Bonus binaire</th>
+                        <th>SV Bonus achat personnel</th>
+                        <th>Etat</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product_sv in product_svs %}
+                        <tr>
+                            <td>{{ product_sv.product.name }}</td>
+                            <td>{{ product_sv.value }}</td>
+                            <td>{{ product_sv.valueBPA }}</td>
+                            <td>{% if product_sv.status %} Activé {% else %} Désactivé {% endif %}</td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <td>
+                                <a href="{{ path('product_sv_edit', {'id': product_sv.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#productSVDeleteDialog{{product_sv.id}}"><span class="fa fa-remove"></span>
+                                </button>
+                                <div class="modal fade" id="productSVDeleteDialog{{product_sv.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                Voulez vous vraiment supprimer ces valeurs ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                <form action="{{ path('product_sv_delete', {'id': product_sv.id }) }}" method="post">
+                                                    <button type="button" class="btn btn-danger">Confirmer</button>
+                                                    <input type="hidden" name="_jtwc_product_sv_token"  value="{{ csrf_token('jtwc_product_sv-delete'~product_sv.id) }}" />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="5" {% else %} colspan="4" {% endif %}>Pas de volume SV enregistré pour l'instant</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

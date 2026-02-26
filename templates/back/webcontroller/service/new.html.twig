@@ -1,0 +1,72 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Enregistrement d'un nouveau service et ses examens {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Enregistrement d'un nouveau service et ses examens</h3>
+    <div class="row mb">
+        <div class="form-panel">
+            <div class="alert alert-success hide"></div>
+            {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <!-- progressbar -->
+            <ul id="progressbar">
+                <li class="active">Step 1: Informations sur le service</li>
+                <li>Step 2: Création des différents examens du service</li>
+            </ul>
+            <fieldset>
+                <h2 class="fs-title">Step 1: Informations sur le service</h2>
+                <div class="form-group">
+                    {{ form_label(form.type, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+                    <div class="col-lg-9">
+                        {{ form_errors(form.type) }}
+                        {{ form_widget(form.type, { 'attr':  {
+                            'class': 'form-control'
+                        }}) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.code, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+                    <div class="col-lg-9">
+                        {{ form_errors(form.code) }}
+                        {{ form_widget(form.code, { 'attr':  {
+                            'class': 'form-control'
+                        }}) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+                    <div class="col-lg-9">
+                        {{ form_errors(form.description) }}
+                        {{ form_widget(form.description, { 'attr':  {
+                            'class': 'form-control'
+                        }}) }}
+                    </div>
+                </div>
+                <input type="button" name="next" class="next action-button" value="Suivant" />
+            </fieldset>
+            <fieldset>
+                <h2 class="fs-title">Step 2: Création des différents examens du service</h2>
+                <div class="collections" data-prototype="{{ form_widget(form.mlmValueServices.vars.prototype)|e('html_attr') }}">
+                </div>
+                <input type="button" name="previous" class="previous action-button" value="Précédent" />
+                <input type="submit" name="submit" class="submit action-button" value="Enregistrer" />
+            </fieldset>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('fieldset') }}
+    {{ encore_entry_script_tags('collection') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('fieldset') }}
+    {{ encore_entry_link_tags('collection') }}
+{% endblock %}
+

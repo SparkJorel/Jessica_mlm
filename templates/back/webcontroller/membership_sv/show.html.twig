@@ -1,0 +1,19 @@
+<div class="container">
+    <h1>Informations détaillées</h1>
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+        <a href="{{ path('membership_sv_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+    {% endif %}
+    {% if mbship_sv is defined %}
+        <table>
+            <tr><th>Membership</th><th>SV</th><th>Etat</th><th>View</th></tr>
+            <tr>
+                <td>{{ mbship_sv.membership.name }}</td>
+                <td>{{ mbship_sv.value }}</td>
+                <td>{% if mbship_sv.state %} Activé {% else %} Désactivé {% endif %}</td>
+                <td></td>
+            </tr>
+        </table>
+    {% else %}
+        <p>La valeur SV du membership sélectionné a été supprimée</p>
+    {% endif %}
+</div>

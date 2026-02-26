@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %} JTWC - Enregistrement du niveau de récompense du bonus générationnel {% endblock %}
+{% block page_title %} Enregistrement du niveau de récompense du bonus générationnel {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.lvl, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.lvl) }}
+                    {{ form_widget(form.lvl, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="col-lg-offset-5 col-lg-5">
+                <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('validate') }}
+{% endblock %}

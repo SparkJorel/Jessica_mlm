@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Indirect Bonus : Les pourcentages sur les packs de souscriptions
+{% endblock %}
+
+{% block page_title %}
+	Indirect Bonus : Les pourcentages sur les packs de souscriptions
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">
+		<div class="content-panel">
+		    {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+			<h4>
+				{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+					<a href="{{ path('indirect_bonus_membership_new') }}">
+						<button type="button" class="btn btn-primary">
+							<span class="fa fa-plus-circle"></span>Paramétrer les pourcentages sur les packs 
+						</button>
+					</a>
+				{% endif %}
+            </h4>
+			<section id="unseen">
+				<table class="table table-bordered table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Générations</th>
+							<th>Valeurs</th>
+							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+								<th>Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for code, indBoMemberships in indirectBonusMemberships %}
+							<tr>
+								<td {% if indBoMemberships|length > 1 %}
+                                    rowspan="{{indBoMemberships|length}}"
+                                {% endif %} >{{ code }}</td>
+								<td>{{ indBoMemberships[0]['lvl'] }}</td>
+								<td>{{ indBoMemberships[0]['value'] }}</td>
+								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+									<td>
+										<a href="{{ path('indirect_bonus_membership_edit', {'id': indBoMemberships[0]['id']})}}" title="Edit" class="btn btn-info btn-xs">
+											<span class="fa fa-edit"></span>
+										</a>
+										<button
+											type="button"
+											class="btn btn-danger btn-xs"
+											title="Delete"
+											data-toggle="modal"
+											data-target="#membershipDeleteDialog{{indBoMemberships[0]['id']}}">
+											<span class="fa fa-remove"></span>
+										</button>
+										<div
+											class="modal fade"
+											id="membershipDeleteDialog{{indBoMemberships[0]['id']}}"
+											tabindex="-1"
+											role="dialog"
+											aria-labelledby="myModalLabel"
+											aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+														<h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+													</div>
+													<div class="modal-body">
+														Voulez vous vraiment supprimer cette valeur ?
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+														<form action="{{ path('indirect_bonus_membership_delete', {'id': indBoMemberships[0]['id'] }) }}" method="post">
+															<input type="hidden" name="_method" value="DELETE">
+															<button type="button" class="btn btn-danger">Confirmer</button>
+															<input type="hidden" name="_jtwc_indirect_bonus_token" value="{{ csrf_token('jtwc_indirect_bonus-delete'~indBoMemberships[0]['id']) }}"/>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+								{% endif %}
+							</tr>
+                            {% if indBoMemberships|length > 1 %}
+                                {% for indBoMembership in indBoMemberships|slice(1, indBoMemberships|length) %}
+                                    <tr>
+                                        <td>{{ indBoMembership['lvl'] }}</td>
+                                        <td>{{ indBoMembership['value'] }}</td>
+                                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                                            <td>
+                                                <a href="{{ path('indirect_bonus_membership_edit', {'id': indBoMembership['id']})}}" title="Edit" class="btn btn-info btn-xs">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-xs"
+                                                    title="Delete"
+                                                    data-toggle="modal"
+                                                    data-target="#membershipDeleteDialog{{indBoMembership['id']}}">
+                                                    <span class="fa fa-remove"></span>
+                                                </button>
+                                                <div
+                                                    class="modal fade"
+                                                    id="membershipDeleteDialog{{indBoMembership['id']}}"
+                                                    tabindex="-1"
+                                                    role="dialog"
+                                                    aria-labelledby="myModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Voulez vous vraiment supprimer cette valeur ?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                                <form action="{{ path('indirect_bonus_membership_delete', {'id': indBoMembership['id'] }) }}" method="post">
+                                                                    <input type="hidden" name="_method" value="DELETE">
+																	<button type="button" class="btn btn-danger">Confirmer</button>
+                                                                    <input type="hidden" name="_jtwc_indirect_bonus_token" value="{{ csrf_token('jtwc_indirect_bonus-delete'~indBoMembership['id']) }}"/>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+						{% else %}
+                            <tr>
+                                <td colspan="4">Aucune valeur définie pour l'instant</td>
+                            </tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</div>
+{% endblock %}

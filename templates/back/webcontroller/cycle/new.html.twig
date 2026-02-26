@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %} JTWC - Enregistrement d'un nouveau cycle {% endblock %}
+{% block page_title %} Enregistrement d'un nouveau cycle {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.startedAt, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.startedAt) }}
+                    {{ form_widget(form.startedAt, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.endedAt, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.endedAt) }}
+                    {{ form_widget(form.endedAt, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.weekly, null, { 'label_attr':  {
+                    'class': 'col-lg-2 control-label'
+                }}) }}
+                <div class="col-lg-10">
+                    {{ form_errors(form.weekly) }}
+                    {{ form_widget(form.weekly, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-10 col-lg-2">
+                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	JTWC - Fiche technique du produit : {{ entity.name }}
+{% endblock %}
+{% block page_title %}
+	Fiche technique du produit : {{ entity.name }}
+{% endblock %}
+{% block main %}
+
+	<div class="col-lg-12">
+		<a href="{{ path('products_all') }}">
+			<button type="button" class="btn btn-primary">
+				<span class="fa fa-arrow-right"></span>Voir les produits</button>
+		</a>
+
+		<div class="row">
+			<div class="col-md-7">
+				<img src="{{ vich_uploader_asset(entity, 'imageFile')|imagine_filter('reduc_detail') }}" alt="{{ entity.name }}"/>
+			</div>
+			<div class="col-md-5" style="padding: 2.8rem; ">
+				<h1 class="mt-4 mt-md-0">{{ entity.name }}</h1>
+				<h2>{{ entity.distributorPrice|number_format(2, ',', ' ') }} FCFA</h2>
+				<hr>
+				<div style="padding: 0.5rem; text-align: justify; font-size: 1.5rem; font-style: italic; ">
+					<b>Description:
+					</b>
+					{{ entity.description|raw }}
+				</div>
+
+				{{ form_start(form, {'attr': {'class': 'mt-4 p-4 bg-light'}}) }}
+				<div class="form-group">
+					{{ form_label(form.quantity) }}
+					{{ form_widget(form.quantity, {
+						'attr': {
+							'class': 'form-control ' ~ (form.quantity.vars.valid ? '' : 'is-invalid')
+						}
+					}) }}
+					<div class="invalid-feedback">
+						{{ form_errors(form.quantity) }}
+					</div>
+				</div>
+				{{ form_widget(form.add, {'attr': {'class': 'btn btn-warning w-50'}}) }}
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        products:
+            uri_prefix: '%jtwc.path.product_images%'
+            upload_destination: '%kernel.project_dir%/public%jtwc.path.product_images%'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        users:
+            uri_prefix: '%jtwc.path.user_images%'
+            upload_destination: '%kernel.project_dir%/public%jtwc.path.user_images%'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

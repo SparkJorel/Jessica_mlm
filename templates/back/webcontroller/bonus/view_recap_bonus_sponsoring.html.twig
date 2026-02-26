@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Bonus Parrainage d'un Cycle {% endblock %}
+{% block page_title %} Bonus Parrainage d'un Cycle {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form class="form-inline" role="form" style="margin: 30px 0;">
+                <div class="form-group">
+                    {{ form_widget(form.period) }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </div>
+            </form>
+        </div>
+        <div id="content-panel" class="content-panel" data-url="{{app.request.attributes.get('_route')}}">
+            <section id="cycle" data-cycle="{{cycle}}" class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    {% if closed and not paid %}
+                        <button style="margin: 0 5px 10px 5px; box-shadow: 4px 4px 2px gray" class="btn btn-theme" type="button" name="bonus" id="bonus">Payé</button>
+                    {% endif %}
+                    <thead>
+                    <tr>
+                        {% if closed and not paid %}
+                            <th>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="check_all">
+                                    <label class="form-check-label" for="check_all">Tout cocher</label>
+                                </div>
+                            </th>
+                        {% endif %}
+                        <th>Bénéficiaire</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for bonus_sponsoring_cycle in bonus_sponsoring_cycles %}
+                        <tr>
+                            {% if closed and not paid %}
+                                <td>
+                                    {% if not bonus_sponsoring_cycle.status %}
+                                        <div class="form-check">
+                                            <input type="checkbox"
+                                                   class="form-check-input check_item"
+                                                   value="{{bonus_sponsoring_cycle.user.id}}" />
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                            <td>{{ bonus_sponsoring_cycle.user.fullname }}</td>
+                            <td>{{ bonus_sponsoring_cycle.montant_total }}</td>
+                            <td>{% if bonus_sponsoring_cycle.status %} Payé {% else %} Non payé {% endif %}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucun parrainage réalisé au cours de ce cycle</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+    {{ encore_entry_script_tags('bonus_sponsoring_paid') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

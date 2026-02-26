@@ -1,0 +1,60 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} JTWC - Modification d'une promotion concernant un bonus spécial {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Modification d'une promotion concernant un bonus spécial</h3>
+    <div class="row mb">
+        <div class="form-panel">
+            <div class="alert alert-success hide"></div>
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                <div class="d-flex justify-content-start">
+                    {{ form_label(form.startedAt, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+
+                    {{ form_errors(form.startedAt) }}
+                    {{ form_widget(form.startedAt, { 'attr':  {
+                        'class': 'form-control col-lg-8'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="d-flex justify-content-start">
+                    {{ form_label(form.endedAt, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+
+                    {{ form_errors(form.endedAt) }}
+                    {{ form_widget(form.endedAt, { 'attr':  {
+                        'class': 'form-control col-lg-8'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group" style="text-align: left">
+                {{ form_errors(form.status) }}
+                {{ form_widget(form.status, { 'attr':  {
+                    'class': '', 'style': 'text-align: right'
+                }}) }}
+            </div>
+            <div class="form-group">
+                <div class="d-flex justify-content-start">
+                    {{ form_label(form.bonusSpecial, null, { 'label_attr':  {
+                        'class': 'col-lg-3 control-label'
+                    }}) }}
+                    {{ form_errors(form.bonusSpecial) }}
+                    {{ form_widget(form.bonusSpecial, { 'attr':  {
+                        'class': 'form-control col-lg-8'
+                    }}) }}
+                </div>
+            </div>
+            <div class="col-lg-offset-5 col-lg-5">
+                <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('validate') }}
+{% endblock %}

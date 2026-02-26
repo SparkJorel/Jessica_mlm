@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Nos packs de souscriptions
+{% endblock %}
+
+{% block page_title %}
+	Nos packs de souscriptions 
+{% endblock %}
+
+{% block main %}
+	<div class="col-lg-12">
+		<div class="content-panel">
+		    {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+			<h4>
+				{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+					<a href="{{ path('membership_new') }}">
+						<button type="button" class="btn btn-primary">
+							<span class="fa fa-plus-circle"></span>Ajouter un pack de souscription
+						</button>
+					</a>
+				{% endif %}
+            </h4>
+			<section id="unseen">
+				<table class="table table-bordered table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Nom</th>
+							<th class="numeric">Coût(XAF)</th>
+							<th class="numeric">Bonus Sponsoring(%)</th>
+							<th class="numeric">SV du Binaire</th>
+							<th class="numeric">Quote du pack</th>
+							<th>Description</th>
+							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+								<th>Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for membership in memberships %}
+							<tr>
+								<td>{{ membership.code }}</td>
+								<td>{{ membership.name }}</td>
+								<td class="numeric">{{ membership.membershipCost|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ membership.membershipBonusBinairePourcent|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ membership.membershipGroupeSV|number_format(2, ',', ' ') }}</td>
+								<td class="numeric">{{ membership.membershipProductCote|number_format(2, ',', ' ') }}</td>
+								<td>{{ membership.description }}</td>
+								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+									<td>
+										<a href="{{ path('membership_edit', {'id': membership.id})}}" title="Edit" class="btn btn-info btn-xs">
+											<span class="fa fa-edit"></span>
+										</a>
+										<a href="{{ path('membership_product_list', {'code': membership.code})}}" title="Add" class="btn btn-info btn-xs">
+											<span class="fa fa-eye"></span>
+										</a>											
+										<a href="{{ path('membership_product_new', {'code': membership.code})}}" title="Add" class="btn btn-info btn-xs">
+											<span class="fa fa-plus"></span>
+										</a>
+										{% if is_granted('ROLE_JTWC_ADMIN') %}		
+											<button
+												type="button"
+												class="btn btn-danger btn-xs"
+												title="Delete"
+												data-toggle="modal"
+												data-target="#membershipDeleteDialog{{membership.id}}">
+												<span class="fa fa-remove"></span>
+											</button>
+											<div
+												class="modal fade"
+												id="membershipDeleteDialog{{membership.id}}"
+												tabindex="-1"
+												role="dialog"
+												aria-labelledby="myModalLabel"
+												aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+															<h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+														</div>
+														<div class="modal-body">
+															Voulez vous vraiment supprimer ce package ?
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+															<form action="{{ path('membership_delete', {'id': membership.id }) }}" method="post">
+																<input type="hidden" name="_method" value="DELETE">
+																<button type="submit" class="btn btn-danger">Confirmer</button>
+																<input type="hidden" name="_jtwc_membership_token" value="{{ csrf_token('jtwc_membership-delete'~membership.id) }}"/>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
+									</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</div>
+{% endblock %}

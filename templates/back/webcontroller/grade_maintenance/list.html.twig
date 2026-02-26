@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - La maintenance de chaque grade {% endblock %}
+{% block page_title %} La maintenance de chaque grade {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="content-panel">
+		    {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+			<h4>
+                {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                    <a href="{{ path('grade_maintenance_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Définir la maintenance d'un grade</button></a>
+                {% endif %}
+            </h4>         
+            <section id="unseen">
+                <table class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Maintenance</th>
+                        <th>Activé</th>
+                        <th>Debut</th>
+                        <th>Fin</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for grade_maint in grade_maints %}
+                        <tr>
+                            <td>{{ grade_maint.grade.commercialName }}</td>
+                            <td>{{ grade_maint.maintenance }}</td>
+                            <td>{% if grade_maint.status %} OUI {% else %} NON {% endif %} </td>
+                            <td>{{ grade_maint.startedAt|date('d/m/Y') }}</td>
+                            <td>{% if grade_maint.endedAt is not null %}{{ grade_maint.endedAt|date('d/m/Y') }}{% endif %}</td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                                <td>
+                                    <a href="{{ path('grade_maintenance_edit', {'id': grade_maint.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                    <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#grade_maintDeleteDialog{{grade_maint.id}}"><span class="fa fa-remove"></span>
+                                    </button>
+                                    <div class="modal fade" id="grade_maintDeleteDialog{{grade_maint.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Voulez vous vraiment supprimer la maintenance associée à ce grade ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                    <form action="{{ path('grade_maintenance_delete', {'id': grade_maint.id }) }}" method="post">
+                                                        <button type="button" class="btn btn-danger">Confirmer</button>
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_jtwc_grade_maintenance_token"  value="{{ csrf_token('jtwc_grade_maintenance-delete'~grade_maint.id) }}" />
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="6" {% else %} colspan="5" {% endif %}>Pas de SV associé à ce grade</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Jessica Total Wellness Concept - Enregistrement d'un nouveau produit
+{% endblock %}
+{% block page_title %}
+	Enregistrement d'un nouveau produit
+{% endblock %}
+{% block main %}
+
+    {% include 'back/webcontroller/product/_form.html.twig' with {'form': form} %}
+        
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('fieldset') }}
+{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('fieldset') }}
+{% endblock %}

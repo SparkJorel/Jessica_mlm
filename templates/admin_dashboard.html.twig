@@ -1,0 +1,169 @@
+{% extends 'dashboard.html.twig' %}
+{% block menu %}
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        <ul class="sidebar-menu" id="nav-accordion">
+            <p class="centered">
+                <a href="#">
+                    <img src="{{ asset(app.user.specificDirectory(upload_base_directory) ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="img-circle" width="80" />
+                </a>
+            </p>
+            <h5 class="centered">{{ app.user.fullname }}</h5>
+            {% if is_granted('ROLE_JTWC_ADMIN') %}
+            <li>
+                <a href="{{ path('user_list_all') }}">
+                    <i class="fa fa-users"></i>
+                    <span>Membres</span>
+                </a>
+            </li>
+            {% endif %}
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-level-up"></i>
+                    <span>Upgrade</span>
+                </a>
+                <ul class="sub">
+                    {% if is_granted('ROLE_JTWC_ADMIN') %}
+                    <li><a href="{{ path('membership_subscription_list') }}">Souscriptions</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('personal_membership_subscription') }}">Upgrade</a></li>
+                    {% if is_granted('ROLE_JTWC_ADMIN') %}
+                        <li><a href="{{ path('users_grade_list') }}">Grades</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('personal_grade_list') }}">Mes Grades</a></li>
+                </ul>
+            </li>
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-tree"></i>
+                    <span>Downline</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('genealogy_tree') }}">Genealogy</a></li>
+                    <li><a href="{{ path('user_list') }}">Downline List</a></li>
+                </ul>
+            </li>
+            {% if is_granted('add_member') %}
+            <li>
+                <a href="{{ path('user_new_from_known_sponsor') }}">
+                    <i class="fa fa-user-plus"></i>
+                    <span>Ajouter un membre</span>
+                </a>
+            </li>
+            {% endif %}
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>Commander</span>
+                </a>
+                <ul class="sub">
+                    {% if is_granted('ROLE_JTWC_ADMIN') %}
+                        <li><a href="{{ path('user_command_list') }}">Liste Commandes</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('user_personal_command_list') }}">Commandes personnelles</a></li>
+                </ul>
+            </li>
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-gift"></i>
+                    <span>Bonus</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('bonus_parrainage_user') }}">Bonus Parrainage</a></li>
+                    <li><a href="{{ path('bonus_achat_personnel') }}">Bonus Achat personnel</a></li>
+                    <li><a href="{{ path('bonus_binaire') }}">Bonus Binaire</a></li>
+                    <li><a href="{{ path('bonus_generational') }}">Genérationnel</a></li>
+                </ul>
+            </li>
+            {% if is_granted('ROLE_JTWC_ADMIN') %}
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-briefcase"></i>
+                    <span>Recapitulatif du cycle</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('bonus_sponsoring_cycle') }}">Récap du parrainage</a></li>
+                    <li><a href="{{ path('bonus_personal_purchase_cycle') }}">Récapitulatif des achats personnels</a></li>
+                    <li><a href="{{ path('bonus_binaire_cycle') }}">Récapitulatif du binaire</a></li>
+                </ul>
+            </li>
+            {% endif %}
+            {% if is_granted('ROLE_JTWC_ADMIN') %}
+                <li>
+                    <a href="{{ path('view_recap') }}">
+                        <i class="fa fa-rotate-left"></i>
+                        <span>Commissions</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if is_granted('ROLE_JTWC_ADMIN') %}
+                <li>
+                    <a href="{{ path('turn_over_monthly') }}">
+                        <i class="fa fa-gavel"></i>
+                        <span>Rapport Cycle</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-cubes"></i>
+                    <span>Membership</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('membership_list') }}">Pack</a></li>
+                    <li><a href="{{ path('membership_cost_list') }}">Coût</a></li>
+                    <li><a href="{{ path('membership_sv_list') }}">SV</a></li>
+                    <li><a href="{{ path('membership_bp_list') }}">Bonus</a></li>
+                </ul>
+            </li>
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-star"></i>
+                    <span>Products</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('product_list') }}">Products</a></li>
+                    <li><a href="{{ path('product_cote_list') }}">Côtes</a></li>
+                    <li><a href="{{ path('product_sv_list') }}">SV</a></li>
+                    <li><a href="{{ path('product_dp_list') }}">Prix distributeur</a></li>
+                    <li><a href="{{ path('product_cp_list') }}">Prix client</a></li>
+                </ul>
+            </li>
+            {% if is_granted('ROLE_JTWC_ADMIN') %}
+            <li>
+                <a href="{{ path('close_cycle_list') }}">
+                    <i class="fa fa-cog"></i>
+                    <span>Finaliser un cycle</span>
+                </a>
+            </li>
+            {% endif %}
+            <li class="sub-menu">
+                <a href="#">
+                    <i class="fa fa-cog"></i>
+                    <span>Paramétrage</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('cycle_list') }}">Cycle</a></li>
+                    <li><a href="{{ path('grade_list') }}">Grade</a></li>
+                    <li><a href="{{ path('grade_maintenance_list') }}">Maintenance</a></li>
+                    <li><a href="{{ path('grade_sv_list') }}">SV</a></li>
+                    <li><a href="{{ path('grade_level_list') }}">Niveau</a></li>
+                    <li><a href="{{ path('grade_bg_list') }}">Bonus générationnel</a></li>
+                    <li><a href="{{ path('level_bonus_generationnel_list') }}">Nombre de <br/>génération</a></li>
+                    <li><a href="{{ path('parameter_config_list') }}">Paramètres généraux</a></li>
+                </ul>
+            </li>
+            <li class="sub-menu">
+                <a href="#">
+                    <i class="fa fa-user"></i>
+                    <span>Profil</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="{{ path('change_password') }}">Modifier le mot de passe</a></li>
+                    <li><a href="{{ path('change_username') }}">Modifier l'identifiant</a></li>
+                </ul>
+            </li>
+        </ul>
+        <!-- sidebar menu end-->
+    </div>
+{% endblock %}

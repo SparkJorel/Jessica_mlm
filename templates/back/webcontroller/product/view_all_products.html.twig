@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	JTWC - Les produits du réseau
+{% endblock %}
+{% block page_title %}
+	Les produits du réseau
+{% endblock %}
+{% block main %}
+	<div class="body-productPage col-lg-12">
+            <div class="container-productPage">
+             {% for product in products %}
+                <div class="card-productPage">
+                    <div class="imgBx">
+                        <img src="{{ vich_uploader_asset(product, 'imageFile')|imagine_filter('reduc_accueil') }}" alt="{{ product.name }}" />
+                        <ul class="action-productPage">
+                            <li>
+                                <a href="{{ path('product_show', {'id': product.id}) }}">
+                                    <i class="fa fa-heart" aria-hidden="true"></i>
+                                    <span>Add to Wishlist</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('product_show', {'id': product.id}) }}">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    <span>Add to Cart</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('product_show', {'id': product.id}) }}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                    <span>Consulter les détails</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="content-productPage">
+                        <div class="productName">
+                            <h3>{{ product.name }}</h3>
+                        </div>
+                        <div class="price_rating">
+                            <h2>{{ product.distributorPrice|number_format(2, ',', ' ') }} FCFA</h2>
+                            <div class="rating">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa grey fa-star" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+	</div>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page_product') }}
+{% endblock %}

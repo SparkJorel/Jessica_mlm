@@ -1,0 +1,115 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: "fr"
+    commission_cycle: "%kernel.project_dir%/public/pdf/commissions/"
+    upload_document_base_directory: "%kernel.project_dir%/public/uploads"
+    jtwc.path.product_images: /uploads/images/products
+    jtwc.path.user_images: /uploads/images/users
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $apiKeyDohone: "%env(API_KEY_DOHONE)%"
+            $urlApiDohonePayIn: "%env(API_URL_PAY_IN)%"
+            $hashCode: "%env(HASH_CODE_DOHONE)%"
+
+    _instanceof:
+        # services whose classes are instances of CustomInterface will be tagged automatically
+        App\Services\Payment\PayInInterface:
+            tags: ['jtwc.payment']
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: "../src/*"
+        exclude: "../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}"
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: "../src/Controller"
+        tags: ["controller.service_arguments"]
+
+    App\Controller\Back\WebController\:
+        resource: "../src/Controller/Back/WebController"
+        tags: ["controller.service_arguments"]
+
+    App\Controller\Front\WebController\:
+        resource: "../src/Controller/Front/WebController"
+        tags: ["controller.service_arguments"]
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - !service { class: PDO, factory: ["@database_connection", "getWrappedConnection"]}
+            - { lock_mode: 1 }
+
+    gedmo.listener.tree:
+        class: Gedmo\Tree\TreeListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [setAnnotationReader, ["@annotation_reader"]]
+
+    jtwc.date_operation:
+        class: App\Services\ComputeDateOperation
+
+    jtwc.cycle.deactivate:
+        class: App\EventListener\CycleSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    jtwc.user_command.create_code:
+        class: App\EventListener\GenerateCodeSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    jtwc.membership_subscription.close:
+        class: App\EventListener\CloseMembershipSubscriptionSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, event: prePersist, method: prePersist, connection: default }
+
+    App\EntityListener\UserCommandsEntityListener:
+        tags:
+            - { name: 'doctrine.event_listener', event: 'prePersist', entity: 'App\Entity\UserCommands'}
+            - { name: 'doctrine.event_listener', event: 'preUpdate', entity: 'App\Entity\UserCommands'}
+
+    App\EntityListener\CommandProductsEntityListener:
+        tags:
+            - { name: 'doctrine.event_listener', event: 'prePersist', entity: 'App\Entity\CommandProducts'}
+            - { name: 'doctrine.event_listener', event: 'preUpdate', entity: 'App\Entity\CommandProducts'}
+
+    jtwc.date_operation.compute:
+        class: App\EventListener\ComputeDateOperationSubscriber
+        arguments: ["@jtwc.date_operation"]
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    jtwc.user_grade.created:
+        class: App\EventListener\AddNewUserGradeSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    jtwc.product.created:
+        class: App\EventListener\AddNewProductSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+#    App\EntityListener\ServiceEntityListener:
+#        tags:
+#            - { name: 'doctrine.orm.entity_listener', event: 'prePersist', entity: 'App\Entity\Service'}
+#            - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\Service'}

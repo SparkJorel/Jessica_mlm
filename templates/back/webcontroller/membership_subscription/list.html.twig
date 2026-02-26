@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Liste des souscriptions {% endblock %}
+{% block page_title %} {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}Liste des souscriptions dans le réseau {% else %} Souscriptions personnelles {% endif %} {% endblock %}
+{% block main %}
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <form novalidate="novalidate" class="form-inline" role="form" style="margin: 30px 0;">
+                {% include "back/webcontroller/search_user.html.twig" with {'form': formSearch} %}
+            </form>
+        </div>
+        <div class="content-panel">
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{type}}">{{message}}</div>
+                {% endfor %}
+            {% endfor %}
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>{{ knp_pagination_sortable(mbship_subs, 'Utilisateur', 'u.fullname') }}</th>
+                            <th>Membership</th>
+                            <th class="numeric">Prix</th>
+                            <th>Upgradé</th>
+                            <th>Activé</th>
+                            {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                <th>Payé</th>
+                                <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for mbship_sub in mbship_subs %}
+                        <tr>
+                            <td>{{ mbship_sub.member.fullname }}</td>
+                            <td>{{ mbship_sub.membership.name }}</td>
+                            <td class="numeric">{% if mbship_sub.price is defined %}{{ mbship_sub.price }} {% endif %}</td>
+                            <td>
+                            {% if mbship_sub.upgraded %}
+                                <button type="button" class="btn btn-info btn-xs" title="Oui">
+                                    <span class="fa fa-check-square"></span>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-warning btn-xs" title="Non">
+                                    <span class="fa fa-times"></span>
+                                </button> 
+                            {% endif %}
+                            </td>
+                            <td>
+                            {% if mbship_sub.state %} 
+                                <button type="button" class="btn btn-info btn-xs" title="Oui">
+                                    <span class="fa fa-check-square"></span>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-warning btn-xs" title="Non">
+                                    <span class="fa fa-times"></span>
+                                </button> 
+                            {% endif %}
+                            </td>
+                            {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                <td>
+                                    {% if not mbship_sub.paid %}
+                                        <button type="button" class="btn btn-outline-info btn-xs" title="Activate" data-toggle="modal" data-target="#userActivateDialog{{mbship_sub.id}}">
+                                            <span class="fa fa-toggle-on"></span>
+                                        </button>
+                                        <div class="modal fade" id="userActivateDialog{{mbship_sub.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Voulez vous activer cet upgrade ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                        <a href="{{ path('membership_subscription_activated', {'id': mbship_sub.id}) }}" class="btn btn-danger">Confirmer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <button type="button" class="btn btn-info btn-xs" title="Activated">
+                                            <span class="fa fa-check-circle"></span>
+                                        </button>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                {% if mbship_sub.isUpgradable %}
+                                    <button type="button" class="btn btn-info btn-xs" title="Upgrade" data-toggle="modal" data-target="#upgradeDialog{{mbship_sub.id}}">
+                                        <span class="fa fa-level-up"></span>Upgrade
+                                    </button>
+                                    <div class="modal fade" id="upgradeDialog{{mbship_sub.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                </div>
+                                                <form action="{{ path('membership_subscription_upgrade') }}" method="post">
+                                                    <div class="modal-body">
+                                                        <div class="form-row">
+                                                            {% if is_granted('ROLE_JTWC_ADMIN') %}
+                                                            <div class="form-group col-md-12">
+                                                                <label for="client">Client</label>
+                                                                <input type="text" class="form-control" id="client" name="client" value="{{  mbship_sub.member.fullname~" ("~mbship_sub.member.id~")" }}" placeholder="Nom du client" />
+                                                            </div>
+                                                            {% endif %}
+                                                            <div class="form-group col-md-6">
+                                                                <label for="pack_inscription">Pack d'inscription</label>
+                                                                <select class="form-control" id="pack_inscription" name="pack_inscription">
+                                                                    <option value="----">choix du pack</option>
+                                                                    {% for p in mbship_sub.membershipUp %}
+                                                                        <option value="{{ p['id'] }}">{{ p['name'] }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6 ">
+                                                                <label for="price">Reste à payer</label>
+                                                                <input type="text" class="form-control" id="price" name="price">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                        <input type="hidden" name="_jtwc_mb_subscription_token" value="{{ csrf_token('jtwc_mb_subscription-upgrade'~mbship_sub.id) }}"/>
+                                                        <button type="submit" class="btn btn-primary">Confirmer</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %} colspan="6" {% else %} colspan="4" {% endif %}>Aucune souscription disponible pour l'instant</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            <div class="navigation text-center">
+                {{ knp_pagination_render(mbship_subs) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('update_price') }}
+{% endblock %}

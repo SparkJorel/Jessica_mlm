@@ -1,0 +1,39 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} JTWC - Enregistrement du prix distributeur d'un produit {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Enregistrement du prix distributeur d'un produit</h3>
+    <div class="row mb">
+        <div class="form-panel">
+            <div class="alert alert-success hide"></div>
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.product, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.product) }}
+                    {{ form_widget(form.product, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.price, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.price) }}
+                    {{ form_widget(form.price, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <input type="submit" name="submit" class="submit action-button" value="Submit" />
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('validate') }}
+{% endblock %}

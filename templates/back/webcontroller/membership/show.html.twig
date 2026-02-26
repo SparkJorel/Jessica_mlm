@@ -1,0 +1,19 @@
+<div class="container">
+    <h1>Fiche membership</h1>
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+        <a href="{{ path('membership_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-arrow-right"></span>Consulter la liste</button></a>
+    {% endif %}
+    {% if membership is defined %}
+        <table>
+            <tr><th>Code</th><th>Nom</th><th>Description</th><th>Actions</th></tr>
+            <tr>
+                <td>{{ membership.code }}</td>
+                <td>{{ membership.name }}</td>
+                <td>{{ membership.description }}</td>
+                <td></td>
+            </tr>
+        </table>
+    {% else %}
+        Membership supprimé du réseau
+    {% endif %}
+</div>

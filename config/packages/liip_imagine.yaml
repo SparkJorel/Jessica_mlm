@@ -1,0 +1,28 @@
+# See dos how to configure the bundle: https://symfony.com/doc/current/bundles/LiipImagineBundle/basic-usage.html
+liip_imagine:
+    # valid drivers options include "gd" or "gmagick" or "imagick"
+    driver: "gd"
+    resolvers:
+        default:
+            web_path: ~ 
+    loaders:
+        default:
+            filesystem:
+                data_root: 
+                    - '%kernel.project_dir%/public'
+    filter_sets:
+        cache: ~
+        reduc_accueil:
+            quality: 95
+            filters:
+                thumbnail: { size: [400, 300], mode: outbound }
+        reduc_cart:
+            quality: 95
+            filters:
+                thumbnail: { size: [200, 150], mode: outbound }
+        reduc_detail:
+            quality: 95
+            filters:
+                scale:
+                    dim: [580, 580]
+                background: { size: [584, 584], position: center, color: '#000000' }

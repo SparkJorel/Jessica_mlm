@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="JTWC">
+    <meta name="keyword" content="JTWC, MLM">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Favicons -->
+    <link href="{{ asset('img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    {% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+    <section id="container">
+        <header class="header black-bg">
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+                <div class="sidebar-toggle-box">
+                    <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+                </div>
+            {% endif %}
+            <!--logo start-->
+            <a href="#" class="logo"><b>JT<span>WC</span></b></a>
+            <!--logo end-->
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="nav notify-row" id="top_menu">
+                <!--  notification start -->
+                <ul class="nav top-menu">
+                <!-- notification dropdown start-->
+                <li id="header_cart_notification" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="badge bg-light" id="notification-cart-count">
+                            <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu extended notification list-group" id="cart-content">
+                    </ul>
+                </li>
+                <!-- notification dropdown end -->
+                <!-- inbox dropdown start-->
+                <li id="header-cart-subscription-notification" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">
+                        <i class="fa fa-cubes"></i>
+                        <span class="badge bg-light" id="notification-cart-subscription-count">
+                            <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu extended notification list-group" id="cart-subscription-content">
+                    </ul>
+                </li>
+                <!-- inbox dropdown end -->                
+                </ul>
+                <!--  notification end -->
+            </div>
+            {% endif %}
+            <div class="top-menu">
+                <ul class="nav pull-right top-menu">
+                    <li>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a class="logout" href="{{ path('jtwc_app_logout') }}"><i class="fa fa-power-off"></i>  Logout</a>
+                        {% else %}
+                            Bonjour cher(e) invité(e) <i class="fa fa-smile-o"></i>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </header>
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+            <aside>
+                <div id="sidebar" class="nav-collapse">
+                    <ul class="sidebar-menu" id="nav-accordion">
+                        <p class="centered">
+                            <a href="#">
+                                <img src="{{ asset(app.user.specificDirectory(upload_base_directory) ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="img-circle" width="80" />
+                            </a>
+                        </p>
+                        <h5 class="centered">{{ app.user.fullname }}</h5>
+                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                        <li>
+                            <a href="{{ path('user_list_all') }}">
+                                <i class="fa fa-users"></i>
+                                <span>Membres</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-level-up"></i>
+                                <span>Upgrade</span>
+                            </a>
+                            <ul class="sub">
+                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                <li><a href="{{ path('membership_subscription_list') }}">Souscriptions</a></li>
+                                {% endif %}
+                                <li><a href="{{ path('personal_membership_subscription') }}">Upgrade</a></li>
+                                {% if is_granted('ROLE_JTWC_ADMIN') %}
+                                    <li><a href="{{ path('users_grade_list') }}">Grades</a></li>
+                                {% endif %}
+                                <li><a href="{{ path('personal_grade_list') }}">Mes Grades</a></li>
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-tree"></i>
+                                <span>Downline</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ path('genealogy_tree') }}">Genealogy</a></li>
+                                <li><a href="{{ path('user_list') }}">Downline List</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{{ path('user_new_from_known_sponsor') }}">
+                                <i class="fa fa-user-plus"></i>
+                                <span>Ajouter un membre</span>
+                            </a>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Commander</span>
+                            </a>
+                            <ul class="sub">
+                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                    <li><a href="{{ path('list_all_user_commands') }}">Les commandes du réseau</a></li>
+                                {% endif %}
+                                <li><a href="{{ path('user_command_list') }}">Commandes de mon réseau</a></li>
+                                <li><a href="{{ path('user_personal_command_list') }}">Commandes personnelles</a></li>
+                                <li><a href="{{ path('products_all') }}">Nos produits</a></li>
+                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                    <li><a href="{{ path('user_command_new') }}">Passer une commande</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-gift"></i>
+                                <span>Bonus</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ path('bonus_parrainage_user') }}">Bonus Parrainage</a></li>
+                                <li><a href="{{ path('bonus_achat_personnel') }}">Bonus Achat personnel</a></li>
+                                <li><a href="{{ path('bonus_binaire') }}">Bonus Binaire</a></li>
+                                <li><a href="{{ path('bonus_generational') }}">Genérationnel</a></li>
+                                <li><a href="{{ path('user_indirect_bonus') }}">Indirect Bonus</a></li>
+                                <li><a href="{{ path('view_own_recap') }}">Récapitulatif des bonus</a></li>
+                            </ul>
+                        </li>
+                        {% if is_granted('ROLE_JTWC_ADMIN') %}
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-briefcase"></i>
+                                <span>Recapitulatif du cycle</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ path('bonus_sponsoring_cycle') }}">Récap du parrainage</a></li>
+                                <li><a href="{{ path('bonus_personal_purchase_cycle') }}">Récapitulatif des achats personnels</a></li>
+                                <li><a href="{{ path('bonus_binaire_cycle') }}">Récapitulatif du binaire</a></li>
+                                <li><a href="{{ path('network_indirect_bonus') }}">Récapitulatif indirect bonus</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                            <li>
+                                <a href="{{ path('view_recap') }}">
+                                    <i class="fa fa-rotate-left"></i>
+                                    <span>Commissions</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_JTWC_ADMIN') %}
+                            <li>
+                                <a href="{{ path('turn_over_monthly') }}">
+                                    <i class="fa fa-gavel"></i>
+                                    <span>Rapport Cycle</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-cubes"></i>
+                                <span>Pack de souscription</span>
+                            </a>
+                            <ul class="sub">
+                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                                    <li><a href="{{ path('membership_list') }}">Administrer les packs</a></li>
+                                {% endif %}
+                                <li><a href="{{ path('packs_view_all') }}">Consulter nos packs</a></li>
+                            </ul>
+                        </li>
+                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                            <li> 
+                                <a href="{{ path('product_list') }}">
+                                    <i class="fa fa-star"></i>
+                                    <span>Administrer les produits</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+                        <li>
+                            <a href="{{ path('close_cycle_list') }}">
+                                <i class="fa fa-cog"></i>
+                                <span>Finaliser un cycle</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="sub-menu">
+                            <a href="#">
+                                <i class="fa fa-cog"></i>
+                                <span>Paramétrage</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ path('cycle_list') }}">Cycle</a></li>
+                                <li><a href="{{ path('grade_list') }}">Grade</a></li>
+                                <li><a href="{{ path('composition_membership_product_list') }}">Composition pack</a></li>
+                                <li><a href="{{ path('grade_maintenance_list') }}">Maintenance</a></li>
+                                <li><a href="{{ path('grade_sv_list') }}">SV</a></li>
+                                <li><a href="{{ path('grade_level_list') }}">Niveau</a></li>
+                                <li><a href="{{ path('indirect_bonus_product_list') }}">Indirect Bonus: Produit</a></li>
+                                <li><a href="{{ path('indirect_bonus_membership_list') }}">Indirect Bonus: Pack</a></li>
+                                <li><a href="{{ path('grade_bg_list') }}">Bonus générationnel</a></li>
+                                <li><a href="{{ path('parameter_config_list') }}">Paramètres généraux</a></li>
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="#">
+                                <i class="fa fa-user"></i>
+                                <span>Mon Profil</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ path('change_password') }}">Modifier le mot de passe</a></li>
+                                <li><a href="{{ path('change_username') }}">Modifier l'identifiant</a></li>
+                                <li><a href="{{ path('user_update_details') }}">Profil</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        {% endif %}
+            <section id="main-content">
+                <section class="wrapper site-min-height">
+                    <h3><i class="fa fa-angle-right"></i>{% block page_title %}{% endblock %}</h3>
+                    <div class="row">
+                        {% block main %} 
+                        
+                        {% endblock %}
+                    </div>
+                </section>
+                <!-- /wrapper -->
+            </section>
+            <footer class="site-footer">
+                <div class="text-center">
+                    <p>
+                        &copy; Copyrights
+                        <strong>RACS Health Global</strong>. All Rights Reserved
+                    </p>
+                    <div class="credits">
+                        Created by RACS Health Global
+                    </div>
+                    <a href="#" class="go-top">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+            </footer>
+    </section>
+{% block body %}
+
+{% endblock %}
+{% block javascripts %}
+{{ encore_entry_script_tags('app') }}
+{{ encore_entry_script_tags('cart') }}
+{{ encore_entry_script_tags('cart-subscription') }}
+
+{#{{ encore_entry_script_tags('cart-subscription') }}#}
+{% endblock %}
+</body>
+</html>

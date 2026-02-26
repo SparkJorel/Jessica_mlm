@@ -1,0 +1,142 @@
+<div class="col-lg-12">
+	<div class="form-panel">
+		{% for type, messages in app.session.flashbag.all() %}
+			{% for message in messages %}
+				<div class="alert alert-{{type}}">{{message}}</div>
+			{% endfor %}
+		{% endfor %}
+		{{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+		<!-- progressbar -->
+		<ul id="progressbar">
+			<li class="active">Step 1: Informations sur le produit</li>
+			<li>Step 2: Informations complémentaires</li>
+		</ul>
+		<fieldset>
+			<h2 class="fs-title">Step 1: Informations sur le produit</h2>
+			<div class="form-group">
+				{{ form_label(form.code, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.code) }}
+					{{ form_widget(form.code, { 'attr':  {
+                            'class': 'form-control'
+                        }})
+					}}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.name, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.name) }}
+					{{ form_widget(form.name, { 'attr':  {
+                            'class': 'form-control'
+                        }})
+					}}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.description, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.description) }}
+					{{ form_widget(form.description, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.imageFile, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.imageFile) }}
+					{{ form_widget(form.imageFile, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<input type="button" name="next" class="next action-button" value="Suivant"/>
+		</fieldset>
+		<fieldset>
+			<h2 class="fs-title">Step 2: Informations complémentaires</h2>
+			<div class="form-group">
+				{{ form_label(form.distributorPrice, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.distributorPrice) }}
+					{{ form_widget(form.distributorPrice, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.clientPrice, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.clientPrice) }}
+					{{ form_widget(form.clientPrice, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.productSV, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.productSV) }}
+					{{ form_widget(form.productSV, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.productSVBPA, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.productSVBPA) }}
+					{{ form_widget(form.productSVBPA, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_label(form.productCote, null, { 'label_attr':  {
+                        'class': 'col-lg-2 control-label'
+                    }}
+					) }}
+				<div class="col-lg-10">
+					{{ form_errors(form.productCote) }}
+					{{ form_widget(form.productCote, { 'attr':  {
+                            'class': 'form-control'
+                        }}
+					) }}
+				</div>
+			</div>
+			<input type="button" name="previous" class="previous action-button" value="Précédent"/>
+			<input type="submit" name="submit" class="submit action-button" value="Enregistrer"/>
+		</fieldset>
+		{{ form_end(form) }}
+	</div>
+</div>

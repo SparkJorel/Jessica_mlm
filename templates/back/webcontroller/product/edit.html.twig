@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	JTWC - Modification d'un produit
+{% endblock %}
+{% block page_title %}
+	Modification du produit : {{ form.code.vars.value }}
+{% endblock %}
+{% block main %}
+
+	{% include 'back/webcontroller/product/_form.html.twig' with {'form': form} %}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('fieldset') }}
+{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('fieldset') }}
+{% endblock %}

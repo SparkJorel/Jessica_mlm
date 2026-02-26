@@ -1,0 +1,91 @@
+{% extends 'admin_dashboard.html.twig' %}
+{% block title %} Jessica Total Wellness Concept - Promotions du bonus spécial {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Historique des promotions du bonus spécial</h3>
+    <div class="row mb">
+        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <a href="{{ path('product_sv_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+        {% endif %}
+        <div class="content-panel">
+            <div class="adv-table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
+                    <thead>
+                    <tr>
+                        <th>Bonus</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Etat</th>
+                        <th>Soumise à condition</th>
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for promotion in promotions %}
+                        <tr>
+                            <td>{{ promotion.bonusSpecial.name }}</td>
+                            <td>{{ promotion.startedAt | date('d/m/Y H:i:s') }}</td>
+                            <td>{{ promotion.endedAt | date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                <input data-id="{{ promotion.id }}"
+                                       data-toggle="toggle" data-on="Activé"
+                                       data-off="Désactivé" class="status"
+                                       type="checkbox"
+                                        {% if promotion.status %} checked {% endif %} />
+                            </td>
+                            <td>
+                                <input data-toggle="toggle" data-on="Oui"
+                                       data-off="Non" class="condition"
+                                       type="checkbox"
+                                        {% if promotion.underCondition %} checked {% endif %} />
+                            </td>
+                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                                <td>
+                                    <a href="{{ path('promo_bonus_special_edit', {'id': promotion.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
+                                    <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#promoBonusSpecialDeleteDialog{{promotion.id}}"><span class="fa fa-remove"></span>
+                                    </button>
+                                    <div class="modal fade" id="promoBonusSpecialDeleteDialog{{promotion.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Voulez vous vraiment supprimer cette promo sur le bonus spécial ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
+                                                    <form action="{{ path('promo_bonus_special_delete', {'id': promotion.id }) }}" method="post">
+                                                        <button type="button" class="btn btn-danger">Confirmer</button>
+                                                        <input type="hidden" name="_jtwc_promo_bonus_special_token"  value="{{ csrf_token('jtwc_promo_bonus_special-delete'~promotion.id) }}" />
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="5" {% else %} colspan="4" {% endif %}>Aucune promotion sur le bonus spécial sauvegardée</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('datatable') }}
+    {{ encore_entry_script_tags('toggle_checkbox') }}
+    {{ encore_entry_script_tags('toggle_boolean_button') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('datatable') }}
+    {{ encore_entry_link_tags('toggle_checkbox') }}
+    {{ encore_entry_link_tags('toggle_boolean_button') }}
+{% endblock %}

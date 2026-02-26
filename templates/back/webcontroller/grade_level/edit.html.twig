@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %} JTWC - Modification du nombre de génération lié à un Grade {% endblock %}
+{% block main %}
+    <h3><i class="fa fa-angle-right"></i>Modification du nombre de génération lié à un Grade</h3>
+    <div class="row mb">
+        <div class="form-panel">
+            <div class="alert alert-success hide"></div>
+            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.grade, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.grade) }}
+                    {{ form_widget(form.grade, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.lvl, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.lvl) }}
+                    {{ form_widget(form.lvl, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.name, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.name) }}
+                    {{ form_widget(form.name, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.value, null, { 'label_attr':  {
+                    'class': 'col-lg-3 control-label'
+                }}) }}
+                <div class="col-lg-9">
+                    {{ form_errors(form.value) }}
+                    {{ form_widget(form.value, { 'attr':  {
+                        'class': 'form-control'
+                    }}) }}
+                </div>
+            </div>
+            <div class="col-lg-offset-5 col-lg-5">
+                <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('validate') }}
+{% endblock %}
