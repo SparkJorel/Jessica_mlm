@@ -57,7 +57,7 @@ COPY . .
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer config --no-plugins allow-plugins.symfony/flex true \
     && composer config --no-plugins allow-plugins.ocramius/package-versions true \
-    && SYMFONY_SKIP_AUTO_SCRIPTS=1 composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+    && composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \
