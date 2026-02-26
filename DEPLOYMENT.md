@@ -7,13 +7,13 @@ Documentation complète du déploiement du projet Jessica MLM sur un serveur de 
 ## Table des matières
 
 1. [Infrastructure](#infrastructure)
-2. [Architecture Docker](#architecture-docker)
+2. [Architecture Docker + Nginx](#architecture-docker)
 3. [Prérequis serveur](#prérequis-serveur)
 4. [Installation initiale du serveur](#installation-initiale-du-serveur)
 5. [Configuration du projet](#configuration-du-projet)
 6. [Déploiement initial](#déploiement-initial)
 7. [CI/CD avec GitHub Actions](#cicd-avec-github-actions)
-8. [SSL/HTTPS avec Certbot](#sslhttps-avec-certbot)
+8. [SSL/HTTPS avec Certbot + Nginx](#sslhttps-avec-certbot)
 9. [Commandes utiles](#commandes-utiles)
 10. [Dépannage](#dépannage)
 
@@ -27,7 +27,7 @@ Documentation complète du déploiement du projet Jessica MLM sur un serveur de 
 | **IP**             | 83.228.193.57                               |
 | **Domaine**        | jessica-mlm.duckdns.org                     |
 | **Compte DuckDNS** | jorel.tiomela@facsciences-uy1.cm            |
-| **Hébergement**    | VPS                                         |
+| **Hébergement**    | VPS Infomaniak                              |
 | **Repo GitHub**    | https://github.com/SparkJorel/Jessica_mlm   |
 | **Branche prod**   | `main`                                      |
 | **Accès SSH**      | `ssh -i ~/.ssh/id_rsa ubuntu@83.228.193.57` |
@@ -39,30 +39,45 @@ Documentation complète du déploiement du projet Jessica MLM sur un serveur de 
 Le projet utilise 3 containers Docker orchestrés via Docker Compose :
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                    Serveur Ubuntu                     │
-│                                                       │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐│
-│  │  jessica_web  │  │  jessica_db  │  │jessica_redis││
-│  │              │  │              │  │             ││
-│  │  PHP 7.4     │  │  MySQL 5.7   │  │ Redis 7     ││
-│  │  Apache 2.4  │  │              │  │ (Alpine)    ││
-│  │              │  │              │  │             ││
-│  │  Port: 80    │  │  Port: 3306  │  │ Port: 6379  ││
-│  │  (public)    │  │  (interne)   │  │ (interne)   ││
-│  └──────────────┘  └──────────────┘  └─────────────┘│
-│         │                 │                │          │
-│         └─────────────────┴────────────────┘          │
-│                   Réseau Docker interne               │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                       Serveur Ubuntu                          │
+│                                                               │
+│  ┌─────────────────┐                                         │
+│  │     Nginx        │  Ports 80 (HTTP) / 443 (HTTPS)         │
+│  │  Reverse Proxy   │  SSL termination + redirect HTTP→HTTPS │
+│  │  + Certbot SSL   │                                         │
+│  └────────┬─────────┘                                         │
+│           │ proxy_pass http://127.0.0.1:8080                  │
+│           ▼                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐        │
+│  │  jessica_web  │  │  jessica_db  │  │jessica_redis│        │
+│  │              │  │              │  │             │        │
+│  │  PHP 7.4     │  │  MySQL 5.7   │  │ Redis 7     │        │
+│  │  Apache 2.4  │  │              │  │ (Alpine)    │        │
+│  │              │  │              │  │             │        │
+│  │  Port: 8080  │  │  Port: 3306  │  │ Port: 6379  │        │
+│  │  (local)     │  │  (interne)   │  │ (interne)   │        │
+│  └──────────────┘  └──────────────┘  └─────────────┘        │
+│         │                 │                │                  │
+│         └─────────────────┴────────────────┘                  │
+│                   Réseau Docker interne                       │
+└──────────────────────────────────────────────────────────────┘
 ```
+
+### Nginx (reverse proxy)
+- **Rôle** : Terminaison SSL, redirection HTTP→HTTPS, reverse proxy
+- **Ports** : 80 (HTTP, redirige vers 443) et 443 (HTTPS)
+- **Certificat** : Let's Encrypt via Certbot (renouvellement auto)
+- **Config** : `/etc/nginx/sites-available/jessica-mlm`
 
 ### Container `jessica_web`
 - **Image** : PHP 7.4 + Apache (Debian Bullseye)
 - **Extensions PHP** : pdo_mysql, mysqli, intl, gd, opcache, zip, mbstring, sodium, bcmath, redis
 - **Rôle** : Serveur web Symfony + PHP
-- **Port exposé** : 80 (HTTP)
-- **Volume** : `uploads` (fichiers uploadés persistants)
+- **Port exposé** : 8080 (local uniquement, accessible via Nginx)
+- **Volumes** :
+  - `uploads` : fichiers uploadés persistants
+  - Bind mount : `/home/ubuntu/certbot-webroot/.well-known/acme-challenge` → challenges ACME pour Certbot
 
 ### Container `jessica_db`
 - **Image** : MySQL 5.7
@@ -373,6 +388,27 @@ Site mis à jour ✓
 
 ## SSL/HTTPS avec Certbot
 
+### Architecture SSL
+
+```
+Client (navigateur)
+    │
+    ▼ HTTPS (port 443)
+┌─────────────────────────────────────────────────────┐
+│  Nginx                                               │
+│  - Terminaison SSL (certificat Let's Encrypt)       │
+│  - Redirection HTTP (80) → HTTPS (443)              │
+│  - Proxy des requêtes vers Docker (port 8080)       │
+└────────────────────┬────────────────────────────────┘
+                     │ proxy_pass http://127.0.0.1:8080
+                     ▼
+              ┌──────────────┐
+              │  jessica_web  │
+              │  Apache :80   │
+              │  (Docker)     │
+              └──────────────┘
+```
+
 ### Installation de Certbot et Nginx
 
 ```bash
@@ -380,30 +416,56 @@ sudo apt-get update
 sudo apt-get install -y certbot nginx
 ```
 
+### Préparer le volume pour les challenges ACME
+
+Certbot utilise le mode **webroot** pour valider le domaine. Les fichiers de challenge sont servis par le container Docker via un bind mount.
+
+```bash
+# Créer le dossier de challenge sur l'hôte
+mkdir -p /home/ubuntu/certbot-webroot/.well-known/acme-challenge
+```
+
+Le `docker-compose.yml` doit contenir ce bind mount dans le service `web` :
+
+```yaml
+volumes:
+  - uploads:/var/www/html/public/uploads
+  - /home/ubuntu/certbot-webroot/.well-known/acme-challenge:/var/www/html/public/.well-known/acme-challenge
+```
+
 ### Obtenir un certificat SSL
 
 ```bash
-# Arrêter le container web pour libérer le port 80
-docker compose -f /home/ubuntu/jessica_mlm/docker-compose.yml stop web
-
-# Obtenir le certificat
-sudo certbot certonly --standalone -d jessica-mlm.duckdns.org \
-    --non-interactive --agree-tos --email tiomelajorel@gmail.com
-
-# Redémarrer le container web
-docker compose -f /home/ubuntu/jessica_mlm/docker-compose.yml start web
+# Mode webroot (le container Docker reste actif)
+sudo certbot certonly --webroot \
+    -w /home/ubuntu/certbot-webroot \
+    -d jessica-mlm.duckdns.org \
+    --non-interactive --agree-tos \
+    --email jorel.tiomela@facsciences-uy1.cm
 ```
 
-### Configuration Nginx comme reverse proxy HTTPS
+Certificat généré dans :
+- **Certificat** : `/etc/letsencrypt/live/jessica-mlm.duckdns.org/fullchain.pem`
+- **Clé privée** : `/etc/letsencrypt/live/jessica-mlm.duckdns.org/privkey.pem`
 
-Une fois le certificat obtenu, configurer Nginx :
+### Configuration Nginx (reverse proxy HTTPS)
 
-```bash
-sudo tee /etc/nginx/sites-available/jessica-mlm << 'EOF'
+Le fichier de configuration se trouve dans `/etc/nginx/sites-available/jessica-mlm` :
+
+```nginx
 server {
     listen 80;
     server_name jessica-mlm.duckdns.org;
-    return 301 https://$host$request_uri;
+
+    # Servir les challenges ACME pour le renouvellement Certbot
+    location /.well-known/acme-challenge/ {
+        root /home/ubuntu/certbot-webroot;
+    }
+
+    # Rediriger tout le reste vers HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
 server {
@@ -412,9 +474,10 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/jessica-mlm.duckdns.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/jessica-mlm.duckdns.org/privkey.pem;
-
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
+
+    client_max_body_size 25M;
 
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -424,30 +487,65 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-EOF
+```
 
+### Appliquer la configuration Nginx
+
+```bash
+# Activer le site et supprimer la config par défaut
 sudo ln -sf /etc/nginx/sites-available/jessica-mlm /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
+
+# Tester la syntaxe
 sudo nginx -t
+
+# Redémarrer Nginx
 sudo systemctl restart nginx
 ```
 
-> **Note** : Avec Nginx en reverse proxy, modifier le port Docker de `80:80` à `8080:80` dans `docker-compose.yml`.
+> **Important** : Le port Docker doit être `8080:80` (et non `80:80`) pour laisser Nginx gérer les ports 80/443.
 
 ### Renouvellement automatique
 
 Certbot installe automatiquement un timer systemd pour le renouvellement. Vérifier :
 
 ```bash
+# Vérifier le timer
 sudo systemctl status certbot.timer
+
+# Tester le renouvellement (dry run)
+sudo certbot renew --dry-run
 ```
 
-### Problèmes connus avec DuckDNS
+Le certificat est renouvelé automatiquement avant expiration (tous les 60-90 jours).
 
-Les nameservers de DuckDNS peuvent retourner des erreurs `SERVFAIL` aux serveurs de Let's Encrypt, empêchant la validation HTTP. Solutions :
+### Vérification SSL
+
+```bash
+# Vérifier la redirection HTTP → HTTPS
+curl -s -o /dev/null -w "%{http_code}" http://jessica-mlm.duckdns.org/
+# Doit retourner : 301
+
+# Vérifier HTTPS
+curl -sk -o /dev/null -w "%{http_code}" https://jessica-mlm.duckdns.org/login
+# Doit retourner : 200
+
+# Voir les certificats installés
+sudo certbot certificates
+```
+
+### Problèmes connus
+
+#### Rate limit Let's Encrypt
+Let's Encrypt limite à 5 échecs d'autorisation par domaine par heure. En cas de rate limit, attendre 1h avant de réessayer.
+
+#### DuckDNS SERVFAIL
+Les nameservers de DuckDNS peuvent retourner des erreurs `SERVFAIL` aux serveurs de Let's Encrypt. Solutions :
 - **Attendre** : le problème est souvent temporaire
 - **Utiliser un domaine avec des nameservers fiables** (Cloudflare, OVH, etc.)
-- **Utiliser le challenge DNS** avec un plugin Certbot compatible DuckDNS
+
+#### Firewall (Infomaniak)
+Si le VPS est chez Infomaniak, vérifier que les **Security Groups** autorisent les ports 80 et 443 entrants (panel Infomaniak > Cloud > Security Groups).
 
 ---
 
@@ -645,3 +743,4 @@ Jessica_mlm/
 | Date       | Description                                              |
 |------------|----------------------------------------------------------|
 | 2026-02-26 | Déploiement initial - Docker (PHP 7.4 + MySQL 5.7 + Redis) |
+| 2026-02-26 | SSL/HTTPS activé - Nginx reverse proxy + Certbot Let's Encrypt |
