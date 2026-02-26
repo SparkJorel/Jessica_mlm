@@ -50,8 +50,9 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Set permissions
-RUN chown -R www-data:www-data var/ public/uploads/ \
+# Create required directories and set permissions
+RUN mkdir -p var/cache var/log var/sessions public/uploads \
+    && chown -R www-data:www-data var/ public/uploads/ \
     && chmod -R 775 var/ public/uploads/
 
 EXPOSE 80
