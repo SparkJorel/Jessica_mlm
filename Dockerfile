@@ -44,15 +44,28 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
+# Install Composer (2.2 LTS for Symfony 4.x compatibility)
+COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
+
 # Set working directory
 WORKDIR /var/www/html
 
+# Copy composer files first (for Docker cache)
+COPY composer.json composer.json
+
 # Copy project files
 COPY . .
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \
     && chown -R www-data:www-data var/ public/uploads/ \
     && chmod -R 775 var/ public/uploads/
+
+# Warm up Symfony cache
+RUN php bin/console cache:clear --env=prod --no-debug \
+    && chown -R www-data:www-data var/
 
 EXPOSE 80
