@@ -56,8 +56,11 @@ COPY composer.json composer.json
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
+# Allow Composer plugins and install PHP dependencies
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer config --no-plugins allow-plugins.symfony/flex true \
+    && composer config --no-plugins allow-plugins.ocramius/package-versions true \
+    && composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \
