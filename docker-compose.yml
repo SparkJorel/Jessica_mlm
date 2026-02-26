@@ -6,7 +6,7 @@ services:
     container_name: jessica_web
     restart: always
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       db:
         condition: service_healthy
@@ -24,6 +24,7 @@ services:
       HASH_CODE_DOHONE: "${HASH_CODE_DOHONE}"
     volumes:
       - uploads:/var/www/html/public/uploads
+      - /home/ubuntu/certbot-webroot/.well-known/acme-challenge:/var/www/html/public/.well-known/acme-challenge
 
   db:
     image: mysql:5.7
