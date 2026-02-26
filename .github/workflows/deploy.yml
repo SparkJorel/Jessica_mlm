@@ -9,28 +9,20 @@ jobs:
   deploy:
     name: Deploy Jessica MLM
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/jessica_mlm
-
-            # Pull latest code
             git pull origin main
-
-            # Build and restart containers
-            docker compose build --no-cache
+            docker compose build
             docker compose up -d
-
-            # Clear Symfony cache inside container
-            docker exec jessica_web php bin/console cache:clear --env=prod --no-debug
-
+            sleep 5
+            docker exec jessica_web php bin/console cache:clear --env=prod --no-debug || true
             echo "Deployment completed successfully"
