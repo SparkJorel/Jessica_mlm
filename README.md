@@ -308,8 +308,14 @@ npm run dev
 
 ### 6. Lancer le serveur
 
+> **Important** : Ce projet nécessite PHP 7.4. Si une autre version de PHP est installée (ex: XAMPP avec PHP 8.2), utilisez le chemin complet vers PHP 7.4.
+
 ```bash
+# Si PHP 7.4 est la version par défaut :
 php -S localhost:8080 -t public public/router.php
+
+# Si plusieurs versions de PHP coexistent (ex: Windows avec XAMPP) :
+C:\php74\php.exe -S localhost:8080 -t public public/router.php
 ```
 
 Le site est accessible sur `http://localhost:8080`.
