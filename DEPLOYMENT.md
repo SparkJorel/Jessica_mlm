@@ -26,6 +26,7 @@ Documentation complète du déploiement du projet Jessica MLM sur un serveur de 
 | **Serveur**        | Ubuntu 22.04 LTS (2 Go RAM, 20 Go disque)  |
 | **IP**             | 83.228.193.57                               |
 | **Domaine**        | jessica-mlm.duckdns.org                     |
+| **Compte DuckDNS** | jorel.tiomela@facsciences-uy1.cm            |
 | **Hébergement**    | VPS                                         |
 | **Repo GitHub**    | https://github.com/SparkJorel/Jessica_mlm   |
 | **Branche prod**   | `main`                                      |
