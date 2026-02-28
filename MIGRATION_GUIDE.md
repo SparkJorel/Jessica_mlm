@@ -89,20 +89,42 @@ Le projet Jessica MLM est une application de marketing multi-niveaux (MLM) en pr
 - [x] `doctrine:mapping:info` : 47 entites OK
 - [x] Commits
 
-## PHASE 5 : Modernisation des Dependances - EN COURS
+## PHASE 5 : Modernisation des Dependances - TERMINEE
 
 - [x] Dependances majeures a jour (Symfony 6.4, Doctrine ORM 2.14+)
 - [x] Migrations dans `migrations/`
+- [x] `prod/doctrine.yaml` : cache DoctrineProvider -> type pool (Symfony 6 compatible)
 - [ ] Deprecation warnings a corriger (Vich annotations, Constraint::getTargets, etc.)
-- [ ] Synchroniser schema DB (`doctrine:schema:update`)
 
-## PHASE 6 : Docker, CI/CD, Infrastructure - A FAIRE
+## PHASE 6 : Docker, CI/CD, Infrastructure - TERMINEE
 
-- [x] Dockerfile PHP 8.2 existe
-- [x] docker-compose.yml existe
-- [ ] Build Docker teste
-- [ ] CI/CD mis a jour
-- [ ] Deploiement sur serveur de production
+- [x] Dockerfile PHP 8.2-apache
+  - Extensions : pdo_mysql, intl, gd, opcache, zip, mbstring, sodium, bcmath, redis
+  - Composer install en mode prod (--no-dev --optimize-autoloader)
+  - `.env` modifie en build pour APP_ENV=prod
+- [x] docker-compose.yml
+  - `jessica_web` : PHP 8.2 + Apache (port 8080)
+  - `jessica_db` : MariaDB 10.4
+  - `jessica_redis` : Redis 7 Alpine
+  - Volumes : db_data, redis_data, uploads
+- [x] `docker/entrypoint.sh` automatise :
+  - Ecriture `.env.local` depuis les variables Docker
+  - Attente DB (30 tentatives max)
+  - Migration one-shot roles CSV -> JSON (marqueur `var/.migration_v6_done`)
+  - `doctrine:schema:update --force`
+  - `doctrine:migrations:migrate`
+  - Cache clear + warmup
+  - Fix permissions www-data
+- [x] CI/CD GitHub Actions (`.github/workflows/deploy.yml`)
+  - Deploiement auto sur push `main`
+  - SSH → pull → build → down → up → verify
+- [x] Nginx reverse proxy (HTTPS Let's Encrypt)
+- [x] Deploiement production reussi
+  - URL : https://jessica-mlm.duckdns.org
+  - Serveur : 83.228.193.57 (user ubuntu)
+  - 410 roles utilisateurs migres automatiquement
+  - Schema DB mis a jour
+  - Page login : 200 OK
 
 ---
 
@@ -110,19 +132,46 @@ Le projet Jessica MLM est une application de marketing multi-niveaux (MLM) en pr
 
 | Risque | Impact | Statut |
 |--------|--------|--------|
-| Migration roles `simple_array` -> `json` | CRITIQUE | FAIT - 410 users migres |
-| Refonte authentification Guard -> Authenticator | CRITIQUE | FAIT - Login teste OK |
+| Migration roles `simple_array` -> `json` | CRITIQUE | FAIT - 410 users migres (auto entrypoint) |
+| Refonte authentification Guard -> Authenticator | CRITIQUE | FAIT - Login teste OK local + prod |
 | Double encoder argon2i/bcrypt -> auto | ELEVE | OK - Rehash automatique au prochain login |
-| Invalidation sessions (Serializable) | MOYEN | OK - Sessions fichier en dev |
+| Invalidation sessions (Serializable) | MOYEN | OK - Sessions fichier en dev, PdoSessionHandler en prod |
 | Migration Gedmo annotations -> attributes | ELEVE | FAIT - mapping:info OK |
 | Paiements Dohone | CRITIQUE | A tester en staging |
 | PdoSessionHandler + serveur PHP built-in | MOYEN | Resolu - sessions fichier en dev |
+| Docker env vars non transmises a PHP/Apache | MOYEN | Resolu - .env.local genere par entrypoint |
+| DoctrineProvider supprime en Symfony 6 | ELEVE | Resolu - cache type pool |
+| DB MySQL 5.7 -> MariaDB 10.4 | MOYEN | Resolu - dump + restore |
+
+---
+
+## Architecture de deploiement
+
+```
+Internet
+   |
+   v
+Nginx (port 80/443, HTTPS Let's Encrypt)
+   |  reverse proxy
+   v
+Docker: jessica_web (PHP 8.2 + Apache, port 8080)
+   |
+   +--> Docker: jessica_db (MariaDB 10.4)
+   +--> Docker: jessica_redis (Redis 7)
+```
+
+**Fichiers de configuration serveur :**
+- `/etc/nginx/sites-enabled/jessica-mlm` : reverse proxy HTTPS
+- `/home/ubuntu/jessica_mlm/.env.docker` : variables d'env production
+- `/home/ubuntu/db_backup_before_migration.sql` : backup DB pre-migration
 
 ---
 
 ## Commandes utiles
 
 ```bash
+# === Developpement local ===
+
 # Lancer le serveur de dev
 /c/xampp/php/php.exe -S localhost:8080 -t public public/router.php
 
@@ -136,4 +185,28 @@ Le projet Jessica MLM est une application de marketing multi-niveaux (MLM) en pr
 # Synchroniser le schema DB
 /c/xampp/php/php.exe bin/console doctrine:schema:update --dump-sql
 /c/xampp/php/php.exe bin/console doctrine:schema:update --force
+
+# === Production (serveur) ===
+
+# Connexion SSH
+ssh jessica
+
+# Deployer manuellement
+cd /home/ubuntu/jessica_mlm
+git pull origin main
+docker compose --env-file .env.docker build --no-cache web
+docker compose --env-file .env.docker up -d
+
+# Voir les logs
+docker logs jessica_web
+docker logs jessica_db
+
+# Executer une commande Symfony en prod
+docker exec jessica_web php bin/console <commande> --env=prod --no-debug
+
+# Backup DB
+docker exec jessica_db mysqldump -u root -p<password> db_jessica_mlm > backup.sql
+
+# Restaurer DB
+docker exec -i jessica_db mysql -u root -p<password> db_jessica_mlm < backup.sql
 ```
