@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Grade;
 use App\Entity\GradeSV;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**

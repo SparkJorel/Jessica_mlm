@@ -6,7 +6,7 @@ use App\Entity\Cycle;
 use App\Entity\Grade;
 use App\Entity\GradeLevel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**

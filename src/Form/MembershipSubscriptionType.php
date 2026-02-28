@@ -43,7 +43,7 @@ class MembershipSubscriptionType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_jtwc_token',
             'csrf_token_id'   => 'jtwc_mbship_sub_form_token',
-            'manager' => 'Doctrine\Common\Persistence\ObjectManager'
+            'manager' => 'Doctrine\Persistence\ObjectManager'
         ]);
     }
 }

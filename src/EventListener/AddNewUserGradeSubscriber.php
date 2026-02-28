@@ -7,7 +7,7 @@ use App\Entity\UserGrade;
 use App\Repository\CycleRepository;
 use App\Repository\UserGradeRepository;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 
 class AddNewUserGradeSubscriber implements EventSubscriber

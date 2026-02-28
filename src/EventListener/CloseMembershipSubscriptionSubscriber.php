@@ -10,7 +10,7 @@ use App\Repository\CycleRepository;
 use Doctrine\Common\EventSubscriber;
 use App\Entity\MembershipSubscription;
 use App\Repository\MembershipSubscriptionRepository;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class CloseMembershipSubscriptionSubscriber implements EventSubscriber
 {

@@ -5,7 +5,7 @@ namespace App\EventListener;
 use App\Entity\Cycle;
 use App\Repository\CycleRepository;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 
 class CycleSubscriber implements EventSubscriber

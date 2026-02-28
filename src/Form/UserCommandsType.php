@@ -65,7 +65,7 @@ class UserCommandsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => UserCommands::class,
-            'manager' => 'Doctrine\Common\Persistence\ObjectManager',
+            'manager' => 'Doctrine\Persistence\ObjectManager',
             'csrf_protection' => true,
             'csrf_field_name' => '_jtwc_token',
             'csrf_token_id'   => 'jtwc_user_cmds_form_token',

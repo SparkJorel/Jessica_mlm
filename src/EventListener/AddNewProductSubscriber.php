@@ -8,7 +8,7 @@ use Doctrine\ORM\Events;
 use App\Entity\Product;
 use Doctrine\Common\EventSubscriber;
 use App\Repository\ProductRepository;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class AddNewProductSubscriber implements EventSubscriber
 {

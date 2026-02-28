@@ -5,7 +5,7 @@ namespace App\Form\DataTransformer;
 use App\Entity\Product;
 use App\Entity\ProductDistributorPrice;
 use App\Repository\ProductDistributorPriceRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 

@@ -7,7 +7,7 @@ use App\Services\ComputeDateOperation;
 use DateTime;
 use DateTimeZone;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Exception;
 

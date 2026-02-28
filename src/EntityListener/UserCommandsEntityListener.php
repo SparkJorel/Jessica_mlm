@@ -3,7 +3,7 @@
 namespace App\EntityListener;
 
 use App\Entity\UserCommands;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class UserCommandsEntityListener
 {
