@@ -129,7 +129,7 @@ class Grade implements EntityInterface
         return $this->maintenance;
     }
 
-    public function setMaintenance(float $maintenance): self
+    public function setMaintenance(?float $maintenance): self
     {
         $this->maintenance = $maintenance;
 
@@ -154,7 +154,7 @@ class Grade implements EntityInterface
         return $this->lvl;
     }
 
-    public function setLvl(int $lvl): self
+    public function setLvl(?int $lvl): self
     {
         $this->lvl = $lvl;
 
@@ -225,7 +225,7 @@ class Grade implements EntityInterface
         return $this->weight;
     }
 
-    public function setWeight(int $weight): self
+    public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
 

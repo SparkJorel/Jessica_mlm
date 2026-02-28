@@ -110,7 +110,7 @@ class Cycle implements EntityInterface
         return $this->weekly;
     }
 
-    public function setWeekly(bool $weekly): self
+    public function setWeekly(?bool $weekly): self
     {
         $this->weekly = $weekly;
         return $this;
@@ -139,7 +139,7 @@ class Cycle implements EntityInterface
         return $this->closed;
     }
 
-    public function setClosed(bool $closed): self
+    public function setClosed(?bool $closed): self
     {
         $this->closed = $closed;
 
@@ -151,7 +151,7 @@ class Cycle implements EntityInterface
         return $this->binarySaved;
     }
 
-    public function setBinarySaved(bool $binarySaved): self
+    public function setBinarySaved(?bool $binarySaved): self
     {
         $this->binarySaved = $binarySaved;
 
@@ -163,7 +163,7 @@ class Cycle implements EntityInterface
         return $this->autoSave;
     }
 
-    public function setAutoSave(bool $autoSave): self
+    public function setAutoSave(?bool $autoSave): self
     {
         $this->autoSave = $autoSave;
         return $this;

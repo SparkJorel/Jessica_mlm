@@ -21,7 +21,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductHandler extends ModelSingleEntityAbstract implements ModelInterface
 {
@@ -33,11 +33,11 @@ class ProductHandler extends ModelSingleEntityAbstract implements ModelInterface
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         CartUserLoggedManager $cartManager
     )
     {
-        parent::__construct($manager, $formFactory, $router, $twig, $session);
+        parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->cartManager = $cartManager;
     }
     protected function createForm(): FormInterface

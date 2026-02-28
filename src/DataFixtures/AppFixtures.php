@@ -7,21 +7,21 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct(UserPasswordHasherInterface $encoder)
     {
         $this->encoder = $encoder;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->saveMembership($manager);
         $this->saveUser($manager);
@@ -79,7 +79,7 @@ class AppFixtures extends Fixture
             ->setRoles(['ROLE_JTWC_USER', 'ROLE_JTWC_ADMIN'])
         ;
 
-        $password = $this->encoder->encodePassword($jtwc, $jtwc->getEmail());
+        $password = $this->encoder->hashPassword($jtwc, $jtwc->getEmail());
         $jtwc->setPassword($password);
         $manager->persist($jtwc);
         $manager->flush();

@@ -31,7 +31,7 @@ use App\Event\MembershipSubscriptionActivatedEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class MembershipSubscriptionHandler extends ModelSingleEntityAbstract implements ModelInterface
@@ -58,14 +58,14 @@ class MembershipSubscriptionHandler extends ModelSingleEntityAbstract implements
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         PaginatorInterface $paginator,
         ComputeDateOperation $compute,
         EventDispatcherInterface $dispatcher
     )
     {
-        parent::__construct($manager, $formFactory, $router, $twig, $session);
+        parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->compute = $compute;
         $this->dispatcher = $dispatcher;
         $this->tokenStorage = $tokenStorage;

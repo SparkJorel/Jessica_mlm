@@ -31,7 +31,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use App\Repository\ProductDistributorPriceRepository;
 use DateTime;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -55,12 +55,12 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         SessionInterface $sessionAttributes,
         ExtractSVFromCommands $extractSVFromCommands,
         TokenStorageInterface $tokenStorage
     ) {
-        parent::__construct($manager, $formFactory, $router, $twig, $session);
+        parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->extractSVFromCommands = $extractSVFromCommands;
         $this->tokenStorage = $tokenStorage;
         $this->sessionAttributes = $sessionAttributes;

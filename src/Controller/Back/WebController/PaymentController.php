@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -50,8 +50,8 @@ class PaymentController extends AbstractController
     /** @var EntityManagerInterface */
     private $manager;
 
-    /** @var FlashBagInterface */
-    private $session;
+    /** @var RequestStack */
+    private $requestStack;
 
     /** @var RouterInterface */
     private $router;
@@ -79,7 +79,7 @@ class PaymentController extends AbstractController
         string $apiKeyDohone, string $hashCode,
         UserCommandsRepository $userCommandsRepository,
         MembershipSubscriptionRepository $repositorySubscription,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         EntityManagerInterface $manager,
         EventDispatcherInterface $dispatcher,
         ComputeDateOperation $computeDateOperation,
@@ -94,7 +94,7 @@ class PaymentController extends AbstractController
 	  	$this->hashCode = $hashCode;
         $this->userCommandsRepository = $userCommandsRepository;
         $this->manager = $manager;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->router = $router;
         $this->token = $token;
         $this->repositorySubscription = $repositorySubscription;
@@ -149,12 +149,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageStartSuccess, $response)) {
-                $this->session->add('success', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
                 return new RedirectResponse($this->router->generate('user_personal_command_list'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->session->add('warning', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
 
                 return new RedirectResponse($this->router->generate('user_cart_create'));
             }
@@ -213,12 +213,12 @@ class PaymentController extends AbstractController
 		
 				file_put_contents($file, PHP_EOL . $status.$response, FILE_APPEND);
 			  
-                $this->session->add('success', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
                 return new RedirectResponse($this->router->generate('user_personal_command_list'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->session->add('warning', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
 			  
 			  	$status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
 		
@@ -277,12 +277,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageCfrmsmsSuccess, $response)) {
-                $this->session->add('success', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
                 return new RedirectResponse($this->router->generate('personal_membership_subscription'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->session->add('warning', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
 
                 return new RedirectResponse($this->router->generate('summary_subscription_cart'));
             }
@@ -370,12 +370,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageStartSuccess, $response)) {
-                $this->session->add('success', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
                 return new RedirectResponse($this->router->generate('personal_membership_subscription'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->session->add('warning', $response);
+                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
 
                 return new RedirectResponse($this->router->generate('summary_subscription_cart'));
             }

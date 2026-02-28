@@ -33,10 +33,10 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -51,7 +51,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
      */
     private $dispatcher;
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $encoder;
     /**
@@ -90,8 +90,8 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
         RouterInterface $router,
         Environment $twig,
         PaginatorInterface $paginator,
-        FlashBagInterface $session,
-        UserPasswordEncoderInterface $encoder,
+        RequestStack $requestStack,
+        UserPasswordHasherInterface $encoder,
         GetUplineKnowingSponsor $upline,
         FileUploader $fileUploader,
         EventDispatcherInterface $dispatcher,
@@ -101,7 +101,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
         ParameterBagInterface $parameterBag
     )
     {
-        parent::__construct($manager, $formFactory, $router, $twig, $session);
+        parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->dispatcher = $dispatcher;
         $this->encoder = $encoder;
         $this->upline = $upline;
@@ -169,7 +169,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
             $user = $this->getUser();
 
             $encoded = $this->encoder
-                                ->encodePassword(
+                                ->hashPassword(
                                     $user,
                                     $user->getEmail()
                                 );
@@ -423,7 +423,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
 
         if ($this->entity->isNew()) {
             $encoded = $this->encoder
-                    ->encodePassword(
+                    ->hashPassword(
                         $user,
                         $user->getPassword()
                     );
@@ -549,13 +549,13 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
 
         if ($this->validOldPassword($form, $user)) {
             $rawPassword = $form->get('password')->getData();
-            $hashPassword = $this->encoder->encodePassword($user, $rawPassword);
+            $hashPassword = $this->encoder->hashPassword($user, $rawPassword);
 
             $user->setPassword($hashPassword);
 
             $this->manager->flush();
 
-            $this->session->add('info', 'Mot de passe modifié avec succès');
+            $this->addFlash('info', 'Mot de passe modifié avec succès');
 
             return new RedirectResponse($this->router->generate('user_list'));
         }
@@ -585,7 +585,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->flush();
 
-            $this->session->add('info', 'Code d\'authentification modifié avec succès');
+            $this->addFlash('info', 'Code d\'authentification modifié avec succès');
 
             return new RedirectResponse($this->router->generate('user_list'));
         }

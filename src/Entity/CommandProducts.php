@@ -244,7 +244,7 @@ class CommandProducts
      * @param bool $distributor
      * @return CommandProducts
      */
-    public function setDistributor(bool $distributor): self
+    public function setDistributor(?bool $distributor): self
     {
         $this->distributor = $distributor;
         return $this;

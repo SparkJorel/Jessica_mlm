@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -84,19 +84,19 @@ class UserController
      * @Security("is_granted('ROLE_JTWC_ADMIN')")
      * @Route("/users/generate-code", name="users_generate_code", methods={"GET"})
      * @param GenerateCodeAllUsers $generate
-     * @param FlashBagInterface $session
+     * @param RequestStack $requestStack
      * @param UrlGeneratorInterface $generator
      * @return RedirectResponse
      */
     public function generateCode(
         GenerateCodeAllUsers $generate,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         UrlGeneratorInterface $generator
     )
     {
         $message = $generate->generateUsersCode();
 
-        $session->add('info', $message);
+        $requestStack->getSession()->getFlashBag()->add('info', $message);
 
         return new RedirectResponse($generator->generate('user_list_all'));
     }

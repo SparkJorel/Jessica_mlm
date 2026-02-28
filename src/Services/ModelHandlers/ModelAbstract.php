@@ -10,8 +10,8 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -22,44 +22,25 @@ use Twig\Error\SyntaxError;
 
 abstract class ModelAbstract
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $manager;
-    /**
-     * @var FormFactoryInterface
-     */
-    protected $formFactory;
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
-    /**
-     * @var Environment
-     */
-    protected $twig;
-    /**
-     * @var EntityInterface
-     */
-    protected $entity;
-    /**
-     * @var FlashBagInterface
-     */
-    protected $session;
+    protected EntityManagerInterface $manager;
+    protected FormFactoryInterface $formFactory;
+    protected RouterInterface $router;
+    protected Environment $twig;
+    protected ?EntityInterface $entity = null;
+    protected RequestStack $requestStack;
 
     public function __construct(
         EntityManagerInterface $manager,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
-        FlashBagInterface $session
-    )
-    {
+        RequestStack $requestStack
+    ) {
         $this->manager = $manager;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->twig = $twig;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     public function setEntity(EntityInterface $entity)
@@ -76,16 +57,9 @@ abstract class ModelAbstract
 
     protected function addFlash(string $type, string $message): void
     {
-        $this->session->add($type, $message);
+        $this->requestStack->getSession()->getFlashBag()->add($type, $message);
     }
 
-    /**
-     * @param string $url
-     * @param string $type
-     * @param string $message
-     * @param array|null $params
-     * @return RedirectResponse
-     */
     protected function redirectAfterSubmit(string $url, string $type, string $message, array $params = null): RedirectResponse
     {
         $this->addFlash($type, $message);
@@ -102,9 +76,6 @@ abstract class ModelAbstract
      */
     protected function getEntities()
     {
-        /**
-         * @var EntityInterface[] $entities
-         */
         $entities = $this
                         ->manager
                         ->getRepository(get_class($this->entity))
@@ -113,13 +84,6 @@ abstract class ModelAbstract
         return $entities;
     }
 
-    /**
-     * @param string $template
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
     protected function getEntityView(string $template)
     {
         return new Response(
@@ -130,14 +94,6 @@ abstract class ModelAbstract
         );
     }
 
-    /**
-     * @param string $url
-     * @param string $type
-     * @param string $message
-     * @param bool|null $mode
-     *
-     * @return RedirectResponse
-     */
     protected function processRemovEntity(string $url, string $type, string $message, ?bool $mode = false, array $params = null)
     {
         if ($mode) {
@@ -167,7 +123,6 @@ abstract class ModelAbstract
         return $csrf->isTokenValid($hashedToken);
     }
 
-
     protected function delivered(string $url_name, string $type, string $message)
     {
         if (($this->entity instanceof UserCommands ||
@@ -181,20 +136,6 @@ abstract class ModelAbstract
 
     abstract protected function createForm(): FormInterface;
 
-    /**
-     * @param Request   $request
-     * @param string    $url_name
-     * @param string    $template
-     * @param string    $type
-     * @param string    $message
-     * @param bool|null $mode
-     *
-     * @return Response
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
     abstract protected function submit(
         Request $request,
         string $url_name,
@@ -203,6 +144,4 @@ abstract class ModelAbstract
         string $message,
         ?bool $mode = false
     ): Response;
-
-    //protected abstract function hashPasswordAndSetUserUpline(User &$entity);
 }

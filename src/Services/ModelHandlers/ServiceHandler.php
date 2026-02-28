@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
@@ -41,12 +41,12 @@ class ServiceHandler extends ModelSingleEntityAbstract implements ModelInterface
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
-        FlashBagInterface $session,
+        RequestStack $requestStack,
         FileUploader $fileUploader = null,
         ParameterBagInterface $parameterBag = null
     )
     {
-        parent::__construct($manager, $formFactory, $router, $twig, $session);
+        parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->parameterBag = $parameterBag;
         $this->fileUploader = $fileUploader;
     }

@@ -11,10 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,8 +30,6 @@ use App\Validator\Constraints as JTWCAssert;
  */
 class User implements
     UserInterface,
-    Serializable,
-    EncoderAwareInterface,
     EntityInterface,
     EntityWithImageToUploadInterface
 {
@@ -351,7 +347,7 @@ class User implements
         return $this->cni;
     }
 
-    public function setCni(int $cni): self
+    public function setCni(?int $cni): self
     {
         $this->cni = $cni;
         return $this;
@@ -401,7 +397,7 @@ class User implements
         return $this->state;
     }
 
-    public function setState(string $state): self
+    public function setState(?string $state): self
     {
         $this->state = $state;
         return $this;
@@ -433,70 +429,28 @@ class User implements
         return $this;
     }
 
-    /**
-     * String representation of object.
-     *
-     * @see https://php.net/manual/en/serializable.serialize.php
-     *
-     * @return string the string representation of the object or null
-     *
-     * @since 5.1.0
-     */
-    public function serialize()
+    public function __serialize(): array
     {
-        // TODO: Implement serialize() method.
-        return serialize(
-            [
-                $this->id,
-                $this->username,
-                $this->fullname,
-                $this->position,
-                $this->email,
-                $this->password,
-            ]
-        );
-    }
-
-    /**
-     * Constructs the object.
-     *
-     * @see https://php.net/manual/en/serializable.unserialize.php
-     *
-     * @param string $serialized <p>
-     *                           The string representation of the object.
-     *                           </p>
-     *
-     * @since 5.1.0
-     */
-    public function unserialize($serialized)
-    {
-        // TODO: Implement unserialize() method.
-        list(
+        return [
             $this->id,
             $this->username,
             $this->fullname,
             $this->position,
             $this->email,
-            $this->password
-            ) = unserialize($serialized);
+            $this->password,
+        ];
     }
 
-    /**
-     * Gets the name of the encoder used to encode the password.
-     *
-     * If the method returns null, the standard way to retrieve the encoder
-     * will be used instead.
-     *
-     * @return string
-     */
-    public function getEncoderName()
+    public function __unserialize(array $data): void
     {
-        // TODO: Implement getEncoderName() method.
-        if ($this->isAdmin()) {
-            return 'encoded_admin';
-        }
-
-        return 'encoded_user';
+        [
+            $this->id,
+            $this->username,
+            $this->fullname,
+            $this->position,
+            $this->email,
+            $this->password,
+        ] = $data;
     }
 
     /**
@@ -788,7 +742,7 @@ class User implements
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 

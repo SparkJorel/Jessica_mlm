@@ -256,7 +256,7 @@ class PrestationService implements EntityInterface, EntityWithImageToUploadInter
      * @param DateTimeInterface $endedAt
      * @return PrestationService
      */
-    public function setEndedAt(DateTimeInterface $endedAt): self
+    public function setEndedAt(?DateTimeInterface $endedAt): self
     {
         $this->endedAt = $endedAt;
         return $this;
@@ -271,7 +271,7 @@ class PrestationService implements EntityInterface, EntityWithImageToUploadInter
      * @param DateTimeInterface $startedAt
      * @return PrestationService
      */
-    public function setStartedAt(DateTimeInterface $startedAt): self
+    public function setStartedAt(?DateTimeInterface $startedAt): self
     {
         $this->startedAt = $startedAt;
         return $this;
