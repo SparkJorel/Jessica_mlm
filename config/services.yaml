@@ -54,7 +54,7 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
-            - { lock_mode: 1 }
+            - { lock_mode: 0 }
 
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
