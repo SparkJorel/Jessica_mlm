@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\ProductDistributorPrice;
 use App\Services\ModelHandlers\ProductDistributorPriceHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class ProductDistributorPriceController
         $this->distributorPriceHandler = $distributorPriceHandler;
     }
 
-    /**
-     * @Route("/distributor-prices", name="product_dp_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/distributor-prices', name: 'product_dp_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -44,31 +38,14 @@ class ProductDistributorPriceController
 
 
 
-    /**
-     * @Route("/distributor-prices/{id}", name="product_dp_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param ProductDistributorPrice $price
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/distributor-prices/{id}', name: 'product_dp_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ProductDistributorPrice $price)
     {
         return $this->distributorPriceHandler->setEntity($price)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/distributor-prices/new", name="product_dp_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/distributor-prices/new', name: 'product_dp_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -79,18 +56,8 @@ class ProductDistributorPriceController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/distributor-prices/{id}/edit", name="product_dp_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param ProductDistributorPrice $price
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/distributor-prices/{id}/edit', name: 'product_dp_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, ProductDistributorPrice $price)
     {
         return
@@ -100,16 +67,8 @@ class ProductDistributorPriceController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/distributor-prices/{id}/delete", name="product_dp_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param ProductDistributorPrice $price
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/distributor-prices/{id}/delete', name: 'product_dp_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, ProductDistributorPrice $price)
     {
         return  $this

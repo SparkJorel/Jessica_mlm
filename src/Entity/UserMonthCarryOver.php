@@ -12,137 +12,131 @@ use Exception;
 /**
  * Class UserMonthCarryOver
  * @package App\Entity
- * @ORM\Entity(repositoryClass="App\Repository\UserMonthCarryOverRepository")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
+#[ORM\Entity(repositoryClass: \App\Repository\UserMonthCarryOverRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class UserMonthCarryOver implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var float
-     * @ORM\Column(type="float")
      */
+    #[ORM\Column(type: 'float')]
     private $co;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $binaire;
 
     /**
     * @var float
-    * @ORM\Column(type="float", nullable=true)
-    */
+     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $svGain;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $gain;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $leftSideSponsoringSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $leftSideAchatSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $leftSideTotalSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $rightSideSponsoringSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $rightSideAchatSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $rightSideTotalSV;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $oldCO;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $leftOrRightSideNewTotalSV;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=20)
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $position;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=20, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $oldPosition;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=20)
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $month;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50)
      */
+    #[ORM\Column(type: 'string', length: 50)]
     private $year;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     private $recordDate;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
     private $user;
 
     /**
@@ -411,9 +405,9 @@ class UserMonthCarryOver implements EntityInterface
     }
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function setRecordDate(): void
     {
         $tz = new DateTimeZone("Africa/Douala");

@@ -14,108 +14,68 @@ use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PrestationServiceRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\PrestationServiceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class PrestationService implements EntityInterface, EntityWithImageToUploadInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=190, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 190, unique: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=190, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 190, unique: true)]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $cost;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pourcentagePrescripteurSNLMembre;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pourcentagePrescripteurSNL;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pourcentageSponsorPrescripteurSNL;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $binaire;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $recordedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="prestationServices")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Service::class, inversedBy: 'prestationServices')]
+    #[ORM\JoinColumn(nullable: false)]
     private $service;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $brochureServiceFilename;
 
-    /**
-     * @Assert\File(maxSize="1024k", mimeTypes={"image/jpeg", "image/png"})
-     */
+    #[Assert\File(maxSize: '1024k', mimeTypes: ['image/jpeg', 'image/png'])]
     private $file;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\AnalyseFonctionnelleSystematique")
-     */
+    #[ORM\ManyToMany(targetEntity: AnalyseFonctionnelleSystematique::class)]
     private $analyseFonctionnelleSystematiques;
 
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $duree;
 
     public function __construct()
@@ -336,18 +296,18 @@ class PrestationService implements EntityInterface, EntityWithImageToUploadInter
 
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function prePersistValue(): void
     {
         $this->recordedAt = new DateTime("now", new DateTimeZone("Africa/Douala"));
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function preUpdateValue(): void
     {
         $this->updatedAt = new DateTime("now", new DateTimeZone("Africa/Douala"));

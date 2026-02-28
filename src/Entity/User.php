@@ -18,239 +18,168 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as JTWCAssert;
 
-/**
- * @Gedmo\Tree(type="nested")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields={"username"}, groups={"registration", "change_username"})
- * @UniqueEntity(fields={"email"}, groups={"registration", "update_profile"})
- * @UniqueEntity(fields={"codeDistributor"}, groups={"registration"})
- * @JTWCAssert\UplinePosition(groups={"registration"})
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks()
- */
+#[Gedmo\Tree(type: 'nested')]
+#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
+#[UniqueEntity(fields: ['username'], groups: ['registration', 'change_username'])]
+#[UniqueEntity(fields: ['email'], groups: ['registration', 'update_profile'])]
+#[UniqueEntity(fields: ['codeDistributor'], groups: ['registration'])]
+#[JTWCAssert\UplinePosition(groups: ['registration'])]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+#[ORM\HasLifecycleCallbacks]
 class User implements
     UserInterface,
     EntityInterface,
     EntityWithImageToUploadInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration", "change_username"})
-     * @Assert\Length(
-     *      min = 4,
-     *      max = 20,
-     *      minMessage = "Le code d\'authentification doit avoir au minimum {{ limit }} caractères",
-     *      maxMessage = "Le code d\'authentification doit être inférieur à {{ limit }} caractères",
-     *      groups={"registration", "change_username"}
-     * )
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration', 'change_username'])]
+    #[Assert\Length(min: 4, max: 20, minMessage: 'Le code d\'authentification doit avoir au minimum {{ limit }} caractères', maxMessage: 'Le code d\'authentification doit être inférieur à {{ limit }} caractères', groups: ['registration', 'change_username'])]
     private $username;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\NotBlank(groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(groups: ['registration', 'quick_registration', 'update_profile'])]
     private $email;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration', 'quick_registration', 'update_profile'])]
     private $fullname;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $cni;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $city;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $country;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     */
+    #[ORM\Column(type: 'datetime', nullable: false)]
     private $entryDate;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Choice(choices={"Left","Right"}, groups={"registration", "quick_registration"})
-     * @Assert\NotBlank(groups={"registration", "quick_registration"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Choice(choices: ['Left', 'Right'], groups: ['registration', 'quick_registration'])]
+    #[Assert\NotBlank(groups: ['registration', 'quick_registration'])]
     private $position;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Choice(choices={"admin","user"}, groups={"registration", "quick_registration"})
-     * @Assert\NotBlank(groups={"registration", "quick_registration"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Choice(choices: ['admin', 'user'], groups: ['registration', 'quick_registration'])]
+    #[Assert\NotBlank(groups: ['registration', 'quick_registration'])]
     private $category;
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": "Actif"}, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => 'Actif'], nullable: true)]
     private $state;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Length(min="8", groups={"registration"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Length(min: '8', groups: ['registration'])]
     private $password;
 
-    /**
-     * @ORM\Column(type="simple_array")
-     */
+    #[ORM\Column(type: 'json')]
     private $roles = [];
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     */
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private $activated;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $dateActivation;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false}, nullable=false)
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false], nullable: false)]
     private $expired;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false}, nullable=false)
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false], nullable: false)]
     private $deleted;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
     private $sponsor;
 
-    /**
-     * @Gedmo\TreeLeft
-     * @ORM\Column(type="integer", nullable=false)
-     */
+    #[Gedmo\TreeLeft]
+    #[ORM\Column(type: 'integer', nullable: false)]
     private $lft;
 
-    /**
-     * @Gedmo\TreeLevel
-     * @ORM\Column(type="integer", nullable=false)
-     */
+    #[Gedmo\TreeLevel]
+    #[ORM\Column(type: 'integer', nullable: false)]
     private $lvl;
 
-    /**
-     * @Gedmo\TreeRight
-     * @ORM\Column(type="integer", nullable=false)
-     */
+    #[Gedmo\TreeRight]
+    #[ORM\Column(type: 'integer', nullable: false)]
     private $rgt;
 
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
-     */
+    #[Gedmo\TreeRoot]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'tree_root', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $root;
 
-    /**
-     * @Gedmo\TreeParent()
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
-     */
+    #[Gedmo\TreeParent]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'cascade')]
     private $parent;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
     private $upline;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="parent")
-     * @ORM\OrderBy({"lvl" = "ASC", "upline" = "ASC", "position" = "ASC" })
-
-     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['lvl' => 'ASC', 'upline' => 'ASC', 'position' => 'ASC'])]
     private $children;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Membership")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $membership;
 
     /**
      * @var  Membership
-     * @ORM\ManyToOne(targetEntity="Membership")
-     * @ORM\JoinColumn(nullable=true)
      */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private $nextMembership;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default": false}, nullable=false)
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => false], nullable: false)]
     private $toUpgrade;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\NotBlank(groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(groups: ['registration', 'quick_registration', 'update_profile'])]
     private $mobilePhone;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default": false}, nullable=true)
      */
+    #[ORM\Column(type: 'boolean', options: ['default' => false], nullable: true)]
     private $served;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Choice(choices={"M.","Mme","Mlle","Dr","Hon.","Pr"}, groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['M.', 'Mme', 'Mlle', 'Dr', 'Hon.', 'Pr'], groups: ['registration', 'quick_registration', 'update_profile'])]
     private $title;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
+    #[ORM\Column(type: 'date', nullable: true)]
     private $dateOfBirth;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Choice(choices={"CNI", "Passeport", "Autres"}, groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['CNI', 'Passeport', 'Autres'], groups: ['registration', 'quick_registration', 'update_profile'])]
     private $documentType;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $nextOfKin;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Choice(choices={"F", "M"}, groups={"registration", "quick_registration", "update_profile"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['F', 'M'], groups: ['registration', 'quick_registration', 'update_profile'])]
     private $gender;
 
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=true)
      */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $codeDistributor;
 
     /**
@@ -259,42 +188,32 @@ class User implements
     private $imageFile;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $imageName;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
      *
      * @var DateTime
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $grade;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Grade")
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class)]
     private $userGrade;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $token;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $isConcernedByPromo;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $createdBy;
 
     public function __construct()
@@ -307,6 +226,11 @@ class User implements
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username ?? '';
     }
 
     public function getUsername(): ?string
@@ -414,7 +338,7 @@ class User implements
         return $this;
     }
 
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         if (empty($this->roles)) {
             $this->roles[] = 'ROLE_JTWC_USER';
@@ -472,9 +396,8 @@ class User implements
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
     private function isAdmin()
@@ -550,9 +473,9 @@ class User implements
     }
 
     /**
-     * @ORM\PrePersist
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function setStatusAccount(): void
     {
         $this->activated = false;
@@ -842,9 +765,9 @@ class User implements
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function userUpdatedAt(): void
     {
         $this->updatedAt = new DateTime("now", new DateTimeZone("Africa/Douala"));

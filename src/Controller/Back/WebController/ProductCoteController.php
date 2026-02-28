@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\ProductCote;
 use App\Services\ModelHandlers\ProductCoteHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class ProductCoteController
         $this->productCoteHandler = $productCoteHandler;
     }
 
-    /**
-     * @Route("/product-cotes", name="product_cote_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/product-cotes', name: 'product_cote_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,15 +36,8 @@ class ProductCoteController
                 ->list();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/product-cotes/new", name="product_cote_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/product-cotes/new', name: 'product_cote_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -61,34 +48,14 @@ class ProductCoteController
             ;
     }
 
-    /**
-     * @Route("/product-cotes/{id}", name="product_cote_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param ProductCote $productCote
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/product-cotes/{id}', name: 'product_cote_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ProductCote $productCote)
     {
         return $this->productCoteHandler->setEntity($productCote)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/product-cotes/{id}/edit", name="product_cote_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param ProductCote $productCote
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/product-cotes/{id}/edit', name: 'product_cote_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, ProductCote $productCote)
     {
         return
@@ -98,16 +65,8 @@ class ProductCoteController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/product-cotes/{id}/delete", name="product_cote_delete",
-     *     methods={"POST","GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param ProductCote $productCote
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/product-cotes/{id}/delete', name: 'product_cote_delete', methods: ['POST', 'GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, ProductCote $productCote)
     {
         return  $this

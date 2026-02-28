@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\ProductClientPrice;
 use App\Services\ModelHandlers\ProductClientPriceHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class ProductClientPriceController
         $this->cpHandler = $cpHandler;
     }
 
-    /**
-     * @Route("/client-prices", name="product_cp_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/client-prices', name: 'product_cp_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,31 +36,14 @@ class ProductClientPriceController
                 ->list();
     }
 
-    /**
-     * @Route("/client-prices/{id}", name="product_cp_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param ProductClientPrice $price
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/client-prices/{id}', name: 'product_cp_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ProductClientPrice $price)
     {
         return $this->cpHandler->setEntity($price)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/client-prices/new", name="product_cp_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/client-prices/new', name: 'product_cp_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -77,18 +54,8 @@ class ProductClientPriceController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/client-prices/{id}/edit", name="product_cp_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param ProductClientPrice $price
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/client-prices/{id}/edit', name: 'product_cp_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, ProductClientPrice $price)
     {
         return
@@ -98,16 +65,8 @@ class ProductClientPriceController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/client-prices/{id}/delete", name="product_cp_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param ProductClientPrice $price
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/client-prices/{id}/delete', name: 'product_cp_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, ProductClientPrice $price)
     {
         return  $this

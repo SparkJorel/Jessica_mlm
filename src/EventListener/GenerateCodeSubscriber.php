@@ -6,11 +6,9 @@ use App\Entity\UserCommandPackPromo;
 use App\Entity\UserCommands;
 use App\Exception\GenerateCodeException;
 use App\Services\GenerateCode;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 
-class GenerateCodeSubscriber implements EventSubscriber
+class GenerateCodeSubscriber
 {
     /**
      * @var GenerateCode
@@ -20,13 +18,6 @@ class GenerateCodeSubscriber implements EventSubscriber
     public function __construct(GenerateCode $generateCode)
     {
         $this->generateCode = $generateCode;
-    }
-
-    public function getSubscribedEvents()
-    {
-        return [
-            Events::prePersist
-        ];
     }
 
     /**

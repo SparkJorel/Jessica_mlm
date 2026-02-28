@@ -7,35 +7,25 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\IndirectBonusMembershipRepository")
- * @UniqueEntity(fields={"membership", "value", "lvl"}, groups={"registration_indirect_bonus_mbship"}, message="Ces valeurs existent dejà dans la plateforme")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\IndirectBonusMembershipRepository::class)]
+#[UniqueEntity(fields: ['membership', 'value', 'lvl'], groups: ['registration_indirect_bonus_mbship'], message: 'Ces valeurs existent dejà dans la plateforme')]
 class IndirectBonusMembership implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Membership")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $membership;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_indirect_bonus_mbship"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_indirect_bonus_mbship'])]
     private $value;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank(groups={"registration_indirect_bonus_mbship"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(groups: ['registration_indirect_bonus_mbship'])]
     private $lvl;
 
     public function getId(): ?int

@@ -7,24 +7,12 @@ use Exception;
 use App\Entity\Cycle;
 use Doctrine\ORM\Events;
 use App\Repository\CycleRepository;
-use Doctrine\Common\EventSubscriber;
 use App\Entity\MembershipSubscription;
 use App\Repository\MembershipSubscriptionRepository;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class CloseMembershipSubscriptionSubscriber implements EventSubscriber
+class CloseMembershipSubscriptionSubscriber
 {
-    /**
-     * Returns an array of events this subscriber wants to listen to.
-     *
-     * @return string[]
-     */
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::prePersist,
-        ];
-    }
 
     /**
      * @param LifecycleEventArgs $args

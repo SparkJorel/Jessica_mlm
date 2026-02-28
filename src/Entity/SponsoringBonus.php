@@ -11,57 +11,49 @@ use Exception;
 /**
  * Class GetBonus
  * @package App\Entity
- * @ORM\Entity(repositoryClass="App\Repository\SponsoringBonusRepository")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
+#[ORM\Entity(repositoryClass: \App\Repository\SponsoringBonusRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class SponsoringBonus implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $paid;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     private $dateActivation;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $dateBonusPaid;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $membership;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $sponsorised;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $value;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $sponsor;
 
     /**
@@ -73,18 +65,18 @@ class SponsoringBonus implements EntityInterface
     }
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function autoSave(): void
     {
         $this->paid = false;
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
         $this->dateBonusPaid = new DateTime("now", new DateTimeZone("Africa/Douala"));

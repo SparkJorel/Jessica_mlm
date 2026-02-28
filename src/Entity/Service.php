@@ -10,63 +10,41 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ServiceRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\ServiceRepository::class)]
 class Service implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_service"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_service'])]
     private $type;
 
-    /**
-     * @ORM\Column(type="string", length=189, unique=true)
-     * @Assert\NotBlank(groups={"registration_service"})
-     */
+    #[ORM\Column(type: 'string', length: 189, unique: true)]
+    #[Assert\NotBlank(groups: ['registration_service'])]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $recordedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
 
-    /**
-     * @ORM\OneToMany(targetEntity="PrestationService", mappedBy="service", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: PrestationService::class, mappedBy: 'service', cascade: ['persist'])]
     private $prestationServices;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\AnalyseFonctionnelleSystematique", inversedBy="services")
-     */
+    #[ORM\ManyToMany(targetEntity: AnalyseFonctionnelleSystematique::class, inversedBy: 'services')]
     private $analyseFonctionnelleSystematiques;
 
     public function __construct()

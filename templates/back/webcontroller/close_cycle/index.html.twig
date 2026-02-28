@@ -32,7 +32,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% for cycle in cycles if not cycle.closed %}
+                                            {% for cycle in cycles %}
+                                                {% if not cycle.closed %}
                                                 <tr>
                                                     <td>{{ cycle.id }}</td>
                                                     <td>{{ cycle.startedAt|date('d/m/Y H:i:s') }}</td>
@@ -46,6 +47,7 @@
                                                         </td>
                                                     {% endif %}
                                                 </tr>
+                                                {% endif %}
                                             {% endfor %}
                                             </tbody>
                                         </table>
@@ -70,7 +72,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% for cycle in cycles if cycle.closed %}
+                                            {% for cycle in cycles %}
+                                                {% if cycle.closed %}
                                                 <tr>
                                                     <td>{{ cycle.id }}</td>
                                                     <td>{{ cycle.startedAt|date('d/m/Y H:i:s') }}</td>
@@ -84,6 +87,7 @@
                                                         </td>
                                                     {% endif %}
                                                 </tr>
+                                                {% endif %}
                                             {% endfor %}
                                             </tbody>
                                         </table>

@@ -9,66 +9,46 @@ use Symfony\Component\Validator\Constraints as Assert;
 use DateTime;
 use DateTimeZone;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\GradeBGRepository")
- * @UniqueEntity(fields={"grade","name","value"})
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\GradeBGRepository::class)]
+#[UniqueEntity(fields: ['grade', 'name', 'value'])]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+#[ORM\HasLifecycleCallbacks]
 class GradeBG implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Grade", inversedBy="gradeBGs")
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank(groups={"registration_grade_bg"})
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class, inversedBy: 'gradeBGs')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+    #[Assert\NotBlank(groups: ['registration_grade_bg'])]
     private $grade;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_grade_bg"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_grade_bg'])]
     private $name;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_grade_bg"})
-     * @Assert\Positive(groups={"registration_grade_bg"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_grade_bg'])]
+    #[Assert\Positive(groups: ['registration_grade_bg'])]
     private $value;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $recordedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\LevelBonusGenerationnel")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: LevelBonusGenerationnel::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $lvl;
 
     public function getId(): ?int
@@ -182,9 +162,9 @@ class GradeBG implements EntityInterface
     }
   
   	/**
-     * @ORM\PrePersist()
      * @throws Exception
-     */
+  	 */
+  	#[ORM\PrePersist]
     public function gradeBGPrePersist(): void
     {
         $this->status = true;

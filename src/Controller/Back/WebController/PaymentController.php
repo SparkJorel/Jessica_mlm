@@ -17,7 +17,7 @@ use App\Repository\UserCommandsRepository;
 use App\Services\Payment\PayInInterface;
 use App\Services\ComputeDateOperation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use App\Services\Payment\PayInContext;
 use App\Services\GenerateUserDistributorCode;
 use DateTime;
@@ -104,14 +104,7 @@ class PaymentController extends AbstractController
 	  	$this->parameterBag = $parameter;
     }
 
-    /**
-     * @Route("/{provider}/{operateur}/{id}/confirm/order/payment", name="confirm_order_payment", methods={"POST", "GET"}, requirements={
-     *     "provider": "\w+",
-     *     "id": "\d+",
-     *     "operateur": "\d+"
-     * })
-     * @return Response
-     */
+    #[Route('/{provider}/{operateur}/{id}/confirm/order/payment', name: 'confirm_order_payment', methods: ['POST', 'GET'], requirements: ['provider' => '\w+', 'id' => '\d+', 'operateur' => '\d+'])]
     public function payOrder(string $provider, int $operateur, UserCommands $userCommands, Request $request)
     {
         $montant = $userCommands->isDistributor() ? $userCommands->getTotalDistributorPrice() : $userCommands->getTotalClientPrice();
@@ -181,9 +174,7 @@ class PaymentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{provider}/{operateur}/{telephone}/{id}/send/sms/confirmation", name="send_sms_confirmation", methods={"POST", "GET"})
-     */
+    #[Route('/{provider}/{operateur}/{telephone}/{id}/send/sms/confirmation', name: 'send_sms_confirmation', methods: ['POST', 'GET'])]
     public function sendSMSConfirmation(string $provider, int $operateur, int $telephone, UserCommands $userCommands, Request $request)
     {
         $sendSMSPayment = new SendSMSPayment($telephone, $userCommands);
@@ -236,9 +227,7 @@ class PaymentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{provider}/{operateur}/{telephone}/send-sms/confirmation/subscription", name="send_sms_confirmation_membership_subsqcription", methods={"POST", "GET"})
-     */
+    #[Route('/{provider}/{operateur}/{telephone}/send-sms/confirmation/subscription', name: 'send_sms_confirmation_membership_subsqcription', methods: ['POST', 'GET'])]
     public function sendSMSConfirmationSubscriptionPayment(string $provider, int $operateur, int $telephone, Request $request)
     {
         $total = 0;
@@ -297,16 +286,7 @@ class PaymentController extends AbstractController
     }
 
 
-    /**
-     * @Route("/{provider}/{operateur}/confirm/subscription/payment", name="confirm_payment_subscriptions", requirements={
-     *     "provider": "\w+",
-     *     "operateur": "\d+"
-     * })
-     * @param string $provider
-     * @param int $operateur
-     * @param Request $request
-     * @return Response
-     */
+    #[Route('/{provider}/{operateur}/confirm/subscription/payment', name: 'confirm_payment_subscriptions', requirements: ['provider' => '\w+', 'operateur' => '\d+'])]
     public function payPackSubscription(string $provider, int $operateur, Request $request)
     {
         $total = 0;
@@ -402,11 +382,7 @@ class PaymentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order-membership-subscription/notify", name="command_membership_subscription_payment_notify", methods={"POST", "GET"})
-     * @param Request $request
-     * @return Response
-     */
+    #[Route('/order-membership-subscription/notify', name: 'command_membership_subscription_payment_notify', methods: ['POST', 'GET'])]
     public function notifyPaymentMembershipSubscription(Request $request)
     {
         $rI = $request->get('rI');
@@ -548,11 +524,7 @@ class PaymentController extends AbstractController
     }
 
 
-    /**
-     * @Route("/order-product/notify", name="command_payment_notify", methods={"POST", "GET"})
-     * @param Request $request
-     * @return Response
-     */
+    #[Route('/order-product/notify', name: 'command_payment_notify', methods: ['POST', 'GET'])]
     public function notifyCommandProduct(Request $request)
     {
         $rI = $request->get('rI');
@@ -625,10 +597,7 @@ EOD;
 	  //return new JsonResponse('KO : Commande erronée');
     }
   
-  	/**
-     * @Route("/payment-product/success", name="payment_product_success", methods={"GET"})
-     * @return Response
-     */
+    #[Route('/payment-product/success', name: 'payment_product_success', methods: ['GET'])]
     public function successPaymentProduct()
     {
         return $this->render('back/webcontroller/payment/payment_product_success.html.twig', [
@@ -636,20 +605,14 @@ EOD;
             ]);
     }
 
-    /**
-     * @Route("/payment-product/fail", name="payment_product_fail", methods={"GET"})
-     * @return Response
-     */
+    #[Route('/payment-product/fail', name: 'payment_product_fail', methods: ['GET'])]
     public function failPaymentProduct()
     {
         return $this->render('back/webcontroller/payment/payment_product_fail.html.twig', [
             'message' => 'Désolé pour l\'échec de l\'opération. Vérifiez votre solde et ressayez. Merci'        ]);
     }
 
-    /**
-     * @Route("/payment-subscription/success", name="payment_subscription_success", methods={"GET"})
-     * @return Response
-     */
+    #[Route('/payment-subscription/success', name: 'payment_subscription_success', methods: ['GET'])]
     public function successPaymentSubscription()
     {
         return $this->render('back/webcontroller/payment/payment_subscription_success.html.twig', [
@@ -657,10 +620,7 @@ EOD;
         ]);
     }
 
-    /**
-     * @Route("/payment-subscription/fail", name="payment_subscription_fail", methods={"GET"})
-     * @return Response
-     */
+    #[Route('/payment-subscription/fail', name: 'payment_subscription_fail', methods: ['GET'])]
     public function failPaymentSubscription()
     {
         return $this->render('back/webcontroller/payment/payment_subscription_fail.html.twig', [

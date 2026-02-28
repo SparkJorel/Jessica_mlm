@@ -5,12 +5,12 @@ namespace App\Controller\Back\WebController;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Services\ModelHandlers\ProductHandler;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
@@ -39,14 +39,8 @@ class ProductController
         $this->manager = $manager;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/products", name="product_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/products', name: 'product_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -56,13 +50,7 @@ class ProductController
                 ->list();
     }
 
-    /**
-     * @Route("/products/all", name="products_all", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/products/all', name: 'products_all', methods: ['GET'])]
     public function viewAllProducts()
     {
         $template = 'back/webcontroller/product/view_all_products.html.twig';
@@ -71,15 +59,8 @@ class ProductController
     }
 
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/products/new", name="product_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/products/new', name: 'product_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -90,34 +71,14 @@ class ProductController
             ;
     }
 
-    /**
-     * @Route("/products/{id}", name="product_show", methods={"GET", "POST"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param Product $product
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/products/{id}', name: 'product_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function show(Product $product, Request $request)
     {
         return $this->productHandler->setEntity($product)->show($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/products/{id}/edit", name="product_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param Product $product
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/products/{id}/edit', name: 'product_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Product $product)
     {
         return
@@ -127,16 +88,8 @@ class ProductController
                     ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/products/{id}/delete", name="product_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param Product $product
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/products/{id}/delete', name: 'product_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, Product $product)
     {
         return  $this
@@ -145,14 +98,8 @@ class ProductController
                     ->remove($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/products/{id}/disabled", name="product_disabled", methods={"GET"},
-     *     requirements={"id": "\d+"}
-     * )
-     * @param Product $product
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/products/{id}/disabled', name: 'product_disabled', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function disableProduct(Product $product)
     {
         return  $this
@@ -162,11 +109,7 @@ class ProductController
     }
 
 
-    /**
-     * @Route("/admin/product/autocomplete", methods={"GET", "POST"}, options={"expose"=true}, name="product_autocomplete")
-     * @param Request $request
-     * @return JsonResponse
-     */
+    #[Route('/admin/product/autocomplete', methods: ['GET', 'POST'], options: ['expose' => true], name: 'product_autocomplete')]
     public function autocompleProduct(Request $request)
     {
         $products = [];

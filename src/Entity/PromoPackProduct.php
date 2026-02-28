@@ -5,48 +5,36 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PromoPackProductRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\PromoPackProductRepository::class)]
 class PromoPackProduct
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[Assert\NotBlank]
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $product;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
-     * @Assert\Positive()
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private $quantity;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\PositiveOrZero]
     private $quantityForSV;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $active;
 
     /**
      * @var PackPromo
-     * @ORM\ManyToOne(targetEntity="App\Entity\PackPromo", inversedBy="products")
-     * @Assert\NotBlank()
      */
+    #[ORM\ManyToOne(targetEntity: PackPromo::class, inversedBy: 'products')]
+    #[Assert\NotBlank]
     private $promo;
 
     public function getId(): ?int

@@ -5,15 +5,12 @@ namespace App\Controller\Back\WebController;
 use App\Entity\FiltreCycle;
 use App\Form\FiltreCycleType;
 use App\Services\UserGrade;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 /**
  * Class UserGradeController
@@ -21,18 +18,8 @@ use Twig\Error\SyntaxError;
  */
 class UserGradeController
 {
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/users/grade/list", name="users_grade_list", methods={"GET"})
-     * @param Request $request
-     * @param Environment $twig
-     * @param FormFactoryInterface $formFactory
-     * @param UserGrade $userGrade
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/grade/list', name: 'users_grade_list', methods: ['GET'])]
     public function list(Request $request, Environment $twig, FormFactoryInterface $formFactory, UserGrade $userGrade)
     {
         $cycle = null;
@@ -63,16 +50,7 @@ class UserGradeController
         return new Response($userGradeView);
     }
 
-    /**
-     * @Route("/personal/grade/list", name="personal_grade_list", methods={"GET"})
-     * @param Request $request
-     * @param Environment $twig
-     * @param UserGrade $userGrade
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/personal/grade/list', name: 'personal_grade_list', methods: ['GET'])]
     public function personalGrade(Request $request, Environment $twig, UserGrade $userGrade)
     {
         $userGrades = $userGrade->listUserGrade($request, true);

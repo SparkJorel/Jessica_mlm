@@ -14,101 +14,77 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
- * @UniqueEntity(fields={"code"}, groups={"registration_product"}, message="Cette valeur est dejà présente dans la plateforme")
- * @Vich\Uploadable
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\ProductRepository::class)]
+#[UniqueEntity(fields: ['code'], groups: ['registration_product'], message: 'Cette valeur est dejà présente dans la plateforme')]
+#[Vich\Uploadable]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class Product implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $name;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $clientPrice;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $productCote;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $distributorPrice;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $productSV;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product'])]
     private $productSVBPA;
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
-     * @Vich\UploadableField(mapping="products", fileNameProperty="imageName")
      *
      * @var File
      */
+    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'imageName')]
     private $imageFile;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $imageName;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
      *
      * @var DateTime
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $updatedAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $recordedAt;
 
 

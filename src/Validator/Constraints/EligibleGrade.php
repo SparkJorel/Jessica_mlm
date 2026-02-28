@@ -4,11 +4,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- * Class EligibleGrade
- * @package App\Validator\Constraints
- */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class EligibleGrade extends Constraint
 {
     public $message = "Le grade doit être renseigné lorsque la promo est soumise à condition";

@@ -4,9 +4,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[\Attribute]
 class PackProductQuantityUnique extends Constraint
 {
     public $message = "Les doublons ne sont pas autorisés";

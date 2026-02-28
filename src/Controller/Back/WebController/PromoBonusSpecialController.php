@@ -8,12 +8,12 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -37,13 +37,7 @@ class PromoBonusSpecialController
         $this->manager = $manager;
     }
 
-    /**
-     * @Route("/promo-bonus-special", name="promo_bonus_special_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/promo-bonus-special', name: 'promo_bonus_special_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -53,15 +47,8 @@ class PromoBonusSpecialController
                 ->list();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/promo-bonus-special/new", name="promo_bonus_special_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/promo-bonus-special/new', name: 'promo_bonus_special_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -72,34 +59,15 @@ class PromoBonusSpecialController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/promo-bonus-special/{id}", name="promo_bonus_special_show",
-     *     methods={"GET"}, requirements={ "id": "\d+"}
-     * )
-     * @param PromoBonusSpecial $promo
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/promo-bonus-special/{id}', name: 'promo_bonus_special_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(PromoBonusSpecial $promo)
     {
         return $this->promoBonusSpecialHandler->setEntity($promo)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/promo-bonus-special/{id}/edit", name="promo_bonus_special_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param PromoBonusSpecial $promo
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/promo-bonus-special/{id}/edit', name: 'promo_bonus_special_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, PromoBonusSpecial $promo)
     {
         return
@@ -109,16 +77,8 @@ class PromoBonusSpecialController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/promo_bonus_special/{id}/delete", name="promo_bonus_special_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param PromoBonusSpecial $promo
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/promo_bonus_special/{id}/delete', name: 'promo_bonus_special_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, PromoBonusSpecial $promo)
     {
         return  $this
@@ -127,16 +87,8 @@ class PromoBonusSpecialController
             ->remove($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/promo_bonus_special/handle", name="handle_status_promotion",
-     *     methods={"GET","POST"}, options={"expose": true}
-     * )
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return JsonResponse
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/promo_bonus_special/handle', name: 'handle_status_promotion', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function handleStatus(Request $request, EntityManagerInterface $manager)
     {
         $status = $request->request->get('status');

@@ -6,23 +6,10 @@ use App\Entity\Cycle;
 use App\Entity\UserGrade;
 use App\Repository\CycleRepository;
 use App\Repository\UserGradeRepository;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 
-class AddNewUserGradeSubscriber implements EventSubscriber
+class AddNewUserGradeSubscriber
 {
-    /**
-     * Returns an array of events this subscriber wants to listen to.
-     *
-     * @return string[]
-     */
-    public function getSubscribedEvents():array
-    {
-        return [
-            Events::prePersist
-        ];
-    }
 
     public function prePersist(LifecycleEventArgs $args): void
     {

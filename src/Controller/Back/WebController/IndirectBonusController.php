@@ -4,9 +4,9 @@ namespace App\Controller\Back\WebController;
 
 use App\Services\IndirectBonusService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class IndirectBonusController
 {
@@ -18,20 +18,14 @@ class IndirectBonusController
         $this->indirectBonusService = $indirectBonusService;
     }
 
-    /**
-     * @Route("/user-indirect-bonus", name="user_indirect_bonus", methods={"GET", "POST"})
-     * @return Response
-     */
+    #[Route('/user-indirect-bonus', name: 'user_indirect_bonus', methods: ['GET', 'POST'])]
     public function userIndirectBonus(Request $request): Response
     {
         return $this->indirectBonusService->viewUserIndirectBonus($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("network-indirect-bonus", name="network_indirect_bonus", methods={"GET", "POST"})
-     * @return Response
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('network-indirect-bonus', name: 'network_indirect_bonus', methods: ['GET', 'POST'])]
     public function networkIndirectBonus(Request $request): Response
     {
         return $this->indirectBonusService->viewNetWorkIndirectBonus($request);

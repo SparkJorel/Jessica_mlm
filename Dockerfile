@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -27,7 +27,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     bcmath
 
 # Install Redis extension
-RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -44,8 +44,8 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
-# Install Composer (2.2 LTS for Symfony 4.x compatibility)
-COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -55,9 +55,7 @@ COPY . .
 
 # Install PHP dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer config --no-plugins allow-plugins.symfony/flex true \
-    && composer config --no-plugins allow-plugins.ocramius/package-versions true \
-    && composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \

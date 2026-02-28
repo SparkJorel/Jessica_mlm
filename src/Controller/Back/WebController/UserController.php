@@ -12,21 +12,18 @@ use App\Services\ModelHandlers\UserHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 /**
  * Class UserController
@@ -65,29 +62,16 @@ class UserController
         $this->twig = $twig;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/users/all", name="user_list_all", options={"expose"=true}, methods={"GET"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/all', name: 'user_list_all', options: ['expose' => true], methods: ['GET'])]
     public function index(Request $request): Response
     {
         $user = new User();
         return $this->userHandler->setEntity($user)->list($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/users/generate-code", name="users_generate_code", methods={"GET"})
-     * @param GenerateCodeAllUsers $generate
-     * @param RequestStack $requestStack
-     * @param UrlGeneratorInterface $generator
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/generate-code', name: 'users_generate_code', methods: ['GET'])]
     public function generateCode(
         GenerateCodeAllUsers $generate,
         RequestStack $requestStack,
@@ -101,14 +85,7 @@ class UserController
         return new RedirectResponse($generator->generate('user_list_all'));
     }
 
-    /**
-     * @Route("/users", name="user_list", methods={"GET"})
-     * @param GetDownlinesGenealogyView $graph
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/users', name: 'user_list', methods: ['GET'])]
     public function list(GetDownlinesGenealogyView $graph): Response
     {
         $rows = $graph->getAllChildrenAsRows()->getArrayResult();
@@ -121,14 +98,7 @@ class UserController
         return new Response($view);
     }
 
-    /**
-     * @Route("/users/new", name="user_new_from_known_sponsor", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/users/new', name: 'user_new_from_known_sponsor', methods: ['GET', 'POST'])]
     public function addMember(Request $request): Response
     {
         /**
@@ -145,47 +115,21 @@ class UserController
     }
 
 
-    /**
-     * @Route("/user/{username}", name="user_show", methods={"GET"},
-     * requirements={
-     * "username": "\w+"
-     * })
-     * @param User $user
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/user/{username}', name: 'user_show', methods: ['GET'], requirements: ['username' => '\w+'])]
     public function show(User $user): Response
     {
         return $this->userHandler->setEntity($user)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/user/{id}/activated", name="user_activated", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param User $user
-     * @return Response
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/user/{id}/activated', name: 'user_activated', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function activateUser(User $user): Response
     {
         return $this->userHandler->redirectAfterActivation($user);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/users/activate", name="users_activate",
-     *     methods={"GET","POST"}, options={"expose"=true}
-     * )
-     * @param Request $request
-     * @param RouterInterface $router
-     * @return RedirectResponse
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/activate', name: 'users_activate', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function activateUsers(Request $request, RouterInterface $router): RedirectResponse
     {
         $users_id = $request->request->get('user_checked');
@@ -201,33 +145,15 @@ class UserController
         return new RedirectResponse($router->generate('user_list_all'));
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/users/{id}/edit", name="user_edit", methods={"GET","POST"},
-     * requirements={"id": "\d+"}
-     * )
-     * @param User $user
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, User $user): Response
     {
         return $this->userHandler->setEntity($user)->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/users/{id}/delete", name="user_delete", methods="DELETE",
-     *     requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param User $user
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/{id}/delete', name: 'user_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, User $user): RedirectResponse
     {
         return $this
@@ -236,14 +162,7 @@ class UserController
                     ->remove($request, $csrf);
     }
 
-    /**
-     * @Route("/genealogy", name="genealogy_tree")
-     * @param GetDownlinesGenealogyView $graph
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/genealogy', name: 'genealogy_tree')]
     public function getTree(GetDownlinesGenealogyView $graph)
     {
         $networkers = $graph->getAllChildren();
@@ -258,14 +177,7 @@ class UserController
         return new Response($view);
     }
 
-    /**
-     * @Route("/change/password", name="change_password", methods={"GET","POST"})
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/change/password', name: 'change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request)
     {
         /**
@@ -279,14 +191,7 @@ class UserController
                     ->changePassword($request);
     }
 
-    /**
-     * @Route("/change/username", name="change_username", methods={"GET","POST"})
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/change/username', name: 'change_username', methods: ['GET', 'POST'])]
     public function changeUsername(Request $request)
     {
         /**
@@ -300,10 +205,7 @@ class UserController
                     ->changeUsername($request);
     }
 
-    /**
-     * @Route("/testjson", name="testjson")
-     * @return JsonResponse
-     */
+    #[Route('/testjson', name: 'testjson')]
     public function getTreeJson()
     {
         /** @var UserRepository $repository */
@@ -314,13 +216,7 @@ class UserController
         return new JsonResponse($repo);
     }
 
-    /**
-     * @Route("/admin/sponsor/autocomplete", methods={"GET", "POST"},  options={"expose"=true}, name="sponsor_autocomplete")
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws Exception
-     */
+    #[Route('/admin/sponsor/autocomplete', name: 'sponsor_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function sponsorAutocomplete(Request $request)
     {
         $names = array();
@@ -360,13 +256,7 @@ class UserController
         return $response;
     }
 
-    /**
-     * @Route("/admin/upline/autocomplete", methods={"GET", "POST"},  options={"expose"=true}, name="upline_autocomplete")
-     *
-     * @param Request $request
-     * @param CheckIfUserHaveOnlyOneChild $check
-     * @return JsonResponse
-     */
+    #[Route('/admin/upline/autocomplete', name: 'upline_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function uplineAutocomplete(Request $request, CheckIfUserHaveOnlyOneChild $check): JsonResponse
     {
         $names = array();
@@ -396,13 +286,7 @@ class UserController
         return $response;
     }
 
-    /**
-     * @Route("/users/{code}/add", name="add_user_quickly", requirements={
-     *   "code"="[a-zA-Z]+"
-     * }, methods={"GET", "POST"})
-     *
-     * @return Response
-     */
+    #[Route('/users/{code}/add', name: 'add_user_quickly', methods: ['GET', 'POST'], requirements: ['code' => '[a-zA-Z]+'])]
     public function addNewUserQuickly(Membership $membership, Request $request): Response
     {
         /**
@@ -420,11 +304,7 @@ class UserController
         return $this->userHandler->userAddFast($request);
     }
 
-    /**
-     * @Route("/new-user/update", name="new_user_update", methods={"GET", "POST"})
-     *
-     * @return Response
-     */
+    #[Route('/new-user/update', name: 'new_user_update', methods: ['GET', 'POST'])]
     public function updateUserInfoFirstConnexion(Request $request)
     {
         /** @var User $user */
@@ -438,11 +318,7 @@ class UserController
         return $this->userHandler->setEntity($user)->updateUserProfile($request, $template);
     }
 
-    /**
-     * @Route("/user/update/details", name="user_update_details", methods={"GET", "POST"})
-     *
-     * @return Response
-     */
+    #[Route('/user/update/details', name: 'user_update_details', methods: ['GET', 'POST'])]
     public function updateUserInfo(Request $request)
     {
         /** @var User $user */
@@ -456,13 +332,7 @@ class UserController
         return $this->userHandler->setEntity($user)->updateUserInfo($request, $template);
     }
 
-    /**
-     * @Route("/admin/check/username", methods={"GET", "POST"},
-     *     options={"expose"=true}, name="check_username")
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
+    #[Route('/admin/check/username', name: 'check_username', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function checkUsername(Request $request): JsonResponse
     {
         $results = [];
@@ -496,12 +366,7 @@ class UserController
         return $response;
     }
 
-    /**
-     * @Route("/recover/genealogy", name="recover_genealogy")
-     * @param RouterInterface $router
-     * @param EntityManagerInterface $em
-     * @return RedirectResponse
-     */
+    #[Route('/recover/genealogy', name: 'recover_genealogy')]
     public function recover(RouterInterface $router, EntityManagerInterface $em)
     {
         /**

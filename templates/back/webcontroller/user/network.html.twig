@@ -37,7 +37,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for user in users if app.user.rgt >= user.rgt %}
+                        {% for user in users %}
+                            {% if app.user.rgt >= user.rgt %}
                             <tr>
                                 <td>{{ user.title }}</td>
                                 <td>{{ user.fullname }}</td>
@@ -66,6 +67,7 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>

@@ -1,18 +1,12 @@
 security_controllers:
     resource: ../../src/Controller/
-    type: annotation
+    type: attribute
     defaults:
         schemes: [https]
 
 back_controllers:
     resource: ../../src/Controller/Back/WebController/
-    type: annotation
+    type: attribute
     prefix: /admin
     defaults:
         schemes: [https]
-    
-#
-#front_controllers:
-#    resource: ../../src/Controller/Front/WebController/
-#    type: annotation
-

@@ -4,9 +4,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class UniquePackProductNameSetting extends Constraint
 {
     public $message = "Une valeur de ce produit pour ce pack existe dejà dans la plateforme";

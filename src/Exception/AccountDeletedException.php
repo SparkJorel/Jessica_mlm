@@ -22,8 +22,8 @@ class AccountDeletedException extends AccountStatusException
     /**
      * {@inheritdoc}
      */
-    public function getMessageData(): string
+    public function getMessageData(): array
     {
-        return 'Account not found or has been deleted.';
+        return [];
     }
 }

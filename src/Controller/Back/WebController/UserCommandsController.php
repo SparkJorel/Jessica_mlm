@@ -10,16 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use App\Manager\CartUserLoggedManager;
 use App\Services\ModelHandlers\UserCommandsHandler;
 use App\Services\SaveUserCommand;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig\Error\RuntimeError;
 
 class UserCommandsController
 {
@@ -42,14 +39,7 @@ class UserCommandsController
         $this->manager = $manager;
     }
 
-    /**
-     * @Route("/commands", name="user_command_list", methods={"GET"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/commands', name: 'user_command_list', methods: ['GET'])]
     public function list(Request $request)
     {
         return
@@ -59,15 +49,8 @@ class UserCommandsController
                 ->commandsCycle($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("user-commands/all", name="list_all_user_commands", methods={"GET"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('user-commands/all', name: 'list_all_user_commands', methods: ['GET'])]
     public function listAll(Request $request)
     {
         return
@@ -77,14 +60,7 @@ class UserCommandsController
                 ->allCommandsCycle($request);
     }
 
-    /**
-     * @Route("commands/personal", name="user_personal_command_list", options={"expose"=true}, methods={"GET"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('commands/personal', name: 'user_personal_command_list', options: ['expose' => true], methods: ['GET'])]
     public function listPersonal(Request $request)
     {
         return
@@ -94,57 +70,26 @@ class UserCommandsController
                 ->commandsCycle($request, false);
     }
 
-    /**
-	 * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/commands/new", name="user_command_new", methods={"GET","POST"})
-     *
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/commands/new', name: 'user_command_new', methods: ['GET', 'POST'])]
     public function create()
     {
         return  $this->userCommandsHandler->selectProduct();
     }
 
-    /**
-     * @Route("/cart/view", name="user_cart_create", methods={"GET", "POST"}, options={"expose"=true})
-     * @param Request $request
-     * @param CartUserLoggedManager $cartManager
-     * @return Response
-     */
+    #[Route('/cart/view', name: 'user_cart_create', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function index(Request $request, CartUserLoggedManager $cartManager): Response
     {
         return $this->userCommandsHandler->createCart($request, $cartManager);
     }
 
-    /**
-     * @Route("/commands/{id}", name="user_command_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param UserCommands $userCommand
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/commands/{id}', name: 'user_command_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(UserCommands $userCommand)
     {
         return $this->userCommandsHandler->setEntity($userCommand)->show();
     }
 
-    /**
-     * @Route("/commands/{id}/edit", name="user_command_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param UserCommands $userCommand
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/commands/{id}/edit', name: 'user_command_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(UserCommands $userCommand)
     {
         return
@@ -154,15 +99,7 @@ class UserCommandsController
                 ->updateCommandProduct();
     }
 
-    /**
-     * @Route("/commands/save", name="save_commands",
-     *     methods={"GET","POST"}, options={"expose"=true}
-     * )
-     * @param Request $request
-     * @param RouterInterface $router
-     * @return RedirectResponse
-     * @throws Exception
-     */
+    #[Route('/commands/save', name: 'save_commands', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function save(Request $request, SaveUserCommand $saveUserCommand, RouterInterface $router)
     {
         $command_id = $request->request->get('command_id');
@@ -200,16 +137,8 @@ class UserCommandsController
         return new RedirectResponse($router->generate('user_command_list'));
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/commands/{id}/delete", name="user_command_delete",
-     *     methods="DELETE", requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param UserCommands $userCommand
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/commands/{id}/delete', name: 'user_command_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, UserCommands $userCommand)
     {
         return  $this
@@ -218,27 +147,15 @@ class UserCommandsController
             ->remove($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/commands/{id}/delivered", name="user_command_delivered",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param UserCommands $userCommand
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/commands/{id}/delivered', name: 'user_command_delivered', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function delivered(UserCommands $userCommand)
     {
         return $this->userCommandsHandler->setEntity($userCommand)->setDeliveredToTrue();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/commands/{id}/paid", name="user_command_paid",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param UserCommands $userCommand
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/commands/{id}/paid', name: 'user_command_paid', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function paid(UserCommands $userCommand)
     {
         return $this->userCommandsHandler->setEntity($userCommand)->setPaidToTrue();

@@ -5,19 +5,14 @@ namespace App\Storage;
 use App\Entity\User;
 use App\Entity\UserCommands;
 use App\Repository\UserCommandsRepository;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CartSessionStorage
 {
     public const CART_KEY_NAME = 'cart_id';
 
-    /**
-     * The session storage
-     *
-     * @var SessionInterface $session
-     */
-    private $session;
+    private RequestStack $requestStack;
 
     /**
      * The cart repository
@@ -32,12 +27,12 @@ class CartSessionStorage
     private $tokenStorage;
 
     public function __construct(
-        SessionInterface $session,
+        RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         UserCommandsRepository $cartRepository
     )
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->cartRepository = $cartRepository;
         $this->tokenStorage = $tokenStorage;
     }
@@ -72,7 +67,7 @@ class CartSessionStorage
      */
     public function setCart(UserCommands $order): void
     {
-        $this->session->set(self::CART_KEY_NAME, $order->getId());
+        $this->requestStack->getSession()->set(self::CART_KEY_NAME, $order->getId());
     }
 
     /**
@@ -82,6 +77,6 @@ class CartSessionStorage
      */
     private function getCartId(): ?int
     {
-        return $this->session->get(self::CART_KEY_NAME);
+        return $this->requestStack->getSession()->get(self::CART_KEY_NAME);
     }
 }

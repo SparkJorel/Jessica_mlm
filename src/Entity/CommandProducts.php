@@ -5,65 +5,48 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CommandProductsRepository")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\CommandProductsRepository::class)]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class CommandProducts
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank(message="Cette valeur doit être renseignée",
-     * groups={"add_to_card", "cart_item"})
-     * @Assert\Positive(message="La quantité doit être supérieure à 0")
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: 'Cette valeur doit être renseignée', groups: ['add_to_card', 'cart_item'])]
+    #[Assert\Positive(message: 'La quantité doit être supérieure à 0')]
     private $quantity;
 
-    /**
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[Assert\NotBlank]
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $product;
 
     /**
      * @var UserCommands
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserCommands", inversedBy="products")
      */
+    #[Assert\NotBlank]
+    #[ORM\ManyToOne(targetEntity: UserCommands::class, inversedBy: 'products')]
     private $command;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $itemDistributorPrice;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $itemClientPrice;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $itemSVAP;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $itemSVBinaire;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=true})
      */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => true])]
     private $distributor = true;
 
     public function getId(): ?int

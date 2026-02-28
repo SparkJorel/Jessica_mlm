@@ -10,62 +10,37 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\MembershipSVRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\MembershipSVRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class MembershipSV implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\Positive(groups={"registration"})
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Type(
-     *     type="float",
-     *     message="La valeur {{ value }} n'est pas un flottant valide",
-     *     groups={"registration"}
-     * )
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\Positive(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Type(type: 'float', message: 'La valeur {{ value }} n\'est pas un flottant valide', groups: ['registration'])]
     private $svGroupe;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\Positive(groups={"registration"})
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Type(
-     *     type="float",
-     *     message="La valeur {{ value }} n'est pas un flottant valide",
-     *     groups={"registration"}
-     * )
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\Positive(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Type(type: 'float', message: 'La valeur {{ value }} n\'est pas un flottant valide', groups: ['registration'])]
     private $svProduct;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $state;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $started;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Membership")
-     *
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
     private $membership;
 
     public function getId(): ?int
@@ -131,9 +106,9 @@ class MembershipSV implements EntityInterface
     }
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function prePersist(): void
     {
         $this->state = true;
@@ -141,9 +116,9 @@ class MembershipSV implements EntityInterface
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function postUpdate()
     {
         $this->endedAt = new DateTime("now", new DateTimeZone("Africa/Douala"));

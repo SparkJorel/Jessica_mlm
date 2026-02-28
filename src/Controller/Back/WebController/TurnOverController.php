@@ -3,10 +3,10 @@
 namespace App\Controller\Back\WebController;
 
 use App\Services\MonthlyTurnOver;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -24,15 +24,8 @@ class TurnOverController
         $this->monthlyTurnOver = $monthlyTurnOver;
     }
 
-    /**
-     * @Route("/admin/turn-over/monthly", name="turn_over_monthly")
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/admin/turn-over/monthly', name: 'turn_over_monthly')]
+    #[IsGranted('ROLE_JTWC_ADMIN')]
     public function turnOver(Request $request)
     {
         $turnover = $this->monthlyTurnOver->turnOver($request);

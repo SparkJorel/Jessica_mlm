@@ -10,52 +10,35 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\MembershipBonusPourcentageRepository")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\MembershipBonusPourcentageRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class MembershipBonusPourcentage implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\Positive(groups={"registration"})
-     * @Assert\NotBlank(groups={"registration"})
-     * @Assert\Type(type="float",
-     *     message="La valeur {{ value }} n'est pas un flottant valide",
-     *     groups={"registration"}
-     * )
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\Positive(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\Type(type: 'float', message: 'La valeur {{ value }} n\'est pas un flottant valide', groups: ['registration'])]
     private $value;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $state;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Membership")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank(groups={"registration"})
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(groups: ['registration'])]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
     private $membership;
 
     public function getId(): ?int
@@ -81,9 +64,9 @@ class MembershipBonusPourcentage implements EntityInterface
     }
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function prePersist(): void
     {
         $this->state = true;
@@ -91,9 +74,9 @@ class MembershipBonusPourcentage implements EntityInterface
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function postUpdate()
     {
         $this->endedAt = new DateTime("now", new DateTimeZone("Africa/Douala"));

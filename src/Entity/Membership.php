@@ -9,70 +9,48 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\MembershipRepository")
- * @UniqueEntity(fields={"coefficent"}, groups={"registration_membership"})
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\MembershipRepository::class)]
+#[UniqueEntity(fields: ['coefficent'], groups: ['registration_membership'])]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class Membership implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $name;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $coefficent;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $membershipCost;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $membershipGroupeSV;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $membershipProductCote;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_membership"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_membership'])]
     private $membershipBonusBinairePourcent;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\MembershipProduct", mappedBy="membership", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: MembershipProduct::class, mappedBy: 'membership', orphanRemoval: true)]
     private $membershipProducts;
 
     public function __construct()

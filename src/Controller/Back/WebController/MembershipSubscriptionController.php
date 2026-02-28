@@ -9,12 +9,12 @@ use App\Services\GetUpdatePrice;
 use App\Services\ModelHandlers\MembershipSubscriptionHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -34,15 +34,8 @@ class MembershipSubscriptionController
         $this->mbshipSubhandler = $mbshipSubhandler;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/membership-subscriptions/all", name="membership_subscription_list", methods={"GET"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-subscriptions/all', name: 'membership_subscription_list', methods: ['GET'])]
     public function list(Request $request)
     {
         return
@@ -52,15 +45,7 @@ class MembershipSubscriptionController
                 ->list(null, $request);
     }
 
-    /**
-     * @Route("/membership-subscriptions/personal", name="personal_membership_subscription", methods={"GET"})
-     * @param TokenStorageInterface $token
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/membership-subscriptions/personal', name: 'personal_membership_subscription', methods: ['GET'])]
     public function personalSubscription(TokenStorageInterface $token, Request $request)
     {
         if ($token->getToken()) {
@@ -77,36 +62,14 @@ class MembershipSubscriptionController
                 ->list($user, $request);
     }
 
-    /**
-     * @Route("/membership-subscriptions/{id}", name="membership_subscription_show",
-     * methods={"GET"}, requirements={
-     * "id": "\d+"
-     * })
-     * @param MembershipSubscription $subscription
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/membership-subscriptions/{id}', name: 'membership_subscription_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(MembershipSubscription $subscription)
     {
         return $this->mbshipSubhandler->setEntity($subscription)->show();
     }
 
 
-    /**
-     * @Route("/membership/{code}/upgrade", name="membership_upgrade",
-     * methods={"GET","POST"}, requirements={
-     * "code"="[a-zA-Z]+"
-     * })
-     * @param Membership $membership
-     * @param CsrfTokenManagerInterface $csrf
-     * @param Request $request
-     * @return RedirectResponse
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/membership/{code}/upgrade', name: 'membership_upgrade', methods: ['GET', 'POST'], requirements: ['code' => '[a-zA-Z]+'])]
     public function upgrade(Request $request, CsrfTokenManagerInterface $csrf, Membership $membership)
     {
         $membershipSubscription = (new MembershipSubscription())
@@ -115,14 +78,8 @@ class MembershipSubscriptionController
         return $this->mbshipSubhandler->setEntity($membershipSubscription)->upgradePack($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/membership-subscriptions/upgrade",
-     *     name="membership_subscription_upgrade",
-     *     methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-subscriptions/upgrade', name: 'membership_subscription_upgrade', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         $mbship = new MembershipSubscription();
@@ -135,18 +92,8 @@ class MembershipSubscriptionController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/membership-subscriptions/{id}/edit", name="membership_subscription_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param MembershipSubscription $subscription
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-subscriptions/{id}/edit', name: 'membership_subscription_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, MembershipSubscription $subscription)
     {
         return
@@ -156,16 +103,8 @@ class MembershipSubscriptionController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-subscriptions/{id}/delete", name="membership_subscription_delete",
-     *     methods="DELETE", requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param MembershipSubscription $subscription
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-subscriptions/{id}/delete', name: 'membership_subscription_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, MembershipSubscription $subscription)
     {
         return  $this
@@ -174,30 +113,15 @@ class MembershipSubscriptionController
                     ->remove($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/membership-subscriptions/{id}/activated", name="membership_subscription_activated", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param MembershipSubscription $membershipSubscription
-     * @param RouterInterface $router
-     * @return Response
-     * @throws Exception
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-subscriptions/{id}/activated', name: 'membership_subscription_activated', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function activateMembershipSubscription(MembershipSubscription $membershipSubscription, RouterInterface $router): Response
     {
         $this->mbshipSubhandler->activate($membershipSubscription);
         return new RedirectResponse($router->generate('membership_subscription_list'));
     }
 
-    /**
-     * @Route("/remain/pay/get", name="get_left_to_pay", options={"expose"=true})
-     * @param Request $request
-     * @param GetUpdatePrice $price
-     * @param EntityManagerInterface $manager
-     * @return JsonResponse
-     */
+    #[Route('/remain/pay/get', name: 'get_left_to_pay', options: ['expose' => true])]
     public function remainToPay(Request $request, GetUpdatePrice $price, EntityManagerInterface $manager)
     {
         $pack_id = $request->request->get('pack_id');
@@ -215,10 +139,7 @@ class MembershipSubscriptionController
         return new JsonResponse(['price' => $priceToPay]);
     }
 
-    /**
-     * @Route("/unpaid-subscription-command", name="unpaid_subscription_command", options={"expose"=true})
-     * @return JsonResponse
-     */
+    #[Route('/unpaid-subscription-command', name: 'unpaid_subscription_command', options: ['expose' => true])]
     public function unpaidSubscriptionCommand(EntityManagerInterface $manager, TokenStorageInterface $token): JsonResponse
     {
         if ($token->getToken()) {
@@ -252,10 +173,7 @@ class MembershipSubscriptionController
         ]);
     }
 
-    /**
-     * @Route("/membership-subscription/cart/summary/", name="summary_subscription_cart", options={"expose"=true})
-     * @return Response
-     */
+    #[Route('/membership-subscription/cart/summary/', name: 'summary_subscription_cart', options: ['expose' => true])]
     public function cartSubscriptionSummary(): Response
     {
         $template = 'back/webcontroller/membership_subscription/cart_subscription.html.twig';

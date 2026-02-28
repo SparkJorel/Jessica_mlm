@@ -7,41 +7,27 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AnalyseFonctionnelleSystematiqueRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\AnalyseFonctionnelleSystematiqueRepository::class)]
 class AnalyseFonctionnelleSystematique implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $unit;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AnalyseFonctionnelleSystematique")
-     */
+    #[ORM\ManyToOne(targetEntity: AnalyseFonctionnelleSystematique::class)]
     private $groupUnit;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Service", mappedBy="analyseFonctionnelleSystematiques")
-     */
+    #[ORM\ManyToMany(targetEntity: Service::class, mappedBy: 'analyseFonctionnelleSystematiques')]
     private $services;
 
     public function __construct()

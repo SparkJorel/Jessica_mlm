@@ -10,7 +10,7 @@ class AddMemberVoter extends Voter
 {
     const ADD_MEMBER = 'add_member';
 
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
         $attributes = [self::ADD_MEMBER];
 
@@ -21,7 +21,7 @@ class AddMemberVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 

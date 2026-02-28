@@ -9,10 +9,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PurchaseSummary
 {
-    /** 
+    /**
      * @var AddressUser
-     * @Assert\NotBlank(groups={"test"})
      */
+    #[Assert\NotBlank(groups: ['test'])]
     private $addressUser;
 
     private $montant;

@@ -8,53 +8,37 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as JTWCAssert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PromoBonusSpecialRepository")
- * @JTWCAssert\StartedAtLessThanEndedAt()
- * @JTWCAssert\EligibleGrade()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\PromoBonusSpecialRepository::class)]
+#[JTWCAssert\StartedAtLessThanEndedAt]
+#[JTWCAssert\EligibleGrade]
 class PromoBonusSpecial implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\BonusSpecial")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: BonusSpecial::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $bonusSpecial;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\DateTime()
-     * @JTWCAssert\ConformStartedAtDatePromotion
-     */
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\DateTime]
+    #[JTWCAssert\ConformStartedAtDatePromotion]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\DateTime()
-     * @JTWCAssert\ConformEndedAtDatePromotion
-     */
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\DateTime]
+    #[JTWCAssert\ConformEndedAtDatePromotion]
     private $endedAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $underCondition;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Grade")
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class)]
     private $eligibleGrade;
 
     public function getId(): ?int

@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\MembershipCost;
 use App\Services\ModelHandlers\MembershipCostHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class MembershipCostController
         $this->mbshipCostHandler = $mbshipCostHandler;
     }
 
-    /**
-     * @Route("/membership-costs", name="membership_cost_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/membership-costs', name: 'membership_cost_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,32 +36,15 @@ class MembershipCostController
                 ->list();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-costs/{id}", name="membership_cost_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param MembershipCost $cost
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-costs/{id}', name: 'membership_cost_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(MembershipCost $cost)
     {
         return $this->mbshipCostHandler->setEntity($cost)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-costs/new", name="membership_cost_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-costs/new', name: 'membership_cost_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -78,18 +55,8 @@ class MembershipCostController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-costs/{id}/edit", name="membership_cost_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param MembershipCost $cost
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-costs/{id}/edit', name: 'membership_cost_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, MembershipCost $cost)
     {
         return
@@ -99,16 +66,8 @@ class MembershipCostController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-costs/{id}/delete", name="membership_cost_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param MembershipCost $cost
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-costs/{id}/delete', name: 'membership_cost_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, MembershipCost $cost)
     {
         return  $this

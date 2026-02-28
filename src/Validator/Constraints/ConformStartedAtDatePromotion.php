@@ -4,11 +4,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- * Class ConformStartedAtDatePromotion
- * @package App\Validator\Constraints
- */
+#[\Attribute]
 class ConformStartedAtDatePromotion extends Constraint
 {
     public $message = "La date de debut {{ started_at }} doit correspondre 

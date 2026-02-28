@@ -6,52 +6,36 @@ use App\AbstractModel\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\GradeSVRepository")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\GradeSVRepository::class)]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class GradeSV implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Grade")
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank(groups={"registration_grade_sv"})
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+    #[Assert\NotBlank(groups: ['registration_grade_sv'])]
     private $grade;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank(groups={"registration_grade_sv"})
-     * @Assert\Positive(groups={"registration_grade_sv"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(groups: ['registration_grade_sv'])]
+    #[Assert\Positive(groups: ['registration_grade_sv'])]
     private $sv;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $recordedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
     public function getId(): ?int

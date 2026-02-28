@@ -4,19 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UpdateCartProductNotificationRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\UpdateCartProductNotificationRepository::class)]
 class UpdateCartProductNotification extends Notification
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserCommands")
-     */
+    #[ORM\ManyToOne(targetEntity: UserCommands::class)]
     private $command;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $user;
 
 

@@ -9,44 +9,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ProductCoteRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\ProductCoteRepository::class)]
 class ProductCote implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank(groups={"registration_product_cote"})
-     */
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(groups: ['registration_product_cote'])]
     private $product;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_product_cote"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_product_cote'])]
     private $value;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $state;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
     public function getId(): ?int

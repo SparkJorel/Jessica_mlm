@@ -12,8 +12,8 @@ class MembershipProducts
 
     /**
      * @var Collection
-     * @JTWCAssert\PackProductQuantityUnique()
      */
+    #[JTWCAssert\PackProductQuantityUnique]
     private $membershipProducts;
 
     public function __construct()

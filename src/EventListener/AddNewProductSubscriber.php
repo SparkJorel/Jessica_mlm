@@ -6,23 +6,11 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\Events;
 use App\Entity\Product;
-use Doctrine\Common\EventSubscriber;
 use App\Repository\ProductRepository;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class AddNewProductSubscriber implements EventSubscriber
+class AddNewProductSubscriber
 {
-    /**
-     * Returns an array of events this subscriber wants to listen to.
-     *
-     * @return string[]
-     */
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::prePersist
-        ];
-    }
 
     /**
      * @param LifecycleEventArgs $args

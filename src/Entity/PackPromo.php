@@ -13,62 +13,46 @@ use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PackPromoRepository")
- * @UniqueEntity(fields={"code"})
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\PackPromoRepository::class)]
+#[UniqueEntity(fields: ['code'])]
+#[ORM\HasLifecycleCallbacks]
 class PackPromo implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le nom de baptême de la promo doit être renseigné")
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Le nom de baptême de la promo doit être renseigné')]
     private $name;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $endedAt;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $started;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $ended;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PromoPackProduct", cascade={"persist"}, mappedBy="promo")
-     * @Assert\Valid()
-     */
+    #[ORM\OneToMany(targetEntity: PromoPackProduct::class, cascade: ['persist'], mappedBy: 'promo')]
+    #[Assert\Valid]
     private $products;
 
     public function getId(): ?int
@@ -164,8 +148,8 @@ class PackPromo implements EntityInterface
 
     /**
      * @throws Exception
-     * @ORM\PrePersist()
      */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         $now = new DateTime("now", new DateTimeZone("Africa/Douala"));

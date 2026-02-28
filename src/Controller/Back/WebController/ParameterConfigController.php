@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\ParameterConfig;
 use App\Services\ModelHandlers\ParameterConfigHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class ParameterConfigController
         $this->paramConfigHandler = $paramConfigHandler;
     }
 
-    /**
-     * @Route("/param-configs", name="parameter_config_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/param-configs', name: 'parameter_config_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,31 +36,14 @@ class ParameterConfigController
                 ->list();
     }
 
-    /**
-     * @Route("/param-configs/{id}", name="parameter_config_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param ParameterConfig $param
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/param-configs/{id}', name: 'parameter_config_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ParameterConfig $param)
     {
         return $this->paramConfigHandler->setEntity($param)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("/param-configs/new", name="parameter_config_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/param-configs/new', name: 'parameter_config_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -77,16 +54,8 @@ class ParameterConfigController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/parameter-config/{id}/delete", name="parameter_config_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param ParameterConfig $param
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/parameter-config/{id}/delete', name: 'parameter_config_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, ParameterConfig $param)
     {
         return  $this

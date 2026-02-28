@@ -12,57 +12,57 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class ParameterConfig
  * @package App\Entity
- * @ORM\Entity(repositoryClass="App\Repository\ParameterConfigRepository")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
+#[ORM\Entity(repositoryClass: \App\Repository\ParameterConfigRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class ParameterConfig implements EntityInterface
 {
     /**
      * @var integer
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Regex(pattern="/[a-z0-9_]+/", groups={"registration_parameter"})
-     * @Assert\NotBlank(groups={"registration_parameter"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Regex(pattern: '/[a-z0-9_]+/', groups: ['registration_parameter'])]
+    #[Assert\NotBlank(groups: ['registration_parameter'])]
     private $name;
 
     /**
      * @var string
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(groups={"registration_parameter"})
      */
+    #[ORM\Column(type: 'string')]
+    #[Assert\NotBlank(groups: ['registration_parameter'])]
     private $value;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $removed;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     private $recordDate;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $deactivatedDate;
 
     /**
@@ -152,9 +152,9 @@ class ParameterConfig implements EntityInterface
     }
 
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function prePersist(): void
     {
         $this->status = true;

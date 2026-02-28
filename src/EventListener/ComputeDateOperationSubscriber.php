@@ -6,12 +6,10 @@ use App\Entity\UserCommands;
 use App\Services\ComputeDateOperation;
 use DateTime;
 use DateTimeZone;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 use Exception;
 
-class ComputeDateOperationSubscriber implements EventSubscriber
+class ComputeDateOperationSubscriber
 {
     /**
      * @var ComputeDateOperation
@@ -21,15 +19,6 @@ class ComputeDateOperationSubscriber implements EventSubscriber
     public function __construct(ComputeDateOperation $compute)
     {
         $this->compute = $compute;
-    }
-
-    public function getSubscribedEvents()
-    {
-        // TODO: Implement getSubscribedEvents() method.
-        return [
-            Events::prePersist,
-            Events::preUpdate
-        ];
     }
 
     /**

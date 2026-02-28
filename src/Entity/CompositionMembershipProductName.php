@@ -5,26 +5,18 @@ namespace App\Entity;
 use App\AbstractModel\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CompositionMembershipProductNameRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\CompositionMembershipProductNameRepository::class)]
 class CompositionMembershipProductName implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $code;
 
     public function getId(): ?int

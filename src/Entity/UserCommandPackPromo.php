@@ -9,55 +9,39 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use App\AbstractModel\EntityInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserCommandPackPromoRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\UserCommandPackPromoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class UserCommandPackPromo implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $member;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PackPromo")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: PackPromo::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $pack;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $quantity;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $dateCommand;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $dateUpdateCommand;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $delivered;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $code;
 
     public function getId(): ?int
@@ -145,9 +129,9 @@ class UserCommandPackPromo implements EntityInterface
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function preUpdate()
     {
         $this->dateUpdateCommand = new DateTime(

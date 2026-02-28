@@ -53,59 +53,60 @@ services:
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: ["@database_connection", "getWrappedConnection"]}
+            - '%env(DATABASE_URL)%'
             - { lock_mode: 1 }
 
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
-        calls:
-            - [setAnnotationReader, ["@annotation_reader"]]
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preRemove }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: loadClassMetadata }
 
     jtwc.date_operation:
         class: App\Services\ComputeDateOperation
 
-    jtwc.cycle.deactivate:
-        class: App\EventListener\CycleSubscriber
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-
     jtwc.user_command.create_code:
         class: App\EventListener\GenerateCodeSubscriber
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: prePersist }
 
     jtwc.membership_subscription.close:
         class: App\EventListener\CloseMembershipSubscriptionSubscriber
         tags:
-            - { name: doctrine.event_subscriber, event: prePersist, method: prePersist, connection: default }
+            - { name: doctrine.event_listener, event: prePersist }
 
     App\EntityListener\UserCommandsEntityListener:
         tags:
-            - { name: 'doctrine.event_listener', event: 'prePersist', entity: 'App\Entity\UserCommands'}
-            - { name: 'doctrine.event_listener', event: 'preUpdate', entity: 'App\Entity\UserCommands'}
+            - { name: 'doctrine.event_listener', event: 'prePersist' }
+            - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
     App\EntityListener\CommandProductsEntityListener:
         tags:
-            - { name: 'doctrine.event_listener', event: 'prePersist', entity: 'App\Entity\CommandProducts'}
-            - { name: 'doctrine.event_listener', event: 'preUpdate', entity: 'App\Entity\CommandProducts'}
+            - { name: 'doctrine.event_listener', event: 'prePersist' }
+            - { name: 'doctrine.event_listener', event: 'preUpdate' }
 
     jtwc.date_operation.compute:
         class: App\EventListener\ComputeDateOperationSubscriber
         arguments: ["@jtwc.date_operation"]
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
 
     jtwc.user_grade.created:
         class: App\EventListener\AddNewUserGradeSubscriber
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: prePersist }
 
     jtwc.product.created:
         class: App\EventListener\AddNewProductSubscriber
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: prePersist }
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

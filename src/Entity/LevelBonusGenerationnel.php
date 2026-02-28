@@ -5,22 +5,16 @@ namespace App\Entity;
 use App\AbstractModel\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\LevelBonusGenerationnelRepository")
- * @ORM\Cache(usage="READ_ONLY")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\LevelBonusGenerationnelRepository::class)]
+#[ORM\Cache(usage: 'READ_ONLY')]
 class LevelBonusGenerationnel implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $lvl;
 
     public function getId(): ?int

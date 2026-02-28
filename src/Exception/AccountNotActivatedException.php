@@ -23,8 +23,8 @@ class AccountNotActivatedException extends AccountStatusException
     /**
      * {@inheritdoc}
      */
-    public function getMessageData(): string
+    public function getMessageData(): array
     {
-        return 'Account not activated. Please follow the link in the mail we previously sent you';
+        return [];
     }
 }

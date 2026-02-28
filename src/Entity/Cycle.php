@@ -7,56 +7,38 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CycleRepository")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\CycleRepository::class)]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+#[ORM\HasLifecycleCallbacks]
 class Cycle implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank(groups={"registration_cycle"})
-     */
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(groups: ['registration_cycle'])]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank(groups={"registration_cycle"})
-     */
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(groups: ['registration_cycle'])]
     private $endedAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $active;
 
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false})
-     */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private $weekly;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false})
-     */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private $autoSave;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false})
-     */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private $binarySaved;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $closed;
   
 
@@ -126,9 +108,7 @@ class Cycle implements EntityInterface
         return is_null($this->id);
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function onPersist()
     {
         $this->active = true;

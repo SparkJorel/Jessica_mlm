@@ -9,45 +9,31 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\TVCPackRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\TVCPackRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class TVCPack implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Membership")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull(groups={"registration_tvc"})
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(groups: ['registration_tvc'])]
     private $membership;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank(groups={"registration_tvc"})
-     */
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(groups: ['registration_tvc'])]
     private $value;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $status;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $endedAt;
 
     public function getId(): ?int
@@ -114,9 +100,9 @@ class TVCPack implements EntityInterface
         return $this;
     }
     /**
-     * @ORM\PrePersist()
      * @throws Exception
      */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         $this->status = true;

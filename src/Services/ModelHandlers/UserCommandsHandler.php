@@ -32,7 +32,6 @@ use App\Repository\ProductDistributorPriceRepository;
 use DateTime;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserCommandsHandler extends ModelCollectionEntityAbstract implements ModelInterface
@@ -47,23 +46,18 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
      */
     private $tokenStorage;
 
-    /** @var SessionInterface */
-    private $sessionAttributes;
-
     public function __construct(
         EntityManagerInterface $manager,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         Environment $twig,
         RequestStack $requestStack,
-        SessionInterface $sessionAttributes,
         ExtractSVFromCommands $extractSVFromCommands,
         TokenStorageInterface $tokenStorage
     ) {
         parent::__construct($manager, $formFactory, $router, $twig, $requestStack);
         $this->extractSVFromCommands = $extractSVFromCommands;
         $this->tokenStorage = $tokenStorage;
-        $this->sessionAttributes = $sessionAttributes;
     }
 
     protected function createForm(): FormInterface
@@ -112,7 +106,7 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
             $formSave = $form->get('save');
 
             if ($formSave->isClicked()) {
-                $this->sessionAttributes->remove('cart_id');
+                $this->requestStack->getSession()->remove('cart_id');
             }
 
             return $this->redirectAfterSubmit('user_cart_create', 'success', 'Commande sauvegardée avec succès !!!');

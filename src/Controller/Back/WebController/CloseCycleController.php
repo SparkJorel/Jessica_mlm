@@ -10,13 +10,13 @@ use App\Repository\CycleRepository;
 use App\Services\BonusSummaryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -55,13 +55,7 @@ class CloseCycleController extends AbstractController
         $this->params = $params;
     }
 
-    /**
-     * @Route("cycle/list", name="close_cycle_list")
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('cycle/list', name: 'close_cycle_list')]
     public function index(CycleRepository $cycleRepository)
     {
         $cycles = $cycleRepository->getAllCycle();
@@ -72,15 +66,8 @@ class CloseCycleController extends AbstractController
         );
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("close/cycle/{id}", name="close_cycle", methods={"GET"},
-     * requirements={"id": "\d+"}
-     * )
-     * @param Cycle $cycle
-     * @param RouterInterface $router
-     * @return Response
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('close/cycle/{id}', name: 'close_cycle', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function closeCycle(Cycle $cycle, RouterInterface $router)
     {
         $this->closeCycle->closeCycle($cycle);
@@ -95,12 +82,8 @@ class CloseCycleController extends AbstractController
         return new RedirectResponse($router->generate('view_recap'));
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')")
-     * @Route("view/recap", name="view_recap", methods={"GET", "POST"})
-     * @param Request $request
-     * @return Response
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('view/recap', name: 'view_recap', methods: ['GET', 'POST'])]
     public function viewRecap(Request $request)
     {
         $cycle = null;
@@ -138,12 +121,7 @@ class CloseCycleController extends AbstractController
         ));
     }
 
-    /**
-     * @Route("view/own/recap", name="view_own_recap", methods={"GET", "POST"})
-     * @param Request $request
-     * @param BonusSummaryInterface $viewReport
-     * @return Response
-     */
+    #[Route('view/own/recap', name: 'view_own_recap', methods: ['GET', 'POST'])]
     public function viewOwnRecap(Request $request, BonusSummaryInterface $viewReport)
     {
         $cycle = null;

@@ -6,7 +6,7 @@ use App\Manager\CartUserLoggedManager;
 use App\Entity\CommandProducts;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class CartNotificationController extends AbstractController
 {
@@ -20,10 +20,7 @@ class CartNotificationController extends AbstractController
         $this->cartUserLoggedManager = $cartUserLoggedManager;
     }
 
-    /**
-     * @Route("/unpaid-command", name="unpaid_command", options={"expose"=true})
-     * @return JsonResponse
-     */
+    #[Route('/unpaid-command', name: 'unpaid_command', options: ['expose' => true])]
     public function unpaidCommand(): JsonResponse
     {
         $userCommands = $this->cartUserLoggedManager->getCurrentCart();

@@ -9,73 +9,50 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\GradeRepository")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @UniqueEntity(fields={"commercialName", "weight", "maintenance", "lvl", "sv"}, ignoreNull=true, groups={"registration_grade"})
- */
+#[ORM\Entity(repositoryClass: \App\Repository\GradeRepository::class)]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+#[UniqueEntity(fields: ['commercialName', 'weight', 'maintenance', 'lvl', 'sv'], ignoreNull: true, groups: ['registration_grade'])]
 class Grade implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_grade"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_grade'])]
     private $commercialName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration_grade"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(groups: ['registration_grade'])]
     private $technicalName;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     *
-     * @Assert\NotBlank(groups={"registration_grade"})
-     * @Assert\Positive(groups={"registration_grade"})
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(groups: ['registration_grade'])]
+    #[Assert\Positive(groups: ['registration_grade'])]
     private $maintenance;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\NotBlank(groups={"registration_grade"})
-     * @Assert\Positive(groups={"registration_grade"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\NotBlank(groups: ['registration_grade'])]
+    #[Assert\Positive(groups: ['registration_grade'])]
     private $lvl;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     * @Assert\NotBlank(groups={"registration_grade"})
-     * @Assert\Positive(groups={"registration_grade"})
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(groups: ['registration_grade'])]
+    #[Assert\Positive(groups: ['registration_grade'])]
     private $sv;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GradeBG", mappedBy="grade")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(targetEntity: GradeBG::class, mappedBy: 'grade')]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
     private $gradeBGs;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
-     */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private $rewardable;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $weight;
 
     public function __construct()

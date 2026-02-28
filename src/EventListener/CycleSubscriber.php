@@ -4,24 +4,10 @@ namespace App\EventListener;
 
 use App\Entity\Cycle;
 use App\Repository\CycleRepository;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 
-class CycleSubscriber implements EventSubscriber
+class CycleSubscriber
 {
-    /**
-     * Returns an array of events this subscriber wants to listen to.
-     *
-     * @return string[]
-     */
-    public function getSubscribedEvents()
-    {
-        return [
-		  //Events::prePersist
-        ];
-    }
-
   /*public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getObject();

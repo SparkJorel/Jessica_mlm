@@ -12,11 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserCommandsRepository")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\UserCommandsRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class UserCommands implements EntityInterface
 {
     /**
@@ -34,97 +32,79 @@ class UserCommands implements EntityInterface
     public const STATUS_ORDERED = 'ordered';
 
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $code;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $codeParrain;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $motif;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $status = self::STATUS_CART;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $dateCommand;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $dateCommandUpdate;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $delivered;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $paid;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=true})
      */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => true])]
     private $distributor = true;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $totalDistributorPrice;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $totalClientPrice;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $totalSVAP;
 
     /**
      * @var float
-     * @ORM\Column(type="float", nullable=true)
      */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $totalSVBinaire;
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
     private $user;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CommandProducts", mappedBy="command", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     */
+    #[ORM\OneToMany(targetEntity: CommandProducts::class, mappedBy: 'command', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
+    #[Assert\Valid]
     private $products;
 
     public function __construct()
@@ -334,9 +314,9 @@ class UserCommands implements EntityInterface
     }
 
     /**
-     * @ORM\PreUpdate()
      * @throws Exception
      */
+    #[ORM\PreUpdate]
     public function defineDateCommandUpdate(): void
     {
         $dateCommandUpdate = new DateTime("now", new DateTimeZone("Africa/Douala"));

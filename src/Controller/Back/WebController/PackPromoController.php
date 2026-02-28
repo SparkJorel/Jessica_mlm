@@ -3,9 +3,9 @@
 namespace App\Controller\Back\WebController;
 
 use App\Entity\PackPromo;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use App\Services\ModelHandlers\PackPromoHandler;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,13 +26,7 @@ class PackPromoController
         $this->packPromoHandler = $packPromoHandler;
     }
 
-    /**
-     * @Route("/pack-promos", name="pack_promo_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/pack-promos', name: 'pack_promo_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,15 +36,8 @@ class PackPromoController
                 ->list();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/new", name="pack_promo_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/new', name: 'pack_promo_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -61,35 +48,15 @@ class PackPromoController
             ;
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/{id}", name="pack_promo_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param PackPromo $packPromo
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/{id}', name: 'pack_promo_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(PackPromo $packPromo)
     {
         return $this->packPromoHandler->setEntity($packPromo)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/{id}/edit", name="pack_promo_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param PackPromo $packPromo
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/{id}/edit', name: 'pack_promo_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, PackPromo $packPromo)
     {
         return
@@ -99,16 +66,8 @@ class PackPromoController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/{id}/delete", name="pack_promo_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param PackPromo $packPromo
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/{id}/delete', name: 'pack_promo_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, PackPromo $packPromo)
     {
         return  $this
@@ -117,27 +76,15 @@ class PackPromoController
             ->remove($request, $csrf);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/{id}/end", name="pack_promo_ended",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param PackPromo $packPromo
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/{id}/end', name: 'pack_promo_ended', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function endPromo(PackPromo $packPromo)
     {
         return $this->packPromoHandler->setEntity($packPromo)->endPromo();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/pack-promos/{id}/start", name="pack_promo_started",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param PackPromo $packPromo
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/pack-promos/{id}/start', name: 'pack_promo_started', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function startPromo(PackPromo $packPromo)
     {
         return $this->packPromoHandler->setEntity($packPromo)->startPromo();

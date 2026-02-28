@@ -4,11 +4,11 @@ namespace App\Controller\Back\WebController;
 
 use App\Entity\MembershipBonusPourcentage;
 use App\Services\ModelHandlers\MembershipBonusPourcentageHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,13 +26,7 @@ class MembershipBonusPourcentageController
         $this->membershipBPHandler = $membershipBPHandler;
     }
 
-    /**
-     * @Route("/membership-bonus", name="membership_bp_list", methods={"GET"})
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[Route('/membership-bonus', name: 'membership_bp_list', methods: ['GET'])]
     public function list()
     {
         return
@@ -42,32 +36,15 @@ class MembershipBonusPourcentageController
                 ->list();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-bonus/{id}", name="membership_bp_show", methods={"GET"},
-     * requirements={
-     * "id": "\d+"
-     * })
-     * @param MembershipBonusPourcentage $rb
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-bonus/{id}', name: 'membership_bp_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(MembershipBonusPourcentage $rb)
     {
         return $this->membershipBPHandler->setEntity($rb)->show();
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-bonus/new", name="membership_bp_new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-bonus/new', name: 'membership_bp_new', methods: ['GET', 'POST'])]
     public function create(Request $request)
     {
         return
@@ -75,18 +52,8 @@ class MembershipBonusPourcentageController
                     ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-bonus/{id}/edit", name="membership_bp_edit",
-     *     methods={"GET","POST"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param MembershipBonusPourcentage $rb
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-bonus/{id}/edit', name: 'membership_bp_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, MembershipBonusPourcentage $rb)
     {
         return
@@ -96,16 +63,8 @@ class MembershipBonusPourcentageController
                 ->save($request);
     }
 
-    /**
-     * @Security("is_granted('ROLE_JTWC_ADMIN')")
-     * @Route("/membership-bonus/{id}/delete", name="membership_bp_delete",
-     *     methods={"GET"}, requirements={"id": "\d+"}
-     * )
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrf
-     * @param MembershipBonusPourcentage $rb
-     * @return RedirectResponse
-     */
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/membership-bonus/{id}/delete', name: 'membership_bp_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function remove(Request $request, CsrfTokenManagerInterface $csrf, MembershipBonusPourcentage $rb)
     {
         return  $this

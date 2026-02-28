@@ -4,60 +4,44 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SummaryCommissionRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\SummaryCommissionRepository::class)]
 class SummaryCommission
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $reason;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $amount;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startedAt;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=20)
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $month;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50)
      */
+    #[ORM\Column(type: 'string', length: 50)]
     private $year;
 
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $endedAt;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false})
-     */
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private $status;
 
     public function getId(): ?int

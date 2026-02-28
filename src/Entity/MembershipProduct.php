@@ -6,45 +6,28 @@ use App\AbstractModel\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\MembershipProductRepository")
- * @UniqueEntity(
- * fields={"name", "quantity", "membership", "product"},
- * errorPath="product",
- * message="La quantité de ce produit a déjà été définié dans ce package.",
- * ignoreNull=false
- * )
- */
+#[ORM\Entity(repositoryClass: \App\Repository\MembershipProductRepository::class)]
+#[UniqueEntity(fields: ['name', 'quantity', 'membership', 'product'], errorPath: 'product', message: 'La quantité de ce produit a déjà été définié dans ce package.', ignoreNull: false)]
 class MembershipProduct implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-    * @ORM\Column(type="integer")
-    */
+    #[ORM\Column(type: 'integer')]
     private $quantity;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\CompositionMembershipProductName")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: CompositionMembershipProductName::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $product;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Membership", inversedBy="membershipProducts")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Membership::class, inversedBy: 'membershipProducts')]
+    #[ORM\JoinColumn(nullable: false)]
     private $membership;
 
     public function getId(): ?int
