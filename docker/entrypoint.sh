@@ -3,6 +3,21 @@ set -e
 
 echo "=== Jessica MLM - Entrypoint ==="
 
+# Write .env.local from Docker environment variables
+# (Apache doesn't forward container env vars to PHP)
+echo "Writing .env.local from Docker environment..."
+cat > .env.local << ENVEOF
+APP_ENV=${APP_ENV:-prod}
+APP_DEBUG=${APP_DEBUG:-0}
+APP_SECRET=${APP_SECRET}
+DATABASE_URL=${DATABASE_URL}
+REDIS_URL=${REDIS_URL}
+MAILER_DSN=${MAILER_DSN:-null://null}
+API_KEY_DOHONE=${API_KEY_DOHONE}
+API_URL_PAY_IN=${API_URL_PAY_IN}
+HASH_CODE_DOHONE=${HASH_CODE_DOHONE}
+ENVEOF
+
 # Wait for database to be ready
 echo "Waiting for database..."
 max_tries=30
