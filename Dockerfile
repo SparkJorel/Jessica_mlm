@@ -58,6 +58,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=prod
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Compile env vars for production (fixes APP_ENV=dev from .env)
+RUN composer dump-env prod
+
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \
     && chown -R www-data:www-data var/ public/uploads/ \
