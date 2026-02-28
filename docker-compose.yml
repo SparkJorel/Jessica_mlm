@@ -14,7 +14,7 @@ services:
       APP_ENV: prod
       APP_DEBUG: 0
       APP_SECRET: "${APP_SECRET}"
-      DATABASE_URL: "mysql://jessica_user:${DB_PASSWORD}@db:3306/db_jessica_mlm?serverVersion=mariadb-10.11.0"
+      DATABASE_URL: "mysql://jessica_user:${DB_PASSWORD}@db:3306/db_jessica_mlm?serverVersion=mariadb-10.4.32"
       REDIS_URL: "redis://redis:6379"
       MAILER_DSN: "null://null"
       API_KEY_DOHONE: "${API_KEY_DOHONE}"
@@ -25,7 +25,7 @@ services:
       - /home/ubuntu/certbot-webroot/.well-known/acme-challenge:/var/www/html/public/.well-known/acme-challenge
 
   db:
-    image: mariadb:10.11
+    image: mariadb:10.4
     container_name: jessica_db
     restart: always
     environment:
@@ -37,7 +37,7 @@ services:
       - db_data:/var/lib/mysql
       - ./docker/init-db:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
