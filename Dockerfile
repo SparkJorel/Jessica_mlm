@@ -55,7 +55,8 @@ COPY . .
 
 # Install PHP dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+ENV APP_ENV=prod
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Create required directories and set permissions
 RUN mkdir -p var/cache var/log var/sessions public/uploads \

@@ -31,6 +31,7 @@ Thumbs.db
 
 # Docker
 /docker/init-db/*.sql
+compose.override.yaml
 
 # Misc
 src.zip
