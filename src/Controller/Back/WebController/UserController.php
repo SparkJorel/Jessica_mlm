@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -80,7 +81,10 @@ class UserController
     {
         $message = $generate->generateUsersCode();
 
-        $requestStack->getSession()->getFlashBag()->add('info', $message);
+        $session = $requestStack->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add('info', $message);
+        }
 
         return new RedirectResponse($generator->generate('user_list_all'));
     }

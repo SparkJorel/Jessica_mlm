@@ -11,9 +11,4 @@ class UplinePosition extends Constraint
     public $message = 'The position {{ side }} of the upline {{ username }} is already used.';
     public $em = null;
     public $errorPath = 'position';
-
-    public function getTargets()
-    {
-        return self::CLASS_CONSTRAINT;
-    }
 }

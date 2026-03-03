@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormEvents;
 
 class AddFieldAnalyseFonctionnelleSystematiqueSubscriber implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SET_DATA => 'onPreSetData'
@@ -30,7 +30,7 @@ class AddFieldAnalyseFonctionnelleSystematiqueSubscriber implements EventSubscri
                 'class' => AnalyseFonctionnelleSystematique::class,
                 'label' => 'Analyse Fonctionnelle Systématique',
                 'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $repo) use ($entity) {
+                'queryBuilder' => function (EntityRepository $repo) use ($entity) {
                     return $repo
                                 ->createQueryBuilder('a')
                                 ->addSelect('s')

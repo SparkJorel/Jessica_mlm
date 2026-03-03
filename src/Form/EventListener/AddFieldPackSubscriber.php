@@ -22,7 +22,7 @@ class AddFieldPackSubscriber implements EventSubscriberInterface
         $this->requestStack = $requestStack;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SET_DATA => 'onPreSetData',
@@ -44,7 +44,7 @@ class AddFieldPackSubscriber implements EventSubscriberInterface
             $form
                 ->add('pack', EntityType::class, [
                     'class' => CompositionMembershipProductName::class,
-                    'query_builder' => function (CompositionMembershipProductNameRepository $repository) use ($membership) {
+                    'queryBuilder' => function (CompositionMembershipProductNameRepository $repository) use ($membership) {
                         return $repository->getAvailablePackName($membership);
                     },
                     'label' => 'Composition de vos produits',

@@ -30,9 +30,8 @@ class AddFieldMembershipSubscriber implements EventSubscriberInterface
      *
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        // TODO: Implement getSubscribedEvents() method.
         return [
             FormEvents::PRE_SET_DATA => 'preSetData',
             FormEvents::PRE_SUBMIT => 'preSubmit',
@@ -45,7 +44,7 @@ class AddFieldMembershipSubscriber implements EventSubscriberInterface
             'class' => Membership::class,
             'placeholder' => '--Membership--',
             'label' => 'Membership ',
-            'query_builder' => function (MembershipRepository $repository) use ($member_id) {
+            'queryBuilder' => function (MembershipRepository $repository) use ($member_id) {
                 if (!$member_id) {
                     return null;
                 }

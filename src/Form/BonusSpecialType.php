@@ -87,7 +87,7 @@ class BonusSpecialType extends AbstractType
             ->add('grade', EntityType::class, [
                 'class' => Grade::class,
                 'label' => 'Grade',
-                'query_builder' => function (EntityRepository $repository) {
+                'queryBuilder' => function (EntityRepository $repository) {
                     return $repository
                                 ->createQueryBuilder('g')
                                 ->where('g.rewardable = :rewardable')

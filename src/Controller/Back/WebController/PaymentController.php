@@ -142,12 +142,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageStartSuccess, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
+                $this->addFlash('success', $response);
                 return new RedirectResponse($this->router->generate('user_personal_command_list'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
+                $this->addFlash('warning', $response);
 
                 return new RedirectResponse($this->router->generate('user_cart_create'));
             }
@@ -204,12 +204,12 @@ class PaymentController extends AbstractController
 		
 				file_put_contents($file, PHP_EOL . $status.$response, FILE_APPEND);
 			  
-                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
+                $this->addFlash('success', $response);
                 return new RedirectResponse($this->router->generate('user_personal_command_list'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
+                $this->addFlash('warning', $response);
 			  
 			  	$status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
 		
@@ -266,12 +266,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageCfrmsmsSuccess, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
+                $this->addFlash('success', $response);
                 return new RedirectResponse($this->router->generate('personal_membership_subscription'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
+                $this->addFlash('warning', $response);
 
                 return new RedirectResponse($this->router->generate('summary_subscription_cart'));
             }
@@ -350,12 +350,12 @@ class PaymentController extends AbstractController
             $messageFail = "/KO start :/";
 
             if (preg_match($messageStartSuccess, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('success', $response);
+                $this->addFlash('success', $response);
                 return new RedirectResponse($this->router->generate('personal_membership_subscription'));
             }
 
             if (preg_match($messageFail, $response)) {
-                $this->requestStack->getSession()->getFlashBag()->add('warning', $response);
+                $this->addFlash('warning', $response);
 
                 return new RedirectResponse($this->router->generate('summary_subscription_cart'));
             }

@@ -18,7 +18,7 @@ class AddServiceFieldSubscriber implements EventSubscriberInterface
         $this->request = $request;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::PRE_SET_DATA => 'onPreSetData'

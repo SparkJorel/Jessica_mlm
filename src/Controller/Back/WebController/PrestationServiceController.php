@@ -7,7 +7,7 @@ use App\Entity\Service;
 use App\Services\ModelHandlers\PrestationServiceHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,11 +39,8 @@ class PrestationServiceController
         $this->manager = $manager;
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     */
     #[Route('/services/{slug}/prestations', name: 'prestation_service_list', requirements: ['slug' => '\w+'], methods: ['GET'])]
-    public function list(Service $service)
+    public function list(#[MapEntity(mapping: ['slug' => 'slug'])] Service $service)
     {
         return
             $this
@@ -53,11 +50,8 @@ class PrestationServiceController
                 ->list();
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     */
     #[Route('/services/{slug}/prestations/list', name: 'prestation_service_list_for_users', requirements: ['slug' => '\w+'], methods: ['GET'])]
-    public function listForUsers(Service $service)
+    public function listForUsers(#[MapEntity(mapping: ['slug' => 'slug'])] Service $service)
     {
         return
             $this
@@ -67,12 +61,9 @@ class PrestationServiceController
                 ->listForUsers();
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     */
     #[IsGranted('ROLE_JTWC_ADMIN')]
     #[Route('/services/{slug}/prestation/new', name: 'service_prestation_new', requirements: ['slug' => '\w+'], methods: ['GET', 'POST'])]
-    public function create(Request $request, Service $service)
+    public function create(Request $request, #[MapEntity(mapping: ['slug' => 'slug'])] Service $service)
     {
         return
             $this
@@ -83,12 +74,9 @@ class PrestationServiceController
             ;
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     */
     #[IsGranted('ROLE_JTWC_USER')]
     #[Route('/services/prestation/{slug}/show', name: 'service_prestation_show', methods: ['GET'], requirements: ['slug' => '\w+'])]
-    public function show(Service $service)
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Service $service)
     {
         return $this
                     ->prestationServiceHandler
@@ -96,16 +84,12 @@ class PrestationServiceController
                     ->show();
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     * @ParamConverter("prestation", options={"mapping": {"prestation_slug": "slug"}})
-     */
     #[IsGranted('ROLE_JTWC_ADMIN')]
     #[Route('/services/{slug}/prestation/{prestation_slug}/edit', name: 'service_prestation_edit', methods: ['GET', 'POST'], requirements: ['slug' => '\w+', 'prestation_slug' => '\w+'])]
     public function edit(
         Request $request,
-        Service $service,
-        PrestationService $prestation
+        #[MapEntity(mapping: ['slug' => 'slug'])] Service $service,
+        #[MapEntity(mapping: ['prestation_slug' => 'slug'])] PrestationService $prestation
     )
     {
         return
@@ -116,17 +100,13 @@ class PrestationServiceController
                 ->save($request);
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     * @ParamConverter("prestation", options={"mapping": {"prestation_slug": "slug"}})
-     */
     #[IsGranted('ROLE_JTWC_ADMIN')]
     #[Route('/services/{slug}/prestation/{prestation_slug}/delete', name: 'service_prestation_delete', methods: ['DELETE'], requirements: ['slug' => '\w+', 'prestation_slug' => '\w+'])]
     public function remove(
         Request $request,
         CsrfTokenManagerInterface $csrf,
-        Service $service,
-        PrestationService $prestation
+        #[MapEntity(mapping: ['slug' => 'slug'])] Service $service,
+        #[MapEntity(mapping: ['prestation_slug' => 'slug'])] PrestationService $prestation
     )
     {
         return  $this
@@ -136,17 +116,13 @@ class PrestationServiceController
             ->remove($request, $csrf);
     }
 
-    /**
-     * @ParamConverter("service", options={"mapping": {"slug": "slug"}})
-     * @ParamConverter("prestation", options={"mapping": {"prestation_slug": "slug"}})
-     */
     #[IsGranted('ROLE_JTWC_ADMIN')]
     #[Route('/services/{slug}/prestation/{prestation_slug}/delete', name: 'service_prestation_delete', methods: ['DELETE'], requirements: ['slug' => '\w+', 'prestation_slug' => '\w+'])]
     public function activatePrestationService(
         Request $request,
         CsrfTokenManagerInterface $csrf,
-        Service $service,
-        PrestationService $prestation
+        #[MapEntity(mapping: ['slug' => 'slug'])] Service $service,
+        #[MapEntity(mapping: ['prestation_slug' => 'slug'])] PrestationService $prestation
     )
     {
         return  $this

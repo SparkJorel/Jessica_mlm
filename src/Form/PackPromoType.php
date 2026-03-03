@@ -49,7 +49,7 @@ class PackPromoType extends AbstractType
             ->add('products_list', EntityType::class, [
                 'class' => Product::class,
                 'choice_label' => 'code',
-                'query_builder' => function (ProductRepository $repository) {
+                'queryBuilder' => function (ProductRepository $repository) {
                     return $repository
                         ->createQueryBuilder('p')
                         ->where('p.status = :status')

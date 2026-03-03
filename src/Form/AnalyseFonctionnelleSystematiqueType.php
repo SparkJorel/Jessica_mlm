@@ -32,7 +32,7 @@ class AnalyseFonctionnelleSystematiqueType extends AbstractType
             ->add('groupUnit', EntityType::class, [
                 'class' => AnalyseFonctionnelleSystematique::class,
                 'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $repo) {
+                'queryBuilder' => function (EntityRepository $repo) {
                     return $repo
                                 ->createQueryBuilder('a')
                                 ->where('a.unit = :unit')
