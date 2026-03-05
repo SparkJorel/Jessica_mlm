@@ -294,8 +294,6 @@ class CloseCycle
                 ->getBonus
                 ->handleBonusPersonalPurchase($cycle, $user, $sv, $total);
 
-            //dump($ac);
-
 
             if ($total != 0) {
                 $userReport['achat_personal'] = $total;
@@ -424,27 +422,23 @@ class CloseCycle
                 $fullname = $userReport['fullname'];
             }
 
-            if ($i === count($summaryCommissions) - 1) {
-           
-                $commissions = $this->computeCommission($userReport);
-
-                if ($commissions['total'] > 0) {
-                    $j++;
-
-                    $userReport['commissions'] = $commissions['total'];
-                    $userReport['id'] = $j;
-                    $commissionTotal += $commissions['total'];
-                    $commissionActif += $commissions['actif'];
-                    $commissionPassif += $commissions['passif'];
-    
-                    $reports[] = $userReport;
-    
-                }
-
-                unset($userReport);
-            }
-
             $i++;
+        }
+
+        if (!empty($userReport)) {
+            $commissions = $this->computeCommission($userReport);
+
+            if ($commissions['total'] > 0) {
+                $j++;
+
+                $userReport['commissions'] = $commissions['total'];
+                $userReport['id'] = $j;
+                $commissionTotal += $commissions['total'];
+                $commissionActif += $commissions['actif'];
+                $commissionPassif += $commissions['passif'];
+
+                $reports[] = $userReport;
+            }
         }
 
         $reports['actif'] = $commissionActif;

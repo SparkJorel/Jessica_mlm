@@ -27,7 +27,11 @@ class UserPaidBonusController
         $endedAt = $request->get('endedAt');
         $startedAt = $request->get('startedAt');
 
-        $url = $request->request->get('url');
+        $url = $request->request->get('url') ?: 'view_recap';
+
+        if (!$users || !is_array($users)) {
+            return new RedirectResponse($router->generate($url));
+        }
 
         $paymentBonus
             ->setUsers($users)

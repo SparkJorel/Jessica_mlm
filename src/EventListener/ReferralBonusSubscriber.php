@@ -5,6 +5,7 @@ namespace App\EventListener;
 use App\Entity\ParameterConfig;
 use App\Entity\SponsoringBonus;
 use App\Entity\User;
+use App\Repository\SponsoringBonusRepository;
 use App\Event\ReferralBonusEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -38,6 +39,17 @@ class ReferralBonusSubscriber implements EventSubscriberInterface
         $sponsor = $data->getSponsor();
 
         if (!$data->getSponsor()) {
+            return;
+        }
+
+        /** @var SponsoringBonusRepository $bonusRepo */
+        $bonusRepo = $this->manager->getRepository(SponsoringBonus::class);
+        $existing = $bonusRepo->findOneBy([
+            'sponsor'     => $sponsor,
+            'sponsorised' => $data->getFullname(),
+        ]);
+
+        if ($existing) {
             return;
         }
 

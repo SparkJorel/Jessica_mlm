@@ -31,8 +31,6 @@ class CartUserLoggedManager
     {
         $userCommands = $this->cartSessionStorage->getCart();
 
-        //dd($userCommands);
-
         if (!$userCommands) {
 
             /** @var User $user **/
@@ -53,9 +51,7 @@ class CartUserLoggedManager
      */
     public function save(UserCommands $userCommands)
     {
-        //dd($userCommands);
-	  	
-	  	$userCommands->setTotalSVAP($userCommands->processSVAPTotal());
+        $userCommands->setTotalSVAP($userCommands->processSVAPTotal());
         $userCommands->setTotalSVBinaire($userCommands->processSVBinaireTotal());
         
         if ($userCommands->isDistributor()) {

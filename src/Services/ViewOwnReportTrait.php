@@ -107,9 +107,6 @@ trait ViewOwnReportTrait
             ->getBonus
             ->handleBonusPersonalPurchase($cycle, $user, $sv, $total);
 
-        //dump($ac);
-
-
         if ($total != 0) {
             $userReport['achat_personal'] = $total;
             unset($ac);

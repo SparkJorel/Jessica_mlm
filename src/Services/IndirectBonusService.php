@@ -228,16 +228,16 @@ class IndirectBonusService
                 }
             }
 
-            if ($i === count($commissionIndirectBonuses) - 1) {
-                $j++;
-
-                $svPurchase['total_indirect_bonus'] = $totalUserIndirectBonus;
-                $svPurchase['id'] = $j;
-
-                $results[] = $svPurchase;
-            }
-
             $i++;
+        }
+
+        if (!empty($svPurchase) && isset($svPurchase['nom'])) {
+            $j++;
+
+            $svPurchase['total_indirect_bonus'] = $totalUserIndirectBonus;
+            $svPurchase['id'] = $j;
+
+            $results[] = $svPurchase;
         }
 
         return $results;
@@ -357,8 +357,6 @@ class IndirectBonusService
         if (empty($users)) {
             return null;
         }
-	  
-	  //dump($users);
 
         $purchases = $this->getPurchases($users, $cycle);
 
@@ -373,8 +371,6 @@ class IndirectBonusService
             $sv = $repositoryParamConfig->findOneBy(['name' => 'sv', 'status' => 1]);
 
             $indirectBonusProductValues = $this->getIndirectBonusProductValues((int)$indirectBonus->getValue());
-		  //dump($purchases);
-		  //dump($indirectBonusProductValues);
             if ($indirectBonusProductValues) {
                 foreach ($purchases as $lvl => $purchase) {
                     if (!isset($indirectBonusProductValues[$lvl])) {
@@ -398,11 +394,7 @@ class IndirectBonusService
 
         if ($subscriptions) {
 
-		  //dump($subscriptions);
-
             $indirectBonusMembershipValues = $this->getIndirectBonusMembershipValues((int)$indirectBonus->getValue());
-
-		  //dump($indirectBonusMembershipValues);
 
             if ($indirectBonusMembershipValues) {
                 /** @var MembershipSubscription[] $subscriptionLevels */
@@ -416,8 +408,6 @@ class IndirectBonusService
                     foreach ($subscriptionLevels as $subscription) {
                         $totalSubscription += (isset($indirectBonusMembershipValues[$lvl][$subscription->getMembership()->getCode()]) ? $indirectBonusMembershipValues[$lvl][$subscription->getMembership()->getCode()] : 0) * ($subscription->getPrice() ? $subscription->getPrice() : $subscription->getMembership()->getMembershipCost());
                     }
-
-                    //dump($totalSubscription);
 
                     $svPurchase[$lvl]['subscription_price'] = $totalSubscription;
 

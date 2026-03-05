@@ -99,7 +99,7 @@ class UserCommandsController
                 ->updateCommandProduct();
     }
 
-    #[Route('/commands/save', name: 'save_commands', methods: ['GET', 'POST'], options: ['expose' => true])]
+    #[Route('/commands/save', name: 'save_commands', methods: ['POST'], options: ['expose' => true])]
     public function save(Request $request, SaveUserCommand $saveUserCommand, RouterInterface $router)
     {
         $command_id = $request->request->get('command_id');

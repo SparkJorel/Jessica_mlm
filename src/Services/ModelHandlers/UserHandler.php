@@ -213,7 +213,18 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
             $this->manager->flush();
 
             if ($request->request->get('submit_and_paid')) {
-                //return $this->redirectAfterSubmit('user_list', 'success', 'utilisateur créé avec succès');
+                $dateActivation = new DateTime("now", new DateTimeZone("Africa/Douala"));
+                $dateActivation = $this->computeDateOperation->getDate($dateActivation);
+
+                $mbshipSubscription
+                    ->setPaid(true)
+                    ->setPaidAt($dateActivation)
+                    ->setStartedAt($dateActivation)
+                    ->setState(true);
+
+                $this->activate($user);
+
+                return $this->redirectAfterSubmit('user_list', 'success', 'Utilisateur créé et activé avec succès');
             } else {
                 return $this->redirectAfterSubmit('user_list', 'success', 'utilisateur créé avec succès');
             }
@@ -319,29 +330,37 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
      */
     public function activate(User $user): void
     {
-	  
-		if (!$user->isActivated()) {
-			
-		  	$referralBonusEvent = new ReferralBonusEvent($user);
-			$user->setActivated(true);
-	
-			$dateActivation =  new DateTime(
-				"now",
-				new DateTimeZone("Africa/Douala")
-			);
-	
-			/** @var DateTime $dateActivation */
-			$dateActivation = $this->computeDateOperation->getDate($dateActivation);
-	
-			$user->setDateActivation($dateActivation);
-	
-			$user->setCodeDistributor($this->codeDistributor->generateCode($user));
-	
-			$this->dispatcher->dispatch($referralBonusEvent);
-	
-			$this->manager->flush();
-			
-		}
+        if ($user->isActivated()) {
+            return;
+        }
+
+        $referralBonusEvent = new ReferralBonusEvent($user);
+        $user->setActivated(true);
+        $user->setState('Actif');
+
+        $dateActivation = new DateTime("now", new DateTimeZone("Africa/Douala"));
+        /** @var DateTime $dateActivation */
+        $dateActivation = $this->computeDateOperation->getDate($dateActivation);
+        $user->setDateActivation($dateActivation);
+
+        if (!$user->getCodeDistributor()) {
+            $user->setCodeDistributor($this->codeDistributor->generateCode($user));
+        }
+
+        /** @var \App\Repository\MembershipSubscriptionRepository $subRepo */
+        $subRepo = $this->manager->getRepository(MembershipSubscription::class);
+        $subscription = $subRepo->findOneBy(['member' => $user, 'paid' => false, 'state' => false]);
+        if ($subscription) {
+            $subscription
+                ->setPaid(true)
+                ->setPaidAt($dateActivation)
+                ->setStartedAt($dateActivation)
+                ->setState(true);
+        }
+
+        $this->dispatcher->dispatch($referralBonusEvent);
+
+        $this->manager->flush();
     }
 
     /**
@@ -456,6 +475,7 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
                     ->setUpgraded(false)
                     ->setPrice($user->getMembership()->getMembershipCost())
                     ->setPaid(false)
+                    ->setCreatedBy($user->getCreatedBy() ?? $user)
                 ;
             $this->manager->persist($this->entity);
             $this->manager->persist($mbshipSubscription);
@@ -497,20 +517,28 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
             /** @var CompositionMembershipProductName $packName */
             $packName = $form->get('pack')->getData();
 
-            $this->getUser()->setState('Actif');
-		  
-			if ($packName) {
-			            $userPack = (new UserPackComposition())
-									  ->setUser($this->entity)
-									  ->setPackName($packName)
-									  ->setUpgraded(false);
+            $user = $this->getUser();
 
-            	$this->manager->persist($userPack);
-			}
+            /** @var \App\Repository\MembershipSubscriptionRepository $subRepo */
+            $subRepo = $this->manager->getRepository(MembershipSubscription::class);
+            $paidSubscription = $subRepo->findOneBy(['member' => $user, 'paid' => true]);
+
+            if ($paidSubscription && !$user->isActivated()) {
+                $user->setState('Actif');
+            }
+
+            if ($packName) {
+                $userPack = (new UserPackComposition())
+                    ->setUser($this->entity)
+                    ->setPackName($packName)
+                    ->setUpgraded(false);
+
+                $this->manager->persist($userPack);
+            }
 
             $this->manager->flush();
 
-            return $this->redirectAfterSubmit('genealogy_tree', 'success', 'Opération mise à jour réussie. Votre compte est désormais activé');
+            return $this->redirectAfterSubmit('genealogy_tree', 'success', 'Opération mise à jour réussie.');
         }
 
         return new Response(

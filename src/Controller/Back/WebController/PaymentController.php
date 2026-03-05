@@ -192,30 +192,25 @@ class PaymentController extends AbstractController
                                     ->getPaymentProvider($provider);
 
             $response = $paymentProvider->setTelephone($telephone)->payIn($rcs);
-		  
-		  //dump($response);
+
+            $file = $this->parameterBag->get('kernel.project_dir').'/public/notify_sms.log';
 
             $messageCfrmsmsSuccess = "/OK start :/";
             $messageFail = "/KO start :/";
 
             if (preg_match($messageCfrmsmsSuccess, $response)) {
-			  
-			  $status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
-		
-				file_put_contents($file, PHP_EOL . $status.$response, FILE_APPEND);
-			  
+                $status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
+                file_put_contents($file, PHP_EOL . $status . $response, FILE_APPEND);
+
                 $this->addFlash('success', $response);
                 return new RedirectResponse($this->router->generate('user_personal_command_list'));
             }
 
             if (preg_match($messageFail, $response)) {
+                $status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
+                file_put_contents($file, PHP_EOL . $status . $response, FILE_APPEND);
+
                 $this->addFlash('warning', $response);
-			  
-			  	$status = $this->manager->getConnection()->isConnected() ? " Connected " : " Not Connected ";
-		
-				file_put_contents($file, PHP_EOL . $status.$response, FILE_APPEND);
-
-
                 return new RedirectResponse($this->router->generate('user_cart_create'));
             }
         }
@@ -529,45 +524,27 @@ class PaymentController extends AbstractController
     {
         $rI = $request->get('rI');
         $rMt = $request->get('rMt');
-        $rDvs = $request->get('rDvs');
         $idReqDoh = $request->get('idReqDoh');
         $rH = $request->get('rH');
-        $mode = $request->get('mode');
-        $motif = $request->get('motif');
         $hash = $request->get('hash');
-	  
-	  	$file = $this->parameterBag->get('kernel.project_dir').'/public/notify_prod.log';
-	  
-	  	$data = <<<EOD
-idVers: $idReqDoh
-montant: $rMt
-idTrans: $rI
-hash code: $this->hashCode
-code marchand fourni: $this->apiKeyDohone
-code marchand reçu: $rH
-hash : $hash
-EOD;
 
-	  	$data = mb_convert_encoding($data, 'UTF-8', 'OLD-ENCODING');
-		file_put_contents($file, PHP_EOL . $data, FILE_APPEND);
-	  
+        $file = $this->parameterBag->get('kernel.project_dir').'/public/notify_prod.log';
+
         $newHash = md5($idReqDoh.$rI.$rMt.$this->hashCode);
 
         if ($newHash != $hash) {
             return new JsonResponse('KO : Origine de la requête douteuse.');
         }
-	  
-	  
-	  	$msgCode = "OK : Origine de la requête valide.";
-	  
-	  	file_put_contents($file, PHP_EOL . $msgCode, FILE_APPEND);
+
         if ($rH != $this->apiKeyDohone) {
             return new JsonResponse('KO : code marchand erroné.');
         }
-	  
-	  	$msgCode = "OK : Code marchand valide.";
-	  
-	  	file_put_contents($file, PHP_EOL . $msgCode, FILE_APPEND);
+
+        $data = sprintf(
+            "idVers: %s\nmontant: %s\nidTrans: %s\n",
+            $idReqDoh, $rMt, $rI
+        );
+        file_put_contents($file, PHP_EOL . $data, FILE_APPEND);
 
         $userCommands = $this->userCommandsRepository->find((int)$rI);
 
@@ -587,14 +564,14 @@ EOD;
             $userCommands->setDateCommand(new DateTime("now", new DateTimeZone("Africa/Douala")));
 
             $this->manager->flush();
-		  
-		  	$msgCode = "OK start : versement effectué. REF: " . $idReqDoh;
-	  
-	  		file_put_contents($file, PHP_EOL . $msgCode, FILE_APPEND);
+
+            $msgCode = "OK start : versement effectué. REF: " . $idReqDoh;
+            file_put_contents($file, PHP_EOL . $msgCode, FILE_APPEND);
 
             return new JsonResponse("OK start : versement effectué. REF: " . $idReqDoh);
         }
-	  //return new JsonResponse('KO : Commande erronée');
+
+        return new JsonResponse('KO : Commande erronée');
     }
   
     #[Route('/payment-product/success', name: 'payment_product_success', methods: ['GET'])]

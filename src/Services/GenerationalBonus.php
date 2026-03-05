@@ -303,7 +303,7 @@ class GenerationalBonus
             } else {
                 $users_ids = array_map(function (User $user) {
                     return $user->getId();
-                }, $users[$i-1]);
+                }, $users[$i]);
             }
 
             /** @var User[]|null $userGenerations */

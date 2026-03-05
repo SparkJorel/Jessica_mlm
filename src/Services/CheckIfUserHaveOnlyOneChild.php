@@ -22,8 +22,7 @@ class CheckIfUserHaveOnlyOneChild
         }
 
         if ($count > 1) {
-            var_dump($count);
-            die;
+            return false;
         }
 
         return true;

@@ -71,7 +71,7 @@ class ComputeDateOperation
              */
             $value = $repo->getCycleInterval();
             $interval = new DateInterval('PT'.(!$value ? 10 : $value).'M');
-            return $endedAt->add($interval);
+            return (clone $endedAt)->add($interval);
         }
     }
 
@@ -120,12 +120,12 @@ class ComputeDateOperation
         if ($operation === 'add') {
 
             /** @var DateTime $dateOperation */
-            $dateOperation = $cycle->getEndedAt();
+            $dateOperation = clone $cycle->getEndedAt();
             return $dateOperation->add($interval);
         } else {
 
             /** @var DateTime $dateOperation */
-            $dateOperation = $cycle->getStartedAt();
+            $dateOperation = clone $cycle->getStartedAt();
             return $dateOperation->sub($interval);
         }
     }

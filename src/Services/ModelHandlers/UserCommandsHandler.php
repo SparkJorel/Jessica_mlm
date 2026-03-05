@@ -91,8 +91,6 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
     {
         $cart = $cartManager->getCurrentCart();
 
-        //dd($cart);
-
         /** @var FormInterface $form */
         $form = $this->formFactory->create(CartType::class, $cart);
         $form->handleRequest($request);
@@ -264,8 +262,6 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
             $userCommands = $repository->getAllCommandsByCycle($cycle, $user);
         }
 
-        //dd($userCommands);
-
         $svUserCommands = $this->extractSVFromCommands
                                                    ->getSVFromCommands($userCommands);
 
@@ -319,8 +315,6 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
 
         $userCommands = $repository->getAllCommandsByCycle($cycle);
 
-        //dd($userCommands);
-
         $svUserCommands = $this->extractSVFromCommands
                                                    ->getSVFromCommands($userCommands);
 
@@ -368,9 +362,12 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
 
     protected function paid(string $url_name, string $type, string $message)
     {
+        if ($this->getEntity()->isPaid()) {
+            return $this->redirectAfterSubmit($url_name, 'info', 'Cette commande est déjà marquée comme payée');
+        }
+
         $this->getEntity()->setPaid(true);
-	  	$this->getEntity()->setStatus(UserCommands::STATUS_ORDERED);
-	  //$this->getEntity()->setDateCommand(new DateTime("now", new DateTimeZone("Africa/Douala")));
+        $this->getEntity()->setStatus(UserCommands::STATUS_ORDERED);
         $this->manager->flush();
         return $this->redirectAfterSubmit($url_name, $type, $message);
     }

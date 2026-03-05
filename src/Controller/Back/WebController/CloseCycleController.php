@@ -70,13 +70,17 @@ class CloseCycleController extends AbstractController
     #[Route('close/cycle/{id}', name: 'close_cycle', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function closeCycle(Cycle $cycle, RouterInterface $router)
     {
+        if ($cycle->getClosed()) {
+            return new RedirectResponse($router->generate('view_recap'));
+        }
+
         $this->closeCycle->closeCycle($cycle);
 
         $cycle->setClosed(true);
         $cycle->setBinarySaved(true);
-	  
-	  	$cycle->setActive(false);
-	  
+        $cycle->setAutoSave(true);
+        $cycle->setActive(false);
+
         $this->manager->flush();
 
         return new RedirectResponse($router->generate('view_recap'));
@@ -144,8 +148,6 @@ class CloseCycleController extends AbstractController
         }
 
         $report = $viewReport->processAllBonuses($cycle);
-
-//        dump($report);
 
         return $this->render('back/webcontroller/bonus/view_own_report.html.twig', array(
             'report' => $report,

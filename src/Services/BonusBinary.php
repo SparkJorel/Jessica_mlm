@@ -150,7 +150,7 @@ class BonusBinary
                     $user_recap = $this->computeUserBonusGroup($user, $cycle, $sv);
                 }
 
-                if (!empty($user_recap) && $user_recap['tl'] !== 0 && $user_recap['tr'] !== 0) {
+                if (!empty($user_recap) && ($user_recap['tl'] !== 0 || $user_recap['tr'] !== 0)) {
                     $user_recap['user'] = $user;
                     $user_recap['status'] = $repository->getStatusBonusBinaireCycle(
                         $user,
@@ -412,11 +412,7 @@ class BonusBinary
         $results['gain'] = $results['sv_gain'] * $sv->getValue();
         $results['side'] = $side;
         $results['sv'] = $sv->getValue();
-	  
-	  /*	  		  	echo "<pre>";
-	  	print_r($results);
-	  echo "</pre>";
-	  die;*/
+
 
         return $results;
     }
@@ -456,7 +452,7 @@ class BonusBinary
             $results['gain'] = $carryOver->getGain();
             $results['sv_gain'] = $carryOver->getSvGain();
             $results['co_pos'] = $carryOver->getPosition();
-            $results['side'] = $carryOver->getOldCO();
+            $results['side'] = $carryOver->getOldPosition();
         }
 
         return $results;
@@ -627,7 +623,7 @@ class BonusBinary
                     $binaire = $this->computeUserBonusGroup($u, $cycle, $sv);
                 }
 
-                $userCommands = $repositoryCommand->getAllCommandsByCycle($cycle, $user, true);
+                $userCommands = $repositoryCommand->getAllCommandsByCycle($cycle, $u, true);
 
                 if (!$userCommands) {
                     $svAchatPersonnel = 0;

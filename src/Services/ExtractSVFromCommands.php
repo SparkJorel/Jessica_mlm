@@ -169,7 +169,6 @@ class ExtractSVFromCommands
     {
         $total = 0;
         if ($achat_personal) {
-            //dump($total);
             foreach ($products as $p) {
                 $total += $p->getQuantity() * $p->getProduct()->getProductSVBPA();
             }

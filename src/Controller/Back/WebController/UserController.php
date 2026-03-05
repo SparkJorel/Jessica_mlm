@@ -276,7 +276,12 @@ class UserController
          */
         $repository = $this->manager->getRepository(User::class);
 
-        $users = $repository->getSponsorOrUplineList($term, $sponsor->getLft(), $sponsor->getRgt(), true);
+        $roles = $this->token->getToken()->getRoleNames();
+        if (in_array('ROLE_JTWC_ADMIN', $roles) || in_array('ROLE_JTWC_USER_SECRET', $roles)) {
+            $users = $repository->getAllMembersList($term);
+        } else {
+            $users = $repository->getSponsorOrUplineList($term, $sponsor->getLft(), $sponsor->getRgt(), true);
+        }
 
         if ($users) {
             foreach ($users as $user) {
