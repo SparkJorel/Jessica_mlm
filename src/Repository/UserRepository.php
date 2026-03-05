@@ -155,8 +155,8 @@ class UserRepository extends NestedTreeRepository
             $qb
                 ->andWhere(
                     $qb->expr()->andX(
-                        $qb->expr()->gt('u.lft', ':left'),
-                        $qb->expr()->lt('u.rgt', ':right')
+                        $qb->expr()->gte('u.lft', ':left'),
+                        $qb->expr()->lte('u.rgt', ':right')
                     )
                 )
                 ->setParameter('left', $left)

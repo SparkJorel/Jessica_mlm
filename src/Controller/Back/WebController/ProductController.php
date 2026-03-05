@@ -109,7 +109,7 @@ class ProductController
     }
 
 
-    #[Route('/admin/product/autocomplete', methods: ['GET', 'POST'], options: ['expose' => true], name: 'product_autocomplete')]
+    #[Route('/product/autocomplete', methods: ['GET', 'POST'], options: ['expose' => true], name: 'product_autocomplete')]
     public function autocompleProduct(Request $request)
     {
         $products = [];

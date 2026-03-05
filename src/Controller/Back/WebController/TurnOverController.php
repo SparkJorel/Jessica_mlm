@@ -24,7 +24,7 @@ class TurnOverController
         $this->monthlyTurnOver = $monthlyTurnOver;
     }
 
-    #[Route('/admin/turn-over/monthly', name: 'turn_over_monthly')]
+    #[Route('/turn-over/monthly', name: 'turn_over_monthly')]
     #[IsGranted('ROLE_JTWC_ADMIN')]
     public function turnOver(Request $request)
     {

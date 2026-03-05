@@ -64,7 +64,7 @@
         {% if form.upline is defined %}
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.upline.vars.label }}</label>
-          <div class="hidden">{{ form_widget(form.upline, {'attr': {'id': 'upline-hidden'}}) }}</div>
+          <div class="hidden">{{ form_widget(form.upline) }}</div>
           <div class="relative">
             <input type="text" id="upline-search" placeholder="Rechercher un upline..." autocomplete="off"
               class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition">
@@ -86,7 +86,7 @@
         {# Position #}
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.position.vars.label }}</label>
-          {{ form_widget(form.position, {'attr': {'id': 'position-select', 'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.position.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {{ form_widget(form.position, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.position.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
           {% if not form.position.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.position) }}</p>{% endif %}
           <div class="mt-1.5 flex items-start gap-1.5">
             <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
@@ -272,59 +272,68 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('autocomplete') }}
+    {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      {{ encore_entry_script_tags('autocomplete') }}
+    {% endif %}
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       var searchInput = document.getElementById('upline-search');
       var dropdown = document.getElementById('upline-dropdown');
-      var hiddenInput = document.getElementById('upline-hidden');
-      var positionSelect = document.getElementById('position-select');
+      var hiddenInput = document.getElementById('{{ form.upline.vars.id }}');
+      var positionSelect = document.getElementById('{{ form.position.vars.id }}');
       var statusDiv = document.getElementById('upline-position-status');
 
       if (!searchInput || !hiddenInput || !positionSelect) return;
 
-      var debounceTimer = null;
       var allUplines = [];
 
       fetch('{{ path("upline_available_list") }}')
         .then(function(r) { return r.json(); })
         .then(function(data) { allUplines = data; });
 
-      searchInput.addEventListener('input', function() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(function() {
-          var q = searchInput.value.trim().toLowerCase();
-          if (q.length < 1) { dropdown.classList.add('hidden'); return; }
+      function showDropdown(filter) {
+        var q = (filter || '').trim().toLowerCase();
+        var filtered = allUplines.filter(function(u) {
+          if (!q) return true;
+          return u.fullname.toLowerCase().indexOf(q) !== -1 ||
+                 u.username.toLowerCase().indexOf(q) !== -1;
+        }).slice(0, 20);
 
-          var filtered = allUplines.filter(function(u) {
-            return u.fullname.toLowerCase().indexOf(q) !== -1 ||
-                   u.username.toLowerCase().indexOf(q) !== -1;
-          }).slice(0, 20);
-
-          if (!filtered.length) {
-            dropdown.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400">Aucun upline disponible</div>';
-            dropdown.classList.remove('hidden');
-            return;
-          }
-
-          dropdown.innerHTML = filtered.map(function(u) {
-            var posInfo = '';
-            if (u.left_free && u.right_free) {
-              posInfo = '<span class="text-green-600">G + D libres</span>';
-            } else if (u.left_free) {
-              posInfo = '<span class="text-green-600">G libre</span> · <span class="text-red-400">D occupee</span>';
-            } else {
-              posInfo = '<span class="text-red-400">G occupee</span> · <span class="text-green-600">D libre</span>';
-            }
-            return '<button type="button" data-label="' + u.label + '" data-left="' + u.left_free + '" data-right="' + u.right_free + '" ' +
-              'class="upline-option w-full text-left px-4 py-2.5 hover:bg-jessica-50 transition-colors border-b border-gray-50 last:border-0">' +
-              '<div class="text-sm font-medium text-gray-800">' + u.fullname + '</div>' +
-              '<div class="text-xs text-gray-400 flex items-center gap-2">' + u.username + ' · ' + posInfo + '</div>' +
-              '</button>';
-          }).join('');
-
+        if (!filtered.length) {
+          dropdown.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400">Aucun upline disponible</div>';
           dropdown.classList.remove('hidden');
-        }, 200);
+          return;
+        }
+
+        dropdown.innerHTML = filtered.map(function(u) {
+          var posInfo = '';
+          if (u.left_free && u.right_free) {
+            posInfo = '<span class="text-green-600">G + D libres</span>';
+          } else if (u.left_free) {
+            posInfo = '<span class="text-green-600">G libre</span> · <span class="text-red-400">D occupee</span>';
+          } else {
+            posInfo = '<span class="text-red-400">G occupee</span> · <span class="text-green-600">D libre</span>';
+          }
+          return '<button type="button" data-label="' + u.label + '" data-left="' + u.left_free + '" data-right="' + u.right_free + '" ' +
+            'class="upline-option w-full text-left px-4 py-2.5 hover:bg-jessica-50 transition-colors border-b border-gray-50 last:border-0">' +
+            '<div class="text-sm font-medium text-gray-800">' + u.fullname + '</div>' +
+            '<div class="text-xs text-gray-400 flex items-center gap-2">' + u.username + ' · ' + posInfo + '</div>' +
+            '</button>';
+        }).join('');
+
+        dropdown.classList.remove('hidden');
+      }
+
+      // Show full list on click/focus
+      searchInput.addEventListener('focus', function() {
+        searchInput.value = '';
+        hiddenInput.value = '';
+        showDropdown('');
+      });
+
+      // Filter as user types
+      searchInput.addEventListener('input', function() {
+        showDropdown(searchInput.value);
       });
 
       dropdown.addEventListener('click', function(e) {
@@ -359,8 +368,6 @@
         lucide.createIcons();
       });
 
-      searchInput.addEventListener('focus', function() { if (searchInput.value) searchInput.select(); });
-
       document.addEventListener('click', function(e) {
         if (!e.target.closest('#upline-search') && !e.target.closest('#upline-dropdown')) {
           dropdown.classList.add('hidden');
@@ -383,5 +390,7 @@
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_link_tags('autocomplete') }}
+    {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      {{ encore_entry_link_tags('autocomplete') }}
+    {% endif %}
 {% endblock %}

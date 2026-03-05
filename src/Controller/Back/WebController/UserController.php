@@ -410,7 +410,7 @@ class UserController
         return new JsonResponse($data);
     }
 
-    #[Route('/admin/sponsor/autocomplete', name: 'sponsor_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
+    #[Route('/sponsor/autocomplete', name: 'sponsor_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function sponsorAutocomplete(Request $request)
     {
         $names = array();
@@ -450,7 +450,7 @@ class UserController
         return $response;
     }
 
-    #[Route('/admin/upline/autocomplete', name: 'upline_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
+    #[Route('/upline/autocomplete', name: 'upline_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function uplineAutocomplete(Request $request, CheckIfUserHaveOnlyOneChild $check): JsonResponse
     {
         $names = array();
@@ -485,55 +485,54 @@ class UserController
         return $response;
     }
 
-    #[Route('/admin/upline/available', name: 'upline_available_list', methods: ['GET'], options: ['expose' => true])]
+    #[Route('/upline/available', name: 'upline_available_list', methods: ['GET'], options: ['expose' => true])]
     public function availableUplines(Request $request): JsonResponse
     {
-        $search = trim(strip_tags($request->get('q', '')));
-
         /** @var User $currentUser */
         $currentUser = $this->token->getToken()->getUser();
-
-        /** @var UserRepository $repository */
-        $repository = $this->manager->getRepository(User::class);
 
         $roles = $this->token->getToken()->getRoleNames();
         $isAdmin = in_array('ROLE_JTWC_ADMIN', $roles) || in_array('ROLE_JTWC_USER_SECRET', $roles);
 
+        // Single optimized query: get all network members + count children per position
+        $qb = $this->manager->createQueryBuilder();
+        $qb->select(
+                'u.id',
+                'u.fullname',
+                'u.username',
+                "SUM(CASE WHEN c.position = 'Left' THEN 1 ELSE 0 END) AS left_count",
+                "SUM(CASE WHEN c.position = 'Right' THEN 1 ELSE 0 END) AS right_count"
+            )
+            ->from(User::class, 'u')
+            ->leftJoin(User::class, 'c', 'WITH', 'c.upline = u.id')
+            ->groupBy('u.id')
+            ->having('left_count = 0 OR right_count = 0')
+            ->orderBy('u.fullname', 'ASC');
+
         if ($isAdmin) {
-            $users = $repository->getAllActivatedMembers($search);
+            $qb->andWhere('u.activated = :activated')
+               ->setParameter('activated', true);
         } else {
-            $users = $repository->getSponsorOrUplineList(
-                $search ?: '%',
-                $currentUser->getLft(),
-                $currentUser->getRgt(),
-                true
-            );
+            $qb->andWhere('u.lft >= :lft AND u.rgt <= :rgt')
+               ->setParameter('lft', $currentUser->getLft())
+               ->setParameter('rgt', $currentUser->getRgt());
         }
 
+        $rows = $qb->getQuery()->getArrayResult();
+
         $results = [];
-        if ($users) {
-            foreach ($users as $user) {
-                $leftTaken = $repository->validateUserPosition($user, 'Left');
-                $rightTaken = $repository->validateUserPosition($user, 'Right');
+        foreach ($rows as $row) {
+            $leftFree = ((int) $row['left_count']) === 0;
+            $rightFree = ((int) $row['right_count']) === 0;
 
-                if ($leftTaken && $rightTaken) {
-                    continue; // Skip users with both positions taken
-                }
-
-                $positions = [];
-                if (!$leftTaken) $positions[] = 'Left';
-                if (!$rightTaken) $positions[] = 'Right';
-
-                $results[] = [
-                    'id' => $user->getId(),
-                    'fullname' => $user->getFullname(),
-                    'username' => $user->getUsername(),
-                    'left_free' => !$leftTaken,
-                    'right_free' => !$rightTaken,
-                    'positions' => $positions,
-                    'label' => $user->getFullname() . ' (' . $user->getUsername() . ')',
-                ];
-            }
+            $results[] = [
+                'id' => $row['id'],
+                'fullname' => $row['fullname'],
+                'username' => $row['username'],
+                'left_free' => $leftFree,
+                'right_free' => $rightFree,
+                'label' => $row['fullname'] . ' (' . $row['username'] . ')',
+            ];
         }
 
         return new JsonResponse($results);
@@ -585,7 +584,7 @@ class UserController
         return $this->userHandler->setEntity($user)->updateUserInfo($request, $template);
     }
 
-    #[Route('/admin/check/username', name: 'check_username', methods: ['GET', 'POST'], options: ['expose' => true])]
+    #[Route('/check/username', name: 'check_username', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function checkUsername(Request $request): JsonResponse
     {
         $results = [];
