@@ -27,13 +27,13 @@ jobs:
             git pull origin main
 
             echo "=== 2. Build Docker image ==="
-            docker compose build --no-cache web
+            docker compose --env-file .env.docker build --no-cache web
 
             echo "=== 3. Stop old containers ==="
-            docker compose down
+            docker compose --env-file .env.docker down
 
             echo "=== 4. Start services ==="
-            docker compose up -d
+            docker compose --env-file .env.docker up -d
 
             echo "=== 5. Wait for services to be healthy ==="
             sleep 10
