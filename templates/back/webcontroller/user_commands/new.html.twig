@@ -1,81 +1,88 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Enregistrement d'une commande {% endblock %}
-{% block page_title %} Enregistrement d'une commande {% endblock %}
+{% block title %}Enregistrement d'une commande - RACS Health Global{% endblock %}
+{% block page_title %}Enregistrement d'une commande{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            {% if is_granted('ROLE_JTWC_ADMIN') %}
-                <div class="form-group col-md-6 ">
-                    <label for="client">Client</label>
-                    <input type="text" class="form-control" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
-                </div>
-                <div class="form-group col-md-6 ">
-                    <label for="date_op">Date achat</label>
-                    <input type="datetime-local" class="form-control" id="date_op" placeholder="Entrez la date de l'opération">
-                </div>
-            {% else %}
-            <div class="form-group">
-                <label for="client">Client</label>
-                <input type="text" class="form-control" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
-            </div>
-            {% endif %}
-            {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.product, null, { 'label_attr':  {
-                        'class': 'col-form-label col-lg-2 required'
-                    }}) }}
-                    <div class="col-lg-10">
-                        {{ form_errors(form.product) }}
-                        {{ form_widget(form.product, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.quantity, null, { 'label_attr':  {
-                        'class': 'col-form-label col-lg-2 required'
-                    }}) }}
-                    <div class="col-lg-10">
-                        {{ form_errors(form.quantity) }}
-                        {{ form_widget(form.quantity, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>                
-                <div class="form-group">
-                    <span id="add_cart" class="col-lg-offset-8 btn btn-primary">Ajouter au panier</span >
-                </div>
-            {{ form_end(form) }}
+<div class="space-y-5 -m-5 sm:-m-6">
+
+  {# Client Info & Form #}
+  <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+    {% if is_granted('ROLE_JTWC_ADMIN') %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="client" class="block text-sm font-medium text-gray-700 mb-1">Client</label>
+          <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm bg-gray-50 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
         </div>
-        <div class="content-panel">
-            <section id="unseen">
-                <table class="table table-bordered table-striped table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Désignation</th>
-                        <th>Quantité</th>
-                        <th>Prix Unitaire</th>
-                        <th>Total</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="content_cart">
-                    <tr id="total">
-                        <td colspan="3">Prix total</td>
-                        <td id="price">0</td>
-                        <td><button id="command">Commander</button></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div>
+          <label for="date_op" class="block text-sm font-medium text-gray-700 mb-1">Date achat</label>
+          <input type="datetime-local" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="date_op" placeholder="Entrez la date de l'operation">
         </div>
+      </div>
+    {% else %}
+      <div>
+        <label for="client" class="block text-sm font-medium text-gray-700 mb-1">Client</label>
+        <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm bg-gray-50 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
+      </div>
+    {% endif %}
+
+    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form'}}) }}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.product.vars.label }}</label>
+        {{ form_widget(form.product, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+        <div class="text-red-500 text-xs mt-1">{{ form_errors(form.product) }}</div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.quantity.vars.label }}</label>
+        {{ form_widget(form.quantity, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+        <div class="text-red-500 text-xs mt-1">{{ form_errors(form.quantity) }}</div>
+      </div>
     </div>
+    <div class="flex justify-end">
+      <span id="add_cart" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors cursor-pointer">
+        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+        Ajouter au panier
+      </span>
+    </div>
+    {{ form_end(form) }}
+  </div>
+
+  {# Cart Table #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Designation</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Quantite</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix Unitaire</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Total</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="content_cart" class="divide-y divide-gray-100">
+          <tr id="total" class="bg-gray-50 font-semibold">
+            <td colspan="3" class="px-4 py-3 text-gray-800">Prix total</td>
+            <td id="price" class="px-4 py-3 text-right text-jessica-600">0</td>
+            <td class="px-4 py-3 text-center">
+              <button id="command" class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Commander
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock %}
+
 {% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('add_product') }}
+  {{ parent() }}
+  {{ encore_entry_script_tags('add_product') }}
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('add_product') }}
+  {{ parent() }}
+  {{ encore_entry_link_tags('add_product') }}
 {% endblock %}

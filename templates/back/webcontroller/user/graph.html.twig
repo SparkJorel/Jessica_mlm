@@ -1,22 +1,489 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Arbre  généalogique {% endblock %}
-{% block page_title %} Arbre généalogique des utilisateurs de mon réseau {% endblock %}
-{% block main %}
-    <div class="col-lg-12">
-        <div class="content-panel">
-            <a href="{{ path('user_new_from_known_sponsor') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus"></span> Ajouter un membre</button></a><br />
-            {{ htmlTree|raw("ul, li") }}
-            <div id="chart-container">
+{% block title %}Arbre genealogique - RACS Health Global{% endblock %}
+{% block page_title %}Arbre genealogique{% endblock %}
+{% block nav_tree %}bg-jessica-500 text-white{% endblock %}
 
-            </div>
-        </div>
-    </div>
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('genealogy') }}
-{% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('genealogy') }}
+  {{ parent() }}
+  <style>
+    .tree-canvas {
+      overflow: hidden; position: relative; height: calc(100vh - 200px); min-height: 400px;
+      touch-action: none; background: #fafafa;
+      background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .tree-inner {
+      display: inline-flex; flex-direction: column; align-items: center;
+      padding: 20px 12px 60px; min-width: 100%;
+      transform-origin: 0 0; will-change: transform; transition: none;
+    }
+
+    .t-node { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+    .t-card {
+      width: 96px; padding: 7px 4px; border-radius: 8px; text-align: center;
+      background: white; border: 1.5px solid #e5e7eb; cursor: pointer;
+      transition: border-color 0.1s, box-shadow 0.1s; position: relative; z-index: 2;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .t-card:hover { border-color: #1B7A3D; box-shadow: 0 2px 8px rgba(27,122,61,0.15); }
+    .t-card.is-active { border-color: #1B7A3D; }
+    .t-card.is-inactive { border-color: #fbbf24; }
+
+    .t-avatar {
+      width: 26px; height: 26px; border-radius: 50%; margin: 0 auto 3px;
+      background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; font-size: 9px; font-weight: 700; color: #9ca3af;
+    }
+    .t-card.is-active .t-avatar { background: #dcfce7; color: #166534; }
+    .t-card.is-inactive .t-avatar { background: #fef3c7; color: #92400e; }
+
+    .t-name { font-size: 9px; font-weight: 700; color: #1f2937; line-height: 1.15; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 88px; margin-left: auto; margin-right: auto; }
+    .t-username { font-size: 8px; color: #9ca3af; margin-bottom: 2px; }
+    .t-meta { font-size: 7px; color: #9ca3af; }
+    .t-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 2px; vertical-align: middle; }
+    .t-dot.green { background: #22c55e; }
+    .t-dot.amber { background: #f59e0b; }
+
+    /* Truncated node (has children but not loaded) */
+    .t-card.truncated { border-style: dashed; background: #f9fafb; }
+    .t-card.truncated:hover { background: #E8F5EC; border-color: #1B7A3D; }
+    .t-expand-badge {
+      font-size: 7px; font-weight: 700; color: white; background: #6b7280;
+      padding: 1px 4px; border-radius: 4px; margin-top: 2px; display: inline-block;
+    }
+    .t-card.truncated:hover .t-expand-badge { background: #1B7A3D; }
+
+    /* Empty slot */
+    .t-slot {
+      width: 96px; padding: 8px 4px; border-radius: 8px; text-align: center;
+      background: #fafafa; border: 1.5px dashed #d1d5db; cursor: pointer;
+      transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 1px;
+    }
+    .t-slot:hover { border-color: #1B7A3D; background: #E8F5EC; }
+    .t-slot-icon { font-size: 14px; color: #d1d5db; line-height: 1; }
+    .t-slot:hover .t-slot-icon { color: #1B7A3D; }
+    .t-slot-label { font-size: 8px; font-weight: 600; color: #9ca3af; }
+    .t-slot:hover .t-slot-label { color: #1B7A3D; }
+
+    /* Connectors */
+    .t-children { display: flex; position: relative; }
+    .t-branch { display: flex; flex-direction: column; align-items: center; position: relative; padding: 0 3px; }
+    .t-node > .t-vline { width: 1.5px; height: 14px; background: #d1d5db; }
+    .t-children::before {
+      content: ''; position: absolute; top: 0;
+      left: calc(50% - ((100% - 6px) / 2)); width: calc(100% - 6px);
+      height: 1.5px; background: #d1d5db;
+    }
+    .t-branch::before { content: ''; width: 1.5px; height: 14px; background: #d1d5db; }
+    .t-pos-label { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #d1d5db; margin-bottom: 2px; }
+
+    .t-card.highlight { border-color: #E8621A !important; box-shadow: 0 0 0 2px rgba(232,98,26,0.3) !important; }
+
+    /* Toolbar sticky */
+    .tree-toolbar {
+      position: sticky; top: 64px; z-index: 20; background: white;
+      border-bottom: 1px solid #e5e7eb; padding: 8px 16px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .zoom-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; border: 1px solid #e5e7eb; background: white; cursor: pointer;
+      transition: all 0.1s;
+    }
+    .zoom-btn:hover { background: #f3f4f6; border-color: #1B7A3D; }
+    .zoom-display { font-size: 11px; font-weight: 700; color: #6b7280; min-width: 36px; text-align: center; }
+  </style>
+{% endblock %}
+
+{% block main %}
+<div class="-m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+
+    {# Toolbar #}
+    <div class="tree-toolbar">
+      <a href="{{ path('user_new_from_known_sponsor') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-jessica-500 text-white text-xs font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Ajouter
+      </a>
+
+      <div class="h-5 w-px bg-gray-200 mx-1"></div>
+
+      {# Zoom controls #}
+      <button type="button" id="zoom-out" class="zoom-btn" title="Zoom -"><i data-lucide="minus" class="w-3.5 h-3.5 text-gray-500"></i></button>
+      <span class="zoom-display" id="zoom-display">60%</span>
+      <button type="button" id="zoom-in" class="zoom-btn" title="Zoom +"><i data-lucide="plus" class="w-3.5 h-3.5 text-gray-500"></i></button>
+      <button type="button" id="zoom-fit" class="zoom-btn" title="Ajuster"><i data-lucide="maximize-2" class="w-3.5 h-3.5 text-gray-500"></i></button>
+
+      <div class="h-5 w-px bg-gray-200 mx-1"></div>
+
+      {# Depth controls #}
+      <span class="text-xs text-gray-400">Niveaux:</span>
+      <select id="depth-select" class="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-jessica-500">
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="10">Tous</option>
+      </select>
+
+      {# Breadcrumb for admin navigation #}
+      <div id="tree-breadcrumb" class="hidden items-center gap-1 ml-2 text-xs"></div>
+
+      <div class="flex-1"></div>
+
+      {# Search #}
+      <div class="relative">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+        <input type="text" id="tree-search" placeholder="Rechercher..." class="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-gray-200 bg-white focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500/20 focus:outline-none transition w-40">
+      </div>
+
+      <span id="tree-count" class="text-xs text-gray-400"></span>
+    </div>
+
+    {# Loading #}
+    <div id="tree-loading" class="p-12 text-center">
+      <div class="inline-flex items-center gap-3 text-sm text-gray-400">
+        <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+        Chargement de l'arbre...
+      </div>
+    </div>
+
+    {# Canvas #}
+    <div class="tree-canvas hidden" id="tree-canvas">
+      <div class="tree-inner" id="tree-inner"></div>
+    </div>
+  </div>
+</div>
+
+{# ===== USER DETAIL MODAL ===== #}
+<div id="modal-user-detail" class="hidden fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm items-center justify-center p-4" onclick="if(event.target===this)closeModal('user-detail')">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-[fade-up_0.2s_ease-out] max-h-[90vh] flex flex-col">
+    <div class="px-6 py-3 border-b border-gray-100 flex items-center justify-between shrink-0">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="user" class="w-4 h-4 text-jessica-500"></i> Profil du membre
+      </h3>
+      <button type="button" onclick="closeModal('user-detail')" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+        <i data-lucide="x" class="w-4 h-4 text-gray-400"></i>
+      </button>
+    </div>
+    <div class="overflow-y-auto flex-1" id="modal-user-body">
+      <div class="p-6 text-center text-sm text-gray-400" id="modal-user-loading">
+        <svg class="animate-spin w-5 h-5 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+        Chargement...
+      </div>
+      <div class="hidden" id="modal-user-content"></div>
+    </div>
+    <div class="px-6 py-3 border-t border-gray-100 flex items-center justify-between shrink-0" id="modal-user-footer" style="display:none;">
+      <a href="#" id="modal-view-profile" class="text-xs font-medium text-jessica-600 hover:text-jessica-700 flex items-center gap-1">
+        <i data-lucide="external-link" class="w-3 h-3"></i> Profil complet
+      </a>
+      <div class="flex gap-2">
+        <button type="button" id="modal-enter-network" class="hidden px-3 py-1.5 text-xs font-semibold text-jessica-600 bg-jessica-50 rounded-lg hover:bg-jessica-100 transition-colors">
+          <i data-lucide="log-in" class="w-3 h-3 inline"></i> Voir son reseau
+        </button>
+        <button type="button" onclick="closeModal('user-detail')" class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+  (function() {
+    var addUrl = '{{ path("user_new_from_known_sponsor") }}';
+    var apiBase = '{{ path("api_genealogy_tree") }}';
+    var detailUrlBase = '{{ path("api_user_details", {id: 0}) }}'.replace('/0/', '/{id}/');
+    var canvas = document.getElementById('tree-canvas');
+    var inner = document.getElementById('tree-inner');
+    var allNodes = [];
+    var navStack = []; // breadcrumb stack: [{id, name}]
+
+    // ========== PAN & ZOOM STATE ==========
+    var scale = 0.6, panX = 0, panY = 0;
+    var isPanning = false, sx = 0, sy = 0, spx = 0, spy = 0;
+
+    function applyTx() {
+      inner.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+      document.getElementById('zoom-display').textContent = Math.round(scale * 100) + '%';
+    }
+    function zoomAt(ns, cx, cy) {
+      ns = Math.max(0.15, Math.min(2.5, ns));
+      var r = ns / scale;
+      panX = cx - r * (cx - panX);
+      panY = cy - r * (cy - panY);
+      scale = ns;
+      applyTx();
+    }
+    function center() { var r = canvas.getBoundingClientRect(); return { x: r.width / 2, y: r.height / 2 }; }
+
+    // Buttons
+    document.getElementById('zoom-in').onclick = function() { var c = center(); zoomAt(scale + 0.05, c.x, c.y); };
+    document.getElementById('zoom-out').onclick = function() { var c = center(); zoomAt(scale - 0.05, c.x, c.y); };
+    document.getElementById('zoom-fit').onclick = function() { scale = 0.6; panX = 0; panY = 0; applyTx(); };
+
+    // Mouse wheel (small step for smoothness)
+    canvas.addEventListener('wheel', function(e) {
+      e.preventDefault();
+      var r = canvas.getBoundingClientRect();
+      zoomAt(scale + (e.deltaY > 0 ? -0.04 : 0.04), e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+
+    // Mouse drag
+    canvas.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.t-card,.t-slot')) return;
+      isPanning = true; sx = e.clientX; sy = e.clientY; spx = panX; spy = panY;
+      canvas.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!isPanning) return;
+      panX = spx + (e.clientX - sx); panY = spy + (e.clientY - sy); applyTx();
+    });
+    window.addEventListener('mouseup', function() { isPanning = false; canvas.style.cursor = ''; });
+
+    // Touch: pinch + drag
+    var t0 = null, iDist = 0, iScale = 0;
+    canvas.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 1) {
+        isPanning = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; spx = panX; spy = panY;
+      } else if (e.touches.length === 2) {
+        isPanning = false;
+        iDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        iScale = scale;
+        var r = canvas.getBoundingClientRect();
+        t0 = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top };
+      }
+    }, { passive: true });
+    canvas.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 1 && isPanning) {
+        e.preventDefault();
+        panX = spx + (e.touches[0].clientX - sx); panY = spy + (e.touches[0].clientY - sy); applyTx();
+      } else if (e.touches.length === 2 && t0) {
+        e.preventDefault();
+        var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        zoomAt(iScale * (d / iDist), t0.x, t0.y);
+      }
+    }, { passive: false });
+    canvas.addEventListener('touchend', function() { isPanning = false; t0 = null; });
+
+    // ========== LOAD TREE ==========
+    var currentDepth = 3;
+    var currentRoot = null; // null = self
+
+    function loadTree(rootId, depth) {
+      document.getElementById('tree-loading').classList.remove('hidden');
+      canvas.classList.add('hidden');
+
+      var url = apiBase + '?depth=' + (depth || currentDepth);
+      if (rootId) url += '&root=' + rootId;
+
+      fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          document.getElementById('tree-loading').classList.add('hidden');
+          canvas.classList.remove('hidden');
+          allNodes = [];
+          inner.innerHTML = data ? buildNodeHTML(data) : '<div class="p-8 text-center text-sm text-gray-400">Aucun membre dans votre reseau</div>';
+          document.getElementById('tree-count').textContent = allNodes.length + ' membre' + (allNodes.length > 1 ? 's' : '');
+          panX = 0; panY = 0;
+          applyTx();
+          lucide.createIcons();
+        })
+        .catch(function() {
+          document.getElementById('tree-loading').innerHTML = '<div class="text-red-500 text-sm">Erreur lors du chargement</div>';
+        });
+    }
+
+    loadTree(null, currentDepth);
+
+    // Depth selector
+    document.getElementById('depth-select').addEventListener('change', function() {
+      currentDepth = parseInt(this.value);
+      loadTree(currentRoot, currentDepth);
+    });
+
+    // ========== BUILD HTML ==========
+    function buildNodeHTML(n) {
+      if (!n) return '';
+      var cls = n.activated ? 'is-active' : 'is-inactive';
+      var ini = (n.fullname || '?').split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
+      allNodes.push({ id: n.id, name: (n.fullname||'').toLowerCase(), username: (n.username||'').toLowerCase() });
+
+      // Truncated node (has descendants but depth limit reached)
+      if (n.truncated) {
+        return '<div class="t-node"><div class="t-card truncated ' + cls + '" data-user-id="' + n.id + '" onclick="expandNode(' + n.id + ')">' +
+          '<div class="t-avatar">' + ini + '</div>' +
+          '<div class="t-name" title="' + (n.fullname||'') + '">' + (n.fullname||'') + '</div>' +
+          '<div class="t-username">@' + (n.username||'') + '</div>' +
+          (n.descendants > 0 ? '<span class="t-expand-badge">' + n.descendants + ' membres ▼</span>' : '<span class="t-expand-badge">Ouvrir ▼</span>') +
+          '</div></div>';
+      }
+
+      var html = '<div class="t-node">';
+      html += '<div class="t-card ' + cls + '" data-user-id="' + n.id + '" onclick="showUserModal(' + n.id + ')">';
+      html += '<div class="t-avatar">' + ini + '</div>';
+      html += '<div class="t-name" title="' + (n.fullname||'') + '">' + (n.fullname||'') + '</div>';
+      html += '<div class="t-username">@' + (n.username||'') + '</div>';
+      html += '<div class="t-meta"><span class="t-dot ' + (n.activated ? 'green' : 'amber') + '"></span>' + (n.membership||'') + '</div>';
+      html += '</div>';
+
+      html += '<div class="t-vline"></div>';
+      html += '<div class="t-children">';
+      // Left
+      html += '<div class="t-branch"><div class="t-pos-label">G</div>';
+      html += n.left ? buildNodeHTML(n.left) : slotHTML(n, 'Left');
+      html += '</div>';
+      // Right
+      html += '<div class="t-branch"><div class="t-pos-label">D</div>';
+      html += n.right ? buildNodeHTML(n.right) : slotHTML(n, 'Right');
+      html += '</div>';
+      html += '</div></div>';
+      return html;
+    }
+
+    function slotHTML(parent, pos) {
+      var lbl = parent.fullname + ' (' + parent.username + ')';
+      var url = addUrl + '?upline=' + encodeURIComponent(lbl) + '&position=' + pos;
+      return '<a href="' + url + '" class="t-slot"><div class="t-slot-icon">+</div><div class="t-slot-label">Ajouter</div></a>';
+    }
+
+    // ========== EXPAND TRUNCATED NODE (enter network) ==========
+    window.expandNode = function(userId) {
+      // Push current root to breadcrumb
+      if (currentRoot !== userId) {
+        if (navStack.length === 0 && currentRoot === null) {
+          navStack.push({ id: null, name: 'Mon reseau' });
+        }
+        var card = document.querySelector('.t-card[data-user-id="' + userId + '"]');
+        var name = card ? card.querySelector('.t-name').textContent : 'Reseau';
+        navStack.push({ id: userId, name: name });
+      }
+      currentRoot = userId;
+      loadTree(userId, currentDepth);
+      updateBreadcrumb();
+    };
+
+    function updateBreadcrumb() {
+      var bc = document.getElementById('tree-breadcrumb');
+      if (navStack.length <= 1) { bc.classList.add('hidden'); bc.classList.remove('flex'); return; }
+      bc.classList.remove('hidden'); bc.classList.add('flex');
+      bc.innerHTML = navStack.map(function(item, i) {
+        if (i === navStack.length - 1) {
+          return '<span class="font-semibold text-gray-700">' + item.name + '</span>';
+        }
+        return '<button type="button" onclick="navigateTo(' + i + ')" class="text-jessica-600 hover:underline">' + item.name + '</button><span class="text-gray-300">/</span>';
+      }).join('');
+    }
+
+    window.navigateTo = function(index) {
+      var target = navStack[index];
+      navStack = navStack.slice(0, index + 1);
+      currentRoot = target.id;
+      loadTree(target.id, currentDepth);
+      updateBreadcrumb();
+    };
+
+    // ========== USER MODAL ==========
+    window.showUserModal = function(userId) {
+      openModal('user-detail');
+      document.getElementById('modal-user-loading').classList.remove('hidden');
+      document.getElementById('modal-user-content').classList.add('hidden');
+      document.getElementById('modal-user-footer').style.display = 'none';
+
+      fetch(detailUrlBase.replace('{id}', userId))
+        .then(function(r) { return r.json(); })
+        .then(function(u) {
+          document.getElementById('modal-user-loading').classList.add('hidden');
+          document.getElementById('modal-user-footer').style.display = '';
+
+          var statusBadge = u.activated
+            ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700"><i data-lucide="check-circle" class="w-3 h-3"></i> Actif</span>'
+            : '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700"><i data-lucide="clock" class="w-3 h-3"></i> Inactif</span>';
+
+          var ini = (u.fullname||'?').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+          var avatar = u.imageName
+            ? '<img src="{{ asset("uploads/users/") }}' + u.imageName + '" class="w-full h-full object-cover">'
+            : '<span class="text-lg font-bold text-gray-400">' + ini + '</span>';
+
+          var positions = '';
+          var pL = u.left_free, pR = u.right_free;
+          positions = '<span class="text-xs font-semibold ' + (pL ? 'text-green-600' : 'text-red-400') + '">G ' + (pL ? 'libre' : 'occup.') + '</span> ';
+          positions += '<span class="text-xs font-semibold ' + (pR ? 'text-green-600' : 'text-red-400') + '">D ' + (pR ? 'libre' : 'occup.') + '</span>';
+
+          var addBtns = '';
+          if (pL) addBtns += '<a href="' + addUrl + '?upline=' + encodeURIComponent(u.fullname+' ('+u.username+')') + '&position=Left" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-jessica-500 rounded-lg hover:bg-jessica-600"><i data-lucide="chevron-left" class="w-3 h-3"></i> Gauche</a>';
+          if (pR) addBtns += '<a href="' + addUrl + '?upline=' + encodeURIComponent(u.fullname+' ('+u.username+')') + '&position=Right" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-accent-500 rounded-lg hover:bg-accent-600">Droite <i data-lucide="chevron-right" class="w-3 h-3"></i></a>';
+
+          var html =
+            '<div class="px-6 pt-4 pb-4">' +
+              '<div class="flex items-start gap-3 mb-4">' +
+                '<div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 ' + (u.activated?'border-jessica-500':'border-amber-400') + ' shrink-0">' + avatar + '</div>' +
+                '<div class="min-w-0 flex-1">' +
+                  '<h4 class="text-sm font-bold text-gray-900">' + (u.title?u.title+' ':'') + u.fullname + '</h4>' +
+                  '<p class="text-xs text-gray-500 truncate" title="' + u.username + '">@' + u.username + '</p>' +
+                  '<div class="mt-1 flex items-center gap-1.5 flex-wrap">' + statusBadge +
+                    (u.membership?'<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-jessica-50 text-jessica-700">'+u.membership+'</span>':'') +
+                    (u.grade?'<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700">'+u.grade+'</span>':'') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="grid grid-cols-3 gap-2 mb-4">' +
+                '<div class="bg-gray-50 rounded-lg p-2 text-center"><div class="text-base font-bold text-gray-800">' + u.networkSize + '</div><div class="text-[9px] text-gray-500 uppercase font-semibold">Reseau</div></div>' +
+                '<div class="bg-gray-50 rounded-lg p-2 text-center"><div class="text-base font-bold text-gray-800">' + u.directCount + '</div><div class="text-[9px] text-gray-500 uppercase font-semibold">Filleuls</div></div>' +
+                '<div class="bg-gray-50 rounded-lg p-2 text-center"><div class="flex items-center justify-center gap-1">' + positions + '</div><div class="text-[9px] text-gray-500 uppercase font-semibold mt-0.5">Positions</div></div>' +
+              '</div>' +
+              '<div class="space-y-1.5 text-xs">' +
+                row('mail','Email',u.email) + row('phone','Telephone',u.phone) +
+                row('map-pin','Localisation',[u.city,u.country].filter(Boolean).join(', ')||'-') +
+                row('calendar','Inscription',u.entryDate||'-') + row('calendar-check','Activation',u.dateActivation||'-') +
+                row('users','Sponsor',u.sponsor||'-') + row('git-branch','Upline',u.upline||'-') +
+                row('move-horizontal','Position',u.position||'-') +
+                (u.codeDistributor?row('hash','Code',u.codeDistributor):'') +
+              '</div>' +
+              (addBtns?'<div class="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100"><span class="text-xs text-gray-400 mr-1">Ajouter:</span>'+addBtns+'</div>':'') +
+            '</div>';
+
+          document.getElementById('modal-user-content').innerHTML = html;
+          document.getElementById('modal-user-content').classList.remove('hidden');
+          document.getElementById('modal-view-profile').href = '{{ path("user_show", {username: "__USERNAME__"}) }}'.replace('__USERNAME__', u.username);
+
+          // "Enter network" button for admin
+          var enterBtn = document.getElementById('modal-enter-network');
+          if (u.networkSize > 0) {
+            enterBtn.classList.remove('hidden');
+            enterBtn.onclick = function() { closeModal('user-detail'); expandNode(u.id); };
+          } else {
+            enterBtn.classList.add('hidden');
+          }
+
+          lucide.createIcons();
+        });
+    };
+
+    function row(icon, label, val) {
+      return '<div class="flex items-center gap-2 py-1 border-b border-gray-50 min-w-0">' +
+        '<i data-lucide="'+icon+'" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i>' +
+        '<span class="text-gray-500 w-20 shrink-0">'+label+'</span>' +
+        '<span class="text-gray-800 font-medium truncate min-w-0 flex-1" title="'+(val||'-')+'">'+(val||'-')+'</span></div>';
+    }
+
+    // ========== SEARCH ==========
+    var st = null;
+    document.getElementById('tree-search').addEventListener('input', function() {
+      clearTimeout(st);
+      var q = this.value.trim().toLowerCase();
+      st = setTimeout(function() {
+        document.querySelectorAll('.t-card.highlight').forEach(function(el) { el.classList.remove('highlight'); });
+        if (q.length < 2) return;
+        var found = allNodes.filter(function(n) { return n.name.indexOf(q) !== -1 || n.username.indexOf(q) !== -1; });
+        found.forEach(function(n, i) {
+          var el = document.querySelector('.t-card[data-user-id="' + n.id + '"]');
+          if (el) { el.classList.add('highlight'); if (i === 0) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); }
+        });
+      }, 250);
+    });
+
+    applyTx();
+  })();
+  </script>
 {% endblock %}

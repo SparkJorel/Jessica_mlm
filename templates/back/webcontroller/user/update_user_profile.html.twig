@@ -1,249 +1,248 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="JTWC">
-    <meta name="keyword" content="JTWC, MLM">
-    <title>Jessica Total Wellness Concept - Enregistrement d'un nouvel utilisateur</title>
-    <!-- Favicons -->
-    <link href="{{ asset('img/favicon.png') }}" rel="icon">
-    <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    <title>RACS Health Global - Enregistrement</title>
+    <link id="favicon" rel="icon" href="{{ asset('img/logo_racs.jpg') }}">
+    <script>
+      (function(){
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          var s = 64, c = document.createElement('canvas');
+          c.width = s; c.height = s;
+          var ctx = c.getContext('2d');
+          ctx.beginPath(); ctx.arc(s/2, s/2, s/2, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+          ctx.drawImage(img, 0, 0, s, s);
+          var link = document.getElementById('favicon');
+          link.type = 'image/png';
+          link.href = c.toDataURL('image/png');
+        };
+        img.src = '{{ asset('img/logo_racs.jpg') }}';
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+            colors: {
+              jessica: { 50:'#f0faf3', 100:'#d5f2dc', 200:'#aee5bc', 300:'#7ad396', 400:'#4fbc72', 500:'#1B7A3D', 600:'#166832', 700:'#115427', 800:'#0D3F1D', 900:'#082B14' },
+              accent:  { 50:'#fff7ed', 100:'#ffedd5', 200:'#fed7aa', 300:'#fdba74', 400:'#fb923c', 500:'#E8621A', 600:'#c2510f', 700:'#9a3412', 800:'#7c2d12', 900:'#6c2710' },
+            }
+          }
+        }
+      }
+    </script>
     {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
     {{ encore_entry_link_tags('autocomplete') }}
     {{ encore_entry_link_tags('fieldset') }}
     {% endblock %}
 </head>
-<body>
-  <div id="login-page">
-    <div class="container">
-        <h3><i class="fa fa-angle-right"> Enregistrement d'un nouvel utilisateur </i></h3>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-panel">
-                    <div class="alert alert-success hide"></div>
-                    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-                    <!-- progressbar -->
-                    <ul id="progressbar">
-                        <li class="active">Informations personnelles</li>
-                        <li>Addresse</li>
-                        <li>Choix du pack</li>
-                    </ul>
-                    <fieldset>
-                        <h2 class="fs-title">Informations personnelles</h2>
-                        <div class="form-group">
-                            {{ form_label(form.title, null, { 'label_attr':  {
-                                'class': 'col-lg-3 control-label'
-                            }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.title, { 'attr':  {
-                                    'class': 'form-control' ~ (form.title.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.title) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            {{ form_label(form.fullname, null, { 'label_attr':  {
-                                'class': 'col-lg-3 control-label'
-                            }}) }}
+<body class="bg-gray-50 font-sans min-h-screen flex items-center justify-center p-4">
 
-                            <div class="col-lg-9">
-                                {{ form_widget(form.fullname, { 'attr':  {
-                                    'class': 'form-control' ~ (form.fullname.vars.valid ? '' : ' is-invalid' )
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.fullname) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.dateOfBirth, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.dateOfBirth, { 'attr':  {
-                                    'class': 'form-control' ~ (form.dateOfBirth.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.dateOfBirth) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.gender, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.gender, { 'attr':  {
-                                    'class': 'form-control' ~ (form.gender.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.gender) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.documentType, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.documentType, { 'attr':  {
-                                    'class': 'form-control' ~ (form.documentType.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.documentType) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.cni, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.cni, { 'attr':  {
-                                    'class': 'form-control' ~ (form.cni.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.cni) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.imageFile, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_errors(form.imageFile) }}
-                                {{ form_widget(form.imageFile, { 'attr':  {
-                                    'class': 'form-control'
-                                }}) }}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.nextOfKin, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_errors(form.nextOfKin) }}
-                                {{ form_widget(form.nextOfKin, { 'attr':  {
-                                    'class': 'form-control'
-                                }}) }}
-                            </div>
-                        </div>
-                        <input type="button" name="next" class="next action-button" value="Suivant" />
-                    </fieldset>
-                    <fieldset>
-                        <h2 class="fs-title">Addresse du distributeur</h2>
-                        <div class="form-group">
-                            {{ form_label(form.email, null, { 'label_attr':  {
-                                'class': 'col-lg-3 control-label'
-                            }}) }}            
-                            <div class="col-lg-9">
-                                {{ form_widget(form.email, { 'attr':  {
-                                    'class': 'form-control'~(form.email.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.email) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.mobilePhone, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.mobilePhone, { 'attr':  {
-                                    'class': 'form-control' ~ (form.mobilePhone.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                {{ form_errors(form.mobilePhone) }}
-                                </div>
-                            </div>
-                        </div>                       
-                        <div class="form-group">
-                                {{ form_label(form.city, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.city, { 'attr':  {
-                                    'class': 'form-control' ~ (form.city.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.city) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                {{ form_label(form.country, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}) }}
-                            <div class="col-lg-9">
-                                {{ form_widget(form.country, { 'attr':  {
-                                    'class': 'form-control' ~ (form.country.vars.valid ? '' : ' is-invalid')
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.country) }}
-                                </div>
-                            </div>
-                        </div>            
-                        <input type="button" name="previous" class="previous action-button" value="Précédent" />
-                        <input type="button" name="next" class="next action-button" value="Suivant" />
-                    </fieldset>
-                    <fieldset>
-                        <h2 class="fs-title">Choix du pack</h2>
-                        <div class="form-group">
-                            {{ form_label(form.pack, null, { 'label_attr':  {
-                                'class': 'col-lg-3 control-label'
-                            }}) }}
+  <div class="w-full max-w-2xl">
+    {# Header #}
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 rounded-2xl bg-jessica-500 flex items-center justify-center mx-auto mb-3 shadow-lg">
+        <img src="{{ asset('img/logo_racs.jpg') }}" alt="RACS Health Global" class="w-10 h-10 object-contain">
+      </div>
+      <h1 class="text-xl font-bold text-gray-800">Inscription Distributeur</h1>
+      <p class="text-sm text-gray-400 mt-1">RACS Health Global</p>
+    </div>
 
-                            <div class="col-lg-9">
-                                {{ form_widget(form.pack, { 'attr':  {
-                                    'class': 'form-control' ~ (form.pack.vars.valid ? '' : ' is-invalid' )
-                                }}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.pack) }}
-                                </div>
-                            </div>
-                        </div>
+    {# Form Card #}
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+      {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'wizard-form'}}) }}
 
-                        <div data-id="{{form.vars.data.membership.id}}" class="table-responsive">
-                            Quote produit du {{ form.vars.data.membership.name }} : {{ form.vars.data.membership.membershipProductCote }}
-
-                            <table class="table table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th>Produit</th>
-                                        <th>Quantité</th>
-                                        <th>Quote</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-body">
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="2">Total</th>
-                                        <th id="value"></th>
-                                    </tr>
-                                </tfoot>                    
-                            </table>
-                        </div>
-                        <input type="button" name="previous" class="previous action-button" value="Préc" />
-                        <input type="submit" name="submit" class="submit action-button" value="Enregistrer" />
-                    </fieldset>
-                    {{ form_end(form) }}
-                </div>
-            </div>        
+      {# Stepper #}
+      <div class="border-b border-gray-200 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <button type="button" class="step-indicator active flex items-center gap-2 text-sm font-semibold text-jessica-600" data-step="0">
+            <span class="w-7 h-7 rounded-full bg-jessica-500 text-white flex items-center justify-center text-xs font-bold">1</span>
+            <span class="hidden sm:inline">Identite</span>
+          </button>
+          <div class="flex-1 h-px bg-gray-200 mx-3"></div>
+          <button type="button" class="step-indicator flex items-center gap-2 text-sm font-medium text-gray-400" data-step="1">
+            <span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold">2</span>
+            <span class="hidden sm:inline">Adresse</span>
+          </button>
+          <div class="flex-1 h-px bg-gray-200 mx-3"></div>
+          <button type="button" class="step-indicator flex items-center gap-2 text-sm font-medium text-gray-400" data-step="2">
+            <span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold">3</span>
+            <span class="hidden sm:inline">Pack</span>
+          </button>
         </div>
+      </div>
+
+      {# Step 1: Personal Info #}
+      <fieldset class="wizard-step p-6 space-y-4" data-step="0">
+        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <i data-lucide="user" class="w-5 h-5 text-jessica-500"></i>
+          Informations personnelles
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.title.vars.label }}</label>
+            {{ form_widget(form.title, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.title.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.title.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.title) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.fullname.vars.label }}</label>
+            {{ form_widget(form.fullname, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.fullname.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.fullname.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.fullname) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.dateOfBirth.vars.label }}</label>
+            {{ form_widget(form.dateOfBirth, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.dateOfBirth.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.dateOfBirth.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.dateOfBirth) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.gender.vars.label }}</label>
+            {{ form_widget(form.gender, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.gender.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.gender.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.gender) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.documentType.vars.label }}</label>
+            {{ form_widget(form.documentType, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.cni.vars.label }}</label>
+            {{ form_widget(form.cni, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.imageFile.vars.label }}</label>
+            {{ form_widget(form.imageFile, {'attr': {'class': 'w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-jessica-50 file:text-jessica-600 hover:file:bg-jessica-100'}}) }}
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.nextOfKin.vars.label }}</label>
+            {{ form_widget(form.nextOfKin, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          </div>
+        </div>
+        <div class="flex justify-end pt-2">
+          <button type="button" class="next inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+            Suivant <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </fieldset>
+
+      {# Step 2: Address #}
+      <fieldset class="wizard-step p-6 space-y-4 hidden" data-step="1">
+        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-5 h-5 text-jessica-500"></i>
+          Adresse du distributeur
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.email.vars.label }}</label>
+            {{ form_widget(form.email, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.email.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.email.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.email) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.mobilePhone.vars.label }}</label>
+            {{ form_widget(form.mobilePhone, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.mobilePhone.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.mobilePhone.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.mobilePhone) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.city.vars.label }}</label>
+            {{ form_widget(form.city, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.city.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.city.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.city) }}</p>{% endif %}
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.country.vars.label }}</label>
+            {{ form_widget(form.country, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.country.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+            {% if not form.country.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.country) }}</p>{% endif %}
+          </div>
+        </div>
+        <div class="flex justify-between pt-2">
+          <button type="button" class="previous inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Precedent
+          </button>
+          <button type="button" class="next inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+            Suivant <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </fieldset>
+
+      {# Step 3: Pack Selection #}
+      <fieldset class="wizard-step p-6 space-y-4 hidden" data-step="2">
+        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <i data-lucide="package" class="w-5 h-5 text-jessica-500"></i>
+          Choix du pack
+        </h2>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.pack.vars.label }}</label>
+          {{ form_widget(form.pack, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.pack.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.pack.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.pack) }}</p>{% endif %}
+        </div>
+        <div data-id="{{ form.vars.data.membership.id }}">
+          <p class="text-sm text-gray-600 mb-3">Quote produit du <strong>{{ form.vars.data.membership.name }}</strong> : <span class="text-jessica-500 font-bold">{{ form.vars.data.membership.membershipProductCote }}</span></p>
+          <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200">
+                  <th class="px-4 py-2 text-left font-semibold text-gray-600">Produit</th>
+                  <th class="px-4 py-2 text-center font-semibold text-gray-600">Quantite</th>
+                  <th class="px-4 py-2 text-right font-semibold text-gray-600">Quote</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
+              <tfoot>
+                <tr class="bg-gray-50 border-t border-gray-200">
+                  <th colspan="2" class="px-4 py-2 text-right font-bold text-gray-700">Total</th>
+                  <th id="value" class="px-4 py-2 text-right font-bold text-jessica-500"></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="flex justify-between pt-2">
+          <button type="button" class="previous inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Precedent
+          </button>
+          <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+            <i data-lucide="check" class="w-4 h-4"></i> Enregistrer
+          </button>
+        </div>
+      </fieldset>
+
+      {{ form_end(form) }}
     </div>
   </div>
-{% block javascripts %}
-{{ encore_entry_script_tags('app') }}
-{{ encore_entry_script_tags('autocomplete') }}
-{{ encore_entry_script_tags('fieldset') }}
-{% endblock %}
+
+  {% block javascripts %}
+  {{ encore_entry_script_tags('app') }}
+  {{ encore_entry_script_tags('autocomplete') }}
+  {% endblock %}
+  <script>
+    lucide.createIcons();
+
+    // Wizard stepper
+    (function() {
+      var steps = document.querySelectorAll('fieldset.wizard-step');
+      if (!steps.length) return;
+      var indicators = document.querySelectorAll('.step-indicator');
+      var current = 0;
+      function showStep(idx) {
+        steps.forEach(function(s, i) { if (i === idx) s.classList.remove('hidden'); else s.classList.add('hidden'); });
+        indicators.forEach(function(ind, i) {
+          var c = ind.querySelector('span');
+          if (i <= idx) { ind.classList.add('text-jessica-600'); ind.classList.remove('text-gray-400'); if(c){c.classList.add('bg-jessica-500','text-white');c.classList.remove('bg-gray-200','text-gray-500');} }
+          else { ind.classList.remove('text-jessica-600'); ind.classList.add('text-gray-400'); if(c){c.classList.remove('bg-jessica-500','text-white');c.classList.add('bg-gray-200','text-gray-500');} }
+        });
+        current = idx;
+      }
+      document.querySelectorAll('.next').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();if(current<steps.length-1)showStep(current+1);});});
+      document.querySelectorAll('.previous').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();if(current>0)showStep(current-1);});});
+      indicators.forEach(function(ind,i){ind.addEventListener('click',function(){if(i<=current)showStep(i);});});
+      showStep(0);
+    })();
+  </script>
 </body>
 </html>

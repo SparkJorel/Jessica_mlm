@@ -1,63 +1,86 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	Jessica Total Wellness Concept - Les packs de souscription commandés
-{% endblock %}
-{% block page_title %}
-	Les packs de souscription commandés
-{% endblock %}
+{% block title %}Panier de souscription - RACS Health Global{% endblock %}
+{% block page_title %}Packs de souscription commandes{% endblock %}
 
 {% block main %}
-	<div class="col-lg-12">		
-		{% for type, messages in app.session.flashbag.all() %}
-			{% for message in messages %}
-				<div class="alert alert-{{type}}">{{message}}</div>
-			{% endfor %}
-		{% endfor %}
-        <div class="row mt-4">
-            <!-- List of items -->
-            <div class="col-md-8">
-                <div class="card table-responsive" style="height:25rem;">
-                    <div class="card-header bg-dark text-white d-flex">
-                        <h5>Les packs commandés</h5>
-                    </div>
+<div class="max-w-3xl mx-auto -m-5 sm:-m-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                    <table class="table table-condensed table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Pack de souscription</th>
-                                <th>Quantité</th>
-                                <th>Prix</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th colspan="2">Total</th>
-                            <th class="info">{{total}}</th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                            {% for packName, summary in summaries %}
-                                <tr>
-                                    <td>{{packName}}</td>
-                                    <td>{{summary['quantity']}}</td>
-                                    <td>{{summary['price']}}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- Summary -->
-            <div class="col-md-4">
-                <div class="card-body">
-                    <button style="margin-bottom: 10px;" class="btn btn-warning w-200 mb-3">Payer par:</button>
-                    <p style="text-align: center;" class="payment">
-                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 1}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/MTN-Mobile-Money.png') }}" /></a>
-                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 2}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/orange-money.jpg') }}" /></a>
-                        <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 3}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/logoeu.jpg') }}" /></a>
-                    </p>
-                </div>
-            </div>
+    {# Order Table #}
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+          <i data-lucide="package" class="w-5 h-5 text-jessica-500"></i>
+          <h3 class="text-sm font-bold text-gray-800">Packs commandes</h3>
         </div>
-	</div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="px-4 py-3 text-left font-semibold text-gray-600">Pack de souscription</th>
+                <th class="px-4 py-3 text-center font-semibold text-gray-600">Quantite</th>
+                <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {% for packName, summary in summaries %}
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-3 font-semibold text-gray-800">{{ packName }}</td>
+                <td class="px-4 py-3 text-center">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">x{{ summary['quantity'] }}</span>
+                </td>
+                <td class="px-4 py-3 text-right font-bold text-gray-800">{{ summary['price']|number_format(0, ',', '.') }} FCFA</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr class="bg-gray-50 border-t border-gray-200">
+                <td colspan="2" class="px-4 py-3 text-right font-bold text-gray-700">Total</td>
+                <td class="px-4 py-3 text-right font-bold text-jessica-600 text-lg">{{ total|number_format(0, ',', '.') }} FCFA</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {# Payment Methods #}
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-24">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h3 class="text-sm font-bold text-gray-800">Payer par :</h3>
+        </div>
+        <div class="p-5 space-y-3">
+          <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 1}) }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-jessica-400 transition-colors group">
+            <img src="{{ asset('img/MTN-Mobile-Money.png') }}" alt="MTN MoMo" class="w-12 h-12 object-contain">
+            <div>
+              <div class="text-sm font-semibold text-gray-800 group-hover:text-jessica-600 transition-colors">MTN Mobile Money</div>
+              <div class="text-xs text-gray-400">Paiement mobile</div>
+            </div>
+          </a>
+          <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 2}) }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-accent-400 transition-colors group">
+            <img src="{{ asset('img/orange-money.jpg') }}" alt="Orange Money" class="w-12 h-12 object-contain">
+            <div>
+              <div class="text-sm font-semibold text-gray-800 group-hover:text-accent-600 transition-colors">Orange Money</div>
+              <div class="text-xs text-gray-400">Paiement mobile</div>
+            </div>
+          </a>
+          <a href="{{ path('confirm_payment_subscriptions', {'provider': 'dohone', 'operateur': 3}) }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors group">
+            <img src="{{ asset('img/logoeu.jpg') }}" alt="Express Union" class="w-12 h-12 object-contain">
+            <div>
+              <div class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">Express Union</div>
+              <div class="text-xs text-gray-400">Paiement mobile</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('cart-subscription') }}
 {% endblock %}

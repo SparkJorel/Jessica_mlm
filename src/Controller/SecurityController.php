@@ -30,7 +30,7 @@ class SecurityController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('jtwc_app_login');
         } else {
-            return $this->redirectToRoute('genealogy_tree');
+            return $this->redirectToRoute('dashboard');
         }
     }
 

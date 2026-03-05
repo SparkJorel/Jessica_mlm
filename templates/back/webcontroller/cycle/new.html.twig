@@ -1,50 +1,38 @@
 {% extends 'base.html.twig' %}
-{% block title %} JTWC - Enregistrement d'un nouveau cycle {% endblock %}
-{% block page_title %} Enregistrement d'un nouveau cycle {% endblock %}
+{% block title %}Nouveau cycle - RACS Health Global{% endblock %}
+{% block page_title %}Enregistrement d'un nouveau cycle{% endblock %}
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div class="form-group">
-                {{ form_label(form.startedAt, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.startedAt) }}
-                    {{ form_widget(form.startedAt, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.endedAt, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.endedAt) }}
-                    {{ form_widget(form.endedAt, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.weekly, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.weekly) }}
-                    {{ form_widget(form.weekly, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-10 col-lg-2">
-                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
-                </div>
-            </div>
-            {{ form_end(form) }}
-        </div>
+<div class="max-w-2xl mx-auto -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
+      <h2 class="text-base font-semibold text-gray-800">Nouveau cycle</h2>
     </div>
+    <div class="p-6">
+      {{ form_start(form, {attr: {'id': 'form', 'class': 'space-y-5', 'novalidate': 'novalidate'}}) }}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.startedAt.vars.label }}</label>
+          {{ form_errors(form.startedAt) }}
+          {{ form_widget(form.startedAt, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.endedAt.vars.label }}</label>
+          {{ form_errors(form.endedAt) }}
+          {{ form_widget(form.endedAt, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.weekly.vars.label }}</label>
+        {{ form_errors(form.weekly) }}
+        {{ form_widget(form.weekly, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+        <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-jessica-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-jessica-600 transition">
+          <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+        </button>
+      </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
 {% endblock %}
-

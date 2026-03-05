@@ -491,13 +491,19 @@ class UserHandler extends ModelSingleEntityAbstract implements ModelInterface
 
     public function updateUserInfo(Request $request, string $template)
     {
-        $form = $this->formFactory->create(UserProfileType::class, $this->entity);
+        $form = $this->formFactory->create(UserProfileType::class, $this->entity, [
+            'edit_identity' => false,
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newFileName = $this->getFileName($this->entity);
+            if ($newFileName) {
+                $this->entity->setImageName($newFileName);
+            }
             $this->manager->flush();
-            return $this->redirectAfterSubmit('genealogy_tree', 'success', 'Informations mises à jour avec succès');
+            return $this->redirectAfterSubmit('user_update_details', 'success', 'Informations mises à jour avec succès');
         }
 
         return new Response(

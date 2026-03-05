@@ -95,8 +95,10 @@ class UserType extends AbstractType
             ])
             ->add('membership', EntityType::class, [
                 'class' => Membership::class,
-                'choice_label' => 'code',
-                'placeholder' => 'Your Package',
+                'choice_label' => function (Membership $m) {
+                    return $m->getCode() . ' - ' . $m->getName() . ' (' . number_format($m->getMembershipCost(), 0, ',', '.') . ' FCFA)';
+                },
+                'placeholder' => 'Selectionner un pack',
                 'label' => 'Package',
                 'required' => true,
             ])

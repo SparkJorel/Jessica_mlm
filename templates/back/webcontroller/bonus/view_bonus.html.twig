@@ -1,51 +1,86 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Bonus Parrainage {% endblock %}
-{% block page_title %} Bonus Parrainage {% endblock %}
+{% block title %}Bonus Parrainage - RACS Health Global{% endblock %}
+{% block page_title %}Bonus Parrainage{% endblock %}
+{% block nav_bonus %}bg-jessica-500 text-white{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            <form class="form-inline" role="form" style="margin: 30px 0;">
-                <div class="form-group">
-                    {{ form_widget(form.period) }}
+<div class="space-y-5 -m-5 sm:-m-6">
+
+  {# Period Filter #}
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <form class="flex flex-wrap items-end gap-3">
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-xs font-medium text-gray-500 mb-1">Periode</label>
+        {{ form_widget(form.period, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+      </div>
+      <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+        <i data-lucide="filter" class="w-4 h-4"></i> Afficher
+      </button>
+    </form>
+  </div>
+
+  {# Bonus Table #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Downline</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Membership</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Date</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Montant</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Statut</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for bonusMontant in bonusMontants %}
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="gift" class="w-4 h-4 text-accent-600"></i>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Afficher</button>
+                <div>
+                  <div class="font-semibold text-gray-800">{{ bonusMontant.sponsorised }}</div>
+                  <div class="text-xs text-gray-400 sm:hidden">{{ bonusMontant.membership }}</div>
                 </div>
-            </form>
-        </div>
-        <div class="content-panel">
-            <section id="unseen">
-                <table class="display table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Downline</th>
-                        <th>Membership</th>
-                        <th>Date</th>
-                        <th>Montant</th>
-                        <th>Statut</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for bonusMontant in bonusMontants %}
-                        <tr>
-                            <td>{{ bonusMontant.sponsorised }}</td>
-                            <td>{{ bonusMontant.membership }}</td>
-                            <td>{{ bonusMontant.dateActivation|date('d/m/Y') }}</td>
-                            <td>{{ bonusMontant.value }}</td>
-                            <td>{% if bonusMontant.paid %} Payé {% else %} Non payé {% endif %}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="5">Vous n'avez parrainé aucun nouveau membre au cours de ce cycle</td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td class="text-right" colspan="3">Total</td>
-                        <td class="text-center" colspan="2">{{ total }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </section>
-        </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{{ bonusMontant.membership }}</span>
+            </td>
+            <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ bonusMontant.dateActivation|date('d/m/Y') }}</td>
+            <td class="px-4 py-3 text-right font-bold text-jessica-500">{{ bonusMontant.value|number_format(0, ',', '.') }} F</td>
+            <td class="px-4 py-3 text-center">
+              {% if bonusMontant.paid %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">
+                  <i data-lucide="check" class="w-3 h-3"></i> Paye
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600">
+                  <i data-lucide="clock" class="w-3 h-3"></i> En attente
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="px-5 py-8 text-center text-sm text-gray-400">
+              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+              <p>Aucun bonus de parrainage pour ce cycle</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr class="bg-gray-50 border-t border-gray-200">
+            <td colspan="3" class="px-4 py-3 text-right font-bold text-gray-700">Total</td>
+            <td class="px-4 py-3 text-right font-bold text-jessica-600 text-lg">{{ total|number_format(0, ',', '.') }} F</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
+  </div>
+</div>
 {% endblock %}

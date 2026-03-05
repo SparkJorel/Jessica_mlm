@@ -68,7 +68,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $user = $token->getUser();
 
         if ($user->getState() === "Actif") {
-            return new RedirectResponse($this->urlGenerator->generate('genealogy_tree'));
+            return new RedirectResponse($this->urlGenerator->generate('dashboard'));
         } else {
             return new RedirectResponse($this->urlGenerator->generate('new_user_update'));
         }

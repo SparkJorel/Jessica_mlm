@@ -1,72 +1,92 @@
-{% extends 'admin_dashboard.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Liste des bonus de pourcentage des packages {% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Liste des bonus de pourcentage des packages - RACS Health Global{% endblock %}
+{% block page_title %}Bonus de pourcentage de chaque package{% endblock %}
+
 {% block main %}
-    <h3><i class="fa fa-angle-right"></i>Liste des bonus de pourcentage de chaque package de la plateforme</h3>
-    <div class="row mb">
-        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-            <a href="{{ path('membership_bp_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter un nouveau bonus</button></a>
-        {% endif %}
-        <div class="content-panel">
-            <div class="adv-table">
-                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
-                    <thead>
-                    <tr>
-                        <th>Membership</th>
-                        <th>Bonus</th>
-                        <th>Statut</th>
-                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                            <th>Actions</th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for membership_bp in membership_bps %}
-                        <tr>
-                            <td>{{ membership_bp.membership.name }}</td>
-                            <td>{{ membership_bp.value }}</td>
-                            <td>{% if membership_bp.state %} Activé {% else %} Désactivé {% endif %}</td>
-                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                            <td>
-                                <a href="{{ path('membership_bp_edit', {'id': membership_bp.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
-                                <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#membershipBPDeleteDialog{{membership_bp.id}}"><span class="fa fa-remove"></span>
-                                </button>
-                                <div class="modal fade" id="membershipBPDeleteDialog{{membership_bp.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                Voulez vous vraiment supprimer le pourcentage du bonus de ce package ?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
-                                                <form action="{{ path('membership_bp_delete', {'id': membership_bp.id }) }}" method="post">
-                                                    <button type="button" class="btn btn-danger">Confirmer</button>
-                                                    <input type="hidden" name="_jtwc_membership_bp_token"  value="{{ csrf_token('jtwc_membership_bp-delete'~membership_bp.id) }}" />
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            {% endif %}
-                        </tr>
-                    {% else %}
-                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="4" {% else %} colspan="3" {% endif %}>Pas de pourcentage de bonus de membership enregistré pour l'instant</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="flex flex-wrap items-center gap-3 px-5">
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+      <a href="{{ path('membership_bp_new') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+        Ajouter un nouveau bonus
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Membership</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Bonus</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Statut</th>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+              <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for membership_bp in membership_bps %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-gray-800">{{ membership_bp.membership.name }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ membership_bp.value }}</td>
+              <td class="px-4 py-3 text-center">
+                {% if membership_bp.state %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">Active</span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600">Desactive</span>
+                {% endif %}
+              </td>
+              {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-center gap-1">
+                    <a href="{{ path('membership_bp_edit', {'id': membership_bp.id}) }}" title="Modifier" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors">
+                      <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </a>
+                    <button type="button" title="Supprimer" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors" onclick="openModal('delete-{{ membership_bp.id }}')">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                    <div id="modal-delete-{{ membership_bp.id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+                      <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                          <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"><i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i></div>
+                          <h3 class="text-lg font-bold text-gray-800">Confirmer la suppression</h3>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer le pourcentage du bonus de ce package ?</p>
+                        <div class="flex gap-3 justify-end">
+                          <button onclick="closeModal('delete-{{ membership_bp.id }}')" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Annuler</button>
+                          <form action="{{ path('membership_bp_delete', {'id': membership_bp.id}) }}" method="post" class="inline">
+                            <input type="hidden" name="_jtwc_membership_bp_token" value="{{ csrf_token('jtwc_membership_bp-delete'~membership_bp.id) }}">
+                            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors">Supprimer</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              {% endif %}
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" class="px-4 py-12 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i>
+                  <p class="text-sm text-gray-500">Pas de pourcentage de bonus de membership enregistre pour l'instant</p>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
+function closeModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+</script>
 {% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('datatable') }}
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('datatable') }}
-{% endblock %}
+{% block javascripts %}{{ parent() }}{{ encore_entry_script_tags('datatable') }}{% endblock %}
+{% block stylesheets %}{{ parent() }}{{ encore_entry_link_tags('datatable') }}{% endblock %}

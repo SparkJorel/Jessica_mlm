@@ -1,84 +1,81 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Les SV en vigueur de chaque grade {% endblock %}
-{% block page_title %} Les SV en vigueur de chaque grade {% endblock %}
+{% block title %}Les SV en vigueur de chaque grade - RACS Health Global{% endblock %}
+{% block page_title %}Les SV en vigueur de chaque grade{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="content-panel">
-		    {% for type, messages in app.session.flashbag.all() %}
-                {% for message in messages %}
-                    <div class="alert alert-{{type}}">{{message}}</div>
-                {% endfor %}
-            {% endfor %}
-			<h4>
-                {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                    <a href="{{ path('grade_sv_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Définir les SV d'un grade</button></a>
-                {% endif %}
-            </h4>
-            <section id="unseen">
-                <table class="display table table-bordered" id="table-info">
-                    <thead>
-                    <tr>
-                        <th>Grade</th>
-                        <th>SV</th>
-                        <th>Activé</th>
-                        <th>Debut</th>
-                        <th>Fin</th>
-                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                            <th>Actions</th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for grade_sv in grade_svs %}
-                        <tr>
-                            <td>{{ grade_sv.grade.commercialName }}</td>
-                            <td>{{ grade_sv.sv }}</td>
-                            <td>{% if grade_sv.status %} OUI {% else %} NON {% endif %} </td>
-                            <td>{{ grade_sv.startedAt|date('d/m/Y') }}</td>
-                            <td>{% if grade_sv.endedAt is not null %}{{ grade_sv.endedAt|date('d/m/Y') }}{% endif %}</td>
-                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                                <td>
-                                    <a href="{{ path('grade_sv_edit', {'id': grade_sv.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
-                                    <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#grade_svDeleteDialog{{grade_sv.id}}"><span class="fa fa-remove"></span>
-                                    </button>
-                                    <div class="modal fade" id="grade_svDeleteDialog{{grade_sv.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Voulez vous vraiment supprimer les SV associé à ce grade ?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
-                                                    <form action="{{ path('grade_sv_delete', {'id': grade_sv.id }) }}" method="post">
-                                                        <button type="button" class="btn btn-danger">Confirmer</button>
-                                                        <input type="hidden" name="_method" value="DELETE">
-                                                        <input type="hidden" name="_jtwc_grade_sv_token"  value="{{ csrf_token('jtwc_grade_sv-delete'~grade_sv.id) }}" />
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% else %}
-                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="6" {% else %} colspan="5" {% endif %}>Pas de SV associé à ce grade</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </div>
+<div class="space-y-5 -m-5 sm:-m-6">
+  {% for type, messages in app.session.flashbag.all() %}
+    {% for message in messages %}
+      <div class="mx-5 px-4 py-3 rounded-lg text-sm font-medium {% if type == 'success' %}bg-green-50 text-green-700{% elseif type == 'danger' %}bg-red-50 text-red-700{% else %}bg-blue-50 text-blue-700{% endif %}">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  <div class="flex flex-wrap items-center gap-3 px-5">
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+      <a href="{{ path('grade_sv_new') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i> Definir les SV d'un grade
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Grade</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Active</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Debut</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Fin</th>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+              <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for grade_sv in grade_svs %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-gray-800">{{ grade_sv.grade.commercialName }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ grade_sv.sv }}</td>
+              <td class="px-4 py-3 text-center">{% if grade_sv.status %}<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">OUI</span>{% else %}<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600">NON</span>{% endif %}</td>
+              <td class="px-4 py-3 text-gray-600">{{ grade_sv.startedAt|date('d/m/Y') }}</td>
+              <td class="px-4 py-3 text-gray-600">{% if grade_sv.endedAt is not null %}{{ grade_sv.endedAt|date('d/m/Y') }}{% endif %}</td>
+              {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-center gap-1">
+                    <a href="{{ path('grade_sv_edit', {'id': grade_sv.id}) }}" title="Modifier" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></a>
+                    <button type="button" title="Supprimer" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors" onclick="openModal('delete-{{ grade_sv.id }}')"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div id="modal-delete-{{ grade_sv.id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+                      <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 p-6">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"><i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i></div><h3 class="text-lg font-bold text-gray-800">Confirmer la suppression</h3></div>
+                        <p class="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer les SV associes a ce grade ?</p>
+                        <div class="flex gap-3 justify-end">
+                          <button onclick="closeModal('delete-{{ grade_sv.id }}')" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Annuler</button>
+                          <form action="{{ path('grade_sv_delete', {'id': grade_sv.id}) }}" method="post" class="inline">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_jtwc_grade_sv_token" value="{{ csrf_token('jtwc_grade_sv-delete'~grade_sv.id) }}">
+                            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors">Supprimer</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              {% endif %}
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="px-4 py-12 text-center"><div class="flex flex-col items-center gap-3"><i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i><p class="text-sm text-gray-500">Pas de SV associe a ce grade</p></div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
+<script>
+function openModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
+function closeModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+</script>
 {% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('datatable') }}
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('datatable') }}
-{% endblock %}
+{% block javascripts %}{{ parent() }}{{ encore_entry_script_tags('datatable') }}{% endblock %}
+{% block stylesheets %}{{ parent() }}{{ encore_entry_link_tags('datatable') }}{% endblock %}

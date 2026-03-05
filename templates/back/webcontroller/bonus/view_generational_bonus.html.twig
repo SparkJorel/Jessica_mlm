@@ -1,59 +1,91 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Bonus Générationnel {% endblock %}
-{% block page_title %} Bonus Générationnel {% endblock %}
+{% block title %}Bonus Generationnel - RACS Health Global{% endblock %}
+{% block page_title %}Bonus Generationnel{% endblock %}
+{% block nav_bonus %}bg-jessica-500 text-white{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            <form class="form-inline" role="form" style="margin: 30px 0;">
-                <div class="form-group">
-                    {{ form_widget(form.period) }}
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Afficher</button>
-                </div>
-            </form>
+<div class="space-y-5 -m-5 sm:-m-6">
+
+  {# Period Filter #}
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <form class="flex flex-wrap items-end gap-3">
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-xs font-medium text-gray-500 mb-1">Periode</label>
+        {{ form_widget(form.period, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+      </div>
+      <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+        <i data-lucide="filter" class="w-4 h-4"></i> Afficher
+      </button>
+    </form>
+  </div>
+
+  {# Summary Cards #}
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+          <i data-lucide="award" class="w-5 h-5 text-purple-600"></i>
         </div>
-        <div class="content-panel">
-            <section id="unseen">
-                <table class="display table table-bordered" id="table-info">
-                    <thead>
-                    <tr>
-                        <th>Grade</th>
-                        <th colspan="2">{% if results is not null %}{{ results['grade'] }}{% else %}Néant{% endif %}</th>
-                        <th colspan="2">Gain</th>
-                        <th>{% if results is not null %}{{ results['gain'] }}{% else %}Néant{% endif %}</th>
-                    </tr>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Génération</th>
-                        <th>Position</th>
-                        <th>Binaire</th>
-                        <th>Pourcentage</th>
-                        <th>Gain</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for result in results %}
-                        {% if result is iterable %}
-                        <tr>
-                            <td>{{ result['nom'] }}</td>
-                            <td>{{ result['generation'] }}</td>
-                            <td>{{ result['position'] }}</td>
-                            <td>{{ result['binaire'] }}</td>
-                            <td>{{ result['pourcentage'] }}</td>
-                            <td>{{ result['gain'] }}</td>
-                        </tr>
-                        {% endif %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">Vous n'êtes pas encore elligible au bonus générationnel</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </section>
+        <div>
+          <p class="text-xs text-gray-500">Grade</p>
+          <p class="text-lg font-bold text-gray-800">{% if results is not null %}{{ results['grade'] }}{% else %}Neant{% endif %}</p>
         </div>
+      </div>
     </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-jessica-50 flex items-center justify-center">
+          <i data-lucide="trending-up" class="w-5 h-5 text-jessica-500"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Gain</p>
+          <p class="text-lg font-bold text-jessica-500">{% if results is not null %}{{ results['gain'] }}{% else %}Neant{% endif %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Detail Table #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm" id="table-info">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Generation</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600 hidden sm:table-cell">Position</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Binaire</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">Pourcentage</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Gain</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for result in results %}
+            {% if result is iterable %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 font-semibold text-gray-800">{{ result['nom'] }}</td>
+              <td class="px-4 py-3 text-center">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-600">G{{ result['generation'] }}</span>
+              </td>
+              <td class="px-4 py-3 text-center text-gray-600 hidden sm:table-cell">{{ result['position'] }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ result['binaire'] }}</td>
+              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{{ result['pourcentage'] }}%</td>
+              <td class="px-4 py-3 text-right font-bold text-jessica-500">{{ result['gain'] }}</td>
+            </tr>
+            {% endif %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="px-5 py-8 text-center text-sm text-gray-400">
+                <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                <p>Vous n'etes pas encore eligible au bonus generationnel</p>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

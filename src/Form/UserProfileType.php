@@ -32,16 +32,6 @@ class UserProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'required' => true,
-                'trim' => true
-            ])
-            ->add('fullname', TextType::class, [
-                'label' => 'Nom & prénoms',
-                'required' => true,
-                'trim' => true,
-            ])
             ->add('imageFile', FileType::class, [
                 'label' => 'Photo',
                 'required' => false,
@@ -56,11 +46,6 @@ class UserProfileType extends AbstractType
                     ])
                 ]
 
-            ])
-            ->add('cni', IntegerType::class, [
-                'required' => true,
-                'label' => 'N° CNI/Passeport/Autre',
-                'trim' => true,
             ])
             ->add('mobilePhone', TextType::class, [
                 'required' => true,
@@ -82,44 +67,58 @@ class UserProfileType extends AbstractType
                 'required' => true,
                 'trim' => true,
                 'placeholder' => 'Select your country',
-            ])
-            ->add('title', ChoiceType::class, [
-                'label' => 'Titre',
-                'choices' => [
-                    'M.' => 'M.',
-                    'Mme' => 'Mme',
-                    'Mlle' => 'Mlle',
-                    'Dr' => 'Dr',
-                    'Hon.' => 'Hon.',
-                    'Pr' => 'Pr',
-                ],
-                'placeholder' => 'Make a choice',
-                'required' => true,
-            ])
-            ->add('gender', ChoiceType::class, [
-                'label' => 'Sexe',
-                'choices' => [
-                    'F' => 'F',
-                    'M' => 'M',
-                ],
-                'placeholder' => 'Make a choice',
-                'required' => true,
-            ])
-            ->add('documentType', ChoiceType::class, [
-                'label' => 'Type de document',
-                'choices' => [
-                    'CNI' => 'CNI',
-                    'Passeport' => 'Passeport',
-                    'Autres' => 'Autres',
-                ],
-                'placeholder' => 'Make a choice',
-                'required' => true,
-            ])
-            ->add('dateOfBirth', BirthdayType::class, [
-                'label' => 'Date de Naissance',
-                'required' => true,
-                'widget' => 'single_text'
             ]);
+
+        if ($options['edit_identity']) {
+            $builder
+                ->add('fullname', TextType::class, [
+                    'label' => 'Nom & prénoms',
+                    'required' => true,
+                    'trim' => true,
+                ])
+                ->add('cni', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'N° CNI/Passeport/Autre',
+                    'trim' => true,
+                ])
+                ->add('title', ChoiceType::class, [
+                    'label' => 'Titre',
+                    'choices' => [
+                        'M.' => 'M.',
+                        'Mme' => 'Mme',
+                        'Mlle' => 'Mlle',
+                        'Dr' => 'Dr',
+                        'Hon.' => 'Hon.',
+                        'Pr' => 'Pr',
+                    ],
+                    'placeholder' => 'Make a choice',
+                    'required' => true,
+                ])
+                ->add('gender', ChoiceType::class, [
+                    'label' => 'Sexe',
+                    'choices' => [
+                        'F' => 'F',
+                        'M' => 'M',
+                    ],
+                    'placeholder' => 'Make a choice',
+                    'required' => true,
+                ])
+                ->add('documentType', ChoiceType::class, [
+                    'label' => 'Type de document',
+                    'choices' => [
+                        'CNI' => 'CNI',
+                        'Passeport' => 'Passeport',
+                        'Autres' => 'Autres',
+                    ],
+                    'placeholder' => 'Make a choice',
+                    'required' => true,
+                ])
+                ->add('dateOfBirth', BirthdayType::class, [
+                    'label' => 'Date de Naissance',
+                    'required' => true,
+                    'widget' => 'single_text'
+                ]);
+        }
 
         $builder->addEventSubscriber(new AddFieldPackSubscriber($this->requestStack));
     }
@@ -131,7 +130,8 @@ class UserProfileType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_jtwc_token',
             'csrf_token_id'   => 'jtwc_user_profile_form_token',
-            'validation_groups' => ['update_profile']
+            'validation_groups' => ['update_profile'],
+            'edit_identity' => true,
         ]);
     }
 }

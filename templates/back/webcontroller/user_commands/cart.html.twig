@@ -1,103 +1,116 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	Jessica Total Wellness Concept - Panier
-{% endblock %}
-{% block page_title %}
-	Votre panier
-{% endblock %}
+{% block title %}Panier - RACS Health Global{% endblock %}
+{% block page_title %}Votre panier{% endblock %}
+{% block nav_shop %}bg-jessica-500 text-white{% endblock %}
 
 {% block main %}
-	<div class="col-lg-12">
-		{% for type, messages in app.session.flashbag.all() %}
-			{% for message in messages %}
-				<div class="alert alert-{{type}}">{{message}}</div>
-			{% endfor %}
-		{% endfor %}
-		{% if cart.products.count > 0 %}
-			<div class="row mt-4">
-				<!-- List of items -->
-				<div class="col-md-8" style="height: 50rem;">
-					{{form_start(form)}}
-					<div class="card">
-						<div class="card-header bg-dark text-white d-flex">
-							<h5>Vos produits</h5>
-							<div class="ml-auto">
-								{{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
-								{{ form_widget(form.clear, {'attr': {'class': 'btn btn-light'}}) }}
-							</div>
-						</div>
-						<ul class="list-group list-group-flush">
-							{% for productForm in form.products %}
-								<li class="list-group-item d-flex">
-									<div class="flex-fill mr-2">
-										<img src="{{ vich_uploader_asset(productForm.vars.data.product, 'imageFile')|imagine_filter('reduc_cart') }}" width="128" alt="{{ productForm.vars.data.product.name }}">
-									</div>
-									<div class="flex-fill mr-2">
-										<h5 class="mt-0 mb-0">{{ productForm.vars.data.product.name }}</h5>
-										<small>{{ productForm.vars.data.product.description[:50]|raw }}...</small>
-										<div class="form-inline mt-2">
-											<div class="form-group mb-0 mr-2">
-												{{ form_widget(productForm.quantity, {
-                                                    'attr': {
-                                                        'class': 'form-control form-control-sm '~ (productForm.quantity.vars.valid ? '' : 'is-invalid')
-                                                    }
-                                                }) }}
-												<div class="invalid-feedback">
-													{{ form_errors(productForm.quantity) }}
-												</div>
-											</div>
-											{{form_widget(productForm.remove, {'attr': {'class': 'btn btn-danger btn-sm'}})}}
-											{{form_widget(productForm.update, {'attr': {'class': 'btn btn-info btn-sm'}})}}
-										</div>
-									</div>
-									<div class="flex-fill mr-2 text-right">
-										<b>{{ productForm.vars.data.product.distributorPrice }} FCFA</b>
-									</div>
-								</li>
-							{% endfor %}
-						</ul>
-					</div>
-					{{form_end(form)}}
-				</div>
-				<!-- Summary -->
-				<div class="col-md-4">
-					<div class="card mt-4 mt-md-0">
-						<h5 class="card-header bg-dark text-white">Récapitulatif</h5>
-						<ul class="list-group">
-							{% for productForm in form.products %}
-								<li class="list-group-item d-flex justify-content-between align-items-center">
-									{{ productForm.vars.data.product.name }} (FCFA {{ productForm.vars.data.product.distributorPrice }})
-									<span class="badge badge-primary badge-pill">{{ productForm.quantity.vars.value }}</span>
-								</li>
-							{% endfor %}
-						</ul>
-					</div>
-					<ul class="list-group list-group-flush">
-						<li class="list-group-item d-flex justify-content-between">
-							<div>
-								<b>Total</b>
-							</div>
-							<span>
-								<b>{{ cart.totalDistributorWithoutShippingCost }} FCFA</b>
-							</span>
-						</li>
-					</ul>
-					<div class="card-body">
-						<button style="margin-bottom: 10px;" class="btn btn-warning w-200 mb-3">Payer par:</button>
-						<p style="text-align: center;" class="payment">
-							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 1, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/MTN-Mobile-Money.png') }}" /></a>
-							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 2, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/orange-money.jpg') }}" /></a>
-							<a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 3, 'id': cart.id}) }}"><img style="width: 75px; height: 75px;" src="{{ asset('img/logoeu.jpg') }}" /></a>
-						</p>
-					</div>
-				</div>
-			</div>
-		{% else %}
-			<div class="alert alert-info">
-				
-				<a href="{{ path('products_all') }}">Votre panier est vide. Consulter nos produits</a>
-			</div>
-		{% endif %}
+<div class="space-y-5 -m-5 sm:-m-6">
+  {% if cart.products.count > 0 %}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-	</div>
+    {# Cart Items #}
+    <div class="lg:col-span-2">
+      {{ form_start(form) }}
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-jessica-500"></i>
+            Vos produits
+          </h3>
+          <div class="flex gap-2">
+            {{ form_widget(form.save, {'attr': {'class': 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-jessica-500 text-white text-xs font-semibold rounded-lg hover:bg-jessica-600 transition-colors cursor-pointer'}}) }}
+            {{ form_widget(form.clear, {'attr': {'class': 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-200 transition-colors cursor-pointer'}}) }}
+          </div>
+        </div>
+        <div class="divide-y divide-gray-100">
+          {% for productForm in form.products %}
+          <div class="flex items-center gap-4 p-5">
+            <div class="w-20 h-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+              {% if productForm.vars.data.product.imageName %}
+                <img src="{{ vich_uploader_asset(productForm.vars.data.product, 'imageFile')|imagine_filter('reduc_cart') }}" alt="{{ productForm.vars.data.product.name }}" class="w-full h-full object-cover">
+              {% else %}
+                <div class="w-full h-full flex items-center justify-center"><i data-lucide="package" class="w-8 h-8 text-gray-300"></i></div>
+              {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-semibold text-gray-800 truncate">{{ productForm.vars.data.product.name }}</h4>
+              <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">{{ productForm.vars.data.product.description[:50]|raw }}...</p>
+              <div class="flex items-center gap-2 mt-2">
+                {{ form_widget(productForm.quantity, {'attr': {'class': 'w-16 rounded-lg border border-gray-300 px-2 py-1 text-sm text-center focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (productForm.quantity.vars.valid ? '' : ' border-red-400')}}) }}
+                {{ form_widget(productForm.update, {'attr': {'class': 'px-2 py-1 text-xs font-semibold text-jessica-600 bg-jessica-50 rounded-lg hover:bg-jessica-100 transition-colors cursor-pointer'}}) }}
+                {{ form_widget(productForm.remove, {'attr': {'class': 'px-2 py-1 text-xs font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer'}}) }}
+              </div>
+              {% if not productForm.quantity.vars.valid %}
+              <p class="text-xs text-red-500 mt-1">{{ form_errors(productForm.quantity) }}</p>
+              {% endif %}
+            </div>
+            <div class="text-right flex-shrink-0">
+              <div class="text-sm font-bold text-gray-800">{{ productForm.vars.data.product.distributorPrice|number_format(0, ',', '.') }}</div>
+              <div class="text-xs text-gray-400">FCFA</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {{ form_end(form) }}
+    </div>
+
+    {# Summary #}
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-24">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+            <i data-lucide="receipt" class="w-5 h-5 text-jessica-500"></i>
+            Recapitulatif
+          </h3>
+        </div>
+        <div class="divide-y divide-gray-100">
+          {% for productForm in form.products %}
+          <div class="flex items-center justify-between px-5 py-3">
+            <span class="text-sm text-gray-600 truncate flex-1">{{ productForm.vars.data.product.name }}</span>
+            <span class="text-xs font-bold text-jessica-500 bg-jessica-50 px-2 py-0.5 rounded-full ml-2">x{{ productForm.quantity.vars.value }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="px-5 py-4 bg-gray-50 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-gray-800">Total</span>
+            <span class="text-lg font-bold text-jessica-500">{{ cart.totalDistributorWithoutShippingCost|number_format(0, ',', '.') }} <span class="text-xs text-gray-400">FCFA</span></span>
+          </div>
+        </div>
+        <div class="p-5 space-y-3">
+          <p class="text-xs font-semibold text-gray-500 text-center">Payer par :</p>
+          <div class="flex items-center justify-center gap-4">
+            <a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 1, 'id': cart.id}) }}" class="w-16 h-16 rounded-xl border-2 border-gray-200 hover:border-jessica-400 transition-colors overflow-hidden p-1">
+              <img src="{{ asset('img/MTN-Mobile-Money.png') }}" alt="MTN MoMo" class="w-full h-full object-contain">
+            </a>
+            <a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 2, 'id': cart.id}) }}" class="w-16 h-16 rounded-xl border-2 border-gray-200 hover:border-accent-400 transition-colors overflow-hidden p-1">
+              <img src="{{ asset('img/orange-money.jpg') }}" alt="Orange Money" class="w-full h-full object-contain">
+            </a>
+            <a href="{{ path('confirm_order_payment', {'provider': 'dohone', 'operateur': 3, 'id': cart.id}) }}" class="w-16 h-16 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-colors overflow-hidden p-1">
+              <img src="{{ asset('img/logoeu.jpg') }}" alt="EU" class="w-full h-full object-contain">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% else %}
+  <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
+    <i data-lucide="shopping-cart" class="w-12 h-12 mx-auto text-gray-300 mb-4"></i>
+    <h3 class="text-lg font-bold text-gray-800 mb-2">Votre panier est vide</h3>
+    <p class="text-sm text-gray-400 mb-4">Ajoutez des produits pour commencer</p>
+    <a href="{{ path('products_all') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+      <i data-lucide="package" class="w-4 h-4"></i>
+      Consulter nos produits
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('cart') }}
 {% endblock %}

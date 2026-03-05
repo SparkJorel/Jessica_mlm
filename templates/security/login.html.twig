@@ -1,41 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="JTWC">
-    <meta name="keyword" content="JTWC, MLM">
-    <title>Jessica Total Wellness Concept - Login</title>
-    <!-- Favicons -->
-    <link href="{{ asset('img/favicon.png') }}" rel="icon">
-    <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
-    {% block stylesheets %}
-    {{ encore_entry_link_tags('login') }}
-    {% endblock %}
+    <meta name="description" content="RACS Health Global - Sante & Bien-etre">
+    <meta name="author" content="RACS Health Global">
+    <title>RACS Health Global - Connexion</title>
+    <link id="favicon" rel="icon" href="{{ asset('img/logo_racs.jpg') }}">
+    <link href="{{ asset('img/logo_racs.jpg') }}" rel="apple-touch-icon">
+    <script>
+      (function(){
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          var s = 64, c = document.createElement('canvas');
+          c.width = s; c.height = s;
+          var ctx = c.getContext('2d');
+          ctx.beginPath(); ctx.arc(s/2, s/2, s/2, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+          ctx.drawImage(img, 0, 0, s, s);
+          var link = document.getElementById('favicon');
+          link.type = 'image/png';
+          link.href = c.toDataURL('image/png');
+        };
+        img.src = '{{ asset('img/logo_racs.jpg') }}';
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              jessica: {
+                50: '#E8F5EC',
+                100: '#C8E6C9',
+                200: '#81C784',
+                300: '#4CAF50',
+                400: '#27A854',
+                500: '#1B7A3D',
+                600: '#0D5A2B',
+                700: '#0A4722',
+                800: '#073518',
+                900: '#04220F',
+              },
+              accent: {
+                50: '#FFF3E0',
+                100: '#FFE0B2',
+                200: '#FFCC80',
+                300: '#FFB74D',
+                400: '#FF9800',
+                500: '#E8621A',
+                600: '#BF3A00',
+                700: '#8B2900',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
 </head>
-<body>
-  <div id="login-page">
-    <div class="container">
-      <form class="form-login" method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-        <h2 class="form-login-heading">Espace membre</h2>
-        <div class="login-wrap">
-          <input type="text"  value="{{ last_username }}" name="_username" class="form-control" placeholder="login" required autofocus>
-          <br>
-          <input type="password" name="_password" class="form-control" placeholder="mot de passe" required>
-          <br />
-          <input type="hidden" name="_csrf_token"  value="{{ csrf_token('jtwc_signing') }}" />
-          <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i>Se Connecter</button>
-          <hr>
+<body class="font-sans bg-gray-50 min-h-screen">
+
+  <div class="min-h-screen flex">
+    {# --- Left: Visual Panel (hidden on mobile) --- #}
+    <div class="hidden lg:flex lg:flex-1 bg-gradient-to-br from-jessica-700 via-jessica-500 to-jessica-400 relative overflow-hidden items-center justify-center">
+      {# Decorative circles #}
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/5 rounded-full"></div>
+      <div class="absolute -bottom-32 -left-16 w-80 h-80 bg-white/5 rounded-full"></div>
+      <div class="absolute top-1/3 right-1/4 w-40 h-40 bg-white/[0.03] rounded-full"></div>
+
+      <div class="relative z-10 text-center text-white px-12 max-w-lg">
+        <img src="{{ asset('img/logo_racs.jpg') }}" alt="RACS Health Global" class="w-48 mx-auto mb-10 rounded-2xl shadow-2xl">
+        <h2 class="text-3xl font-800 mb-4 leading-tight">RACS Health Global</h2>
+        <p class="text-lg text-white/75 leading-relaxed">
+          Rejoignez le reseau RACS Health Global et developpez votre activite dans le bien-etre et la sante.
+        </p>
+        <div class="flex items-center justify-center gap-6 mt-10 text-sm text-white/50">
+          <div class="flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>Securise</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="globe" class="w-4 h-4"></i>
+            <span>International</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>MLM</span>
+          </div>
         </div>
-      </form>
+      </div>
+    </div>
+
+    {# --- Right: Login Form --- #}
+    <div class="flex-1 flex items-center justify-center px-6 py-12 sm:px-12">
+      <div class="w-full max-w-md">
+        {# Logo for mobile #}
+        <div class="flex justify-center mb-8 lg:hidden">
+          <img src="{{ asset('img/logo_racs.jpg') }}" alt="RACS Health Global" class="h-16 rounded-xl shadow-md">
+        </div>
+
+        <div class="text-center mb-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Espace Membre</h1>
+          <p class="text-gray-500 text-sm sm:text-base">Connectez-vous pour acceder a votre tableau de bord</p>
+        </div>
+
+        {# Error message #}
+        {% if error %}
+          <div class="flex items-start gap-3 bg-red-50 border border-red-200 text-red-800 rounded-xl px-4 py-3 mb-6 text-sm">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"></i>
+            <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+          </div>
+        {% endif %}
+
+        {# Login Card #}
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 sm:p-10">
+          <form method="post" class="space-y-5">
+
+            <div>
+              <label for="username" class="block text-sm font-semibold text-gray-700 mb-1.5">Identifiant</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+                </div>
+                <input
+                  type="text"
+                  id="username"
+                  name="_username"
+                  value="{{ last_username }}"
+                  class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 text-base placeholder-gray-400 focus:border-jessica-500 focus:ring-4 focus:ring-jessica-500/10 outline-none transition-all duration-200"
+                  placeholder="Votre email ou code"
+                  required
+                  autofocus
+                >
+              </div>
+            </div>
+
+            <div>
+              <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">Mot de passe</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  name="_password"
+                  class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 text-base placeholder-gray-400 focus:border-jessica-500 focus:ring-4 focus:ring-jessica-500/10 outline-none transition-all duration-200"
+                  placeholder="Votre mot de passe"
+                  required
+                >
+              </div>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('jtwc_signing') }}">
+
+            <button
+              type="submit"
+              class="w-full flex items-center justify-center gap-2 bg-jessica-500 hover:bg-jessica-600 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-jessica-500/25 active:scale-[0.98] text-base mt-2"
+            >
+              <i data-lucide="log-in" class="w-5 h-5"></i>
+              Se Connecter
+            </button>
+          </form>
+        </div>
+
+        <p class="text-center text-xs text-gray-400 mt-8">
+          &copy; {{ "now"|date("Y") }} <span class="font-semibold text-jessica-500">RACS Health Global</span>. Tous droits reserves.
+        </p>
+      </div>
     </div>
   </div>
-{% block javascripts %}
-{{ encore_entry_script_tags('login') }}
-{% endblock %}
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>

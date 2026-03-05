@@ -1,110 +1,88 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	JTWC - Payer sa facture
-{% endblock %}
-{% block page_title %}
-	Payer sa facture avec {% if operateur == 1 %}
-        MTN Mobile Money
-        {% elseif operateur == 2 %}
-        Orange Money
-        {% elseif operateur == 3 %}
-        Express Union Mobile
-    {% endif %}
-{% endblock %}
+{% block title %}Paiement - RACS Health Global{% endblock %}
+{% block page_title %}Payer sa facture avec {% if operateur == 1 %}MTN Mobile Money{% elseif operateur == 2 %}Orange Money{% elseif operateur == 3 %}Express Union Mobile{% endif %}{% endblock %}
+
 {% block main %}
-	<div class="col-lg-12">
-        {% for type, messages in app.session.flashbag.all() %}
-            {% for message in messages %}
-                <div class="alert alert-{{type}}">{{message}}</div>
-            {% endfor %}
-        {% endfor %}
-		<a class="btn btn-info w-200 mb-3" href="{{ path('summary_subscription_cart') }}"> Changer de moyen de paiment
-		</a>
-        <div class="row mt-4">
-            <!-- List of items -->
-            <div class="col-md-10 col-md-offset-1" style="margin-top: 2rem; margin-bottom: 2rem;">
-                    {{form_start(form)}}
-                    <div class="row">
-                        <div class="form-group">
-                            {{ form_label(form.telephone, null, { 'label_attr':  {
-                                    'class': 'col-lg-3 control-label'
-                                }}
-                                ) }}
-                            <div class="col-lg-9">
-                                {{ form_errors(form.telephone) }}
-                                {{ form_widget(form.telephone, { 'attr':  {
-                                        'class': 'form-control' ~ (form.telephone.vars.valid ? '' : 'is-invalid')
-                                    }})
-                                }}
-                                {{ form_help(form.telephone) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.telephone) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>    
-                        {% if form.otpCode is defined %}
-                        <div class="row">
-                            <div class="form-group">
-                                {{ form_label(form.otpCode, null, { 'label_attr':  {
-                                        'class': 'col-lg-3 control-label'
-                                    }}
-                                    ) }}
-                                <div class="col-lg-9">
-                                    {{ form_errors(form.otpCode) }}
-                                    {{ form_widget(form.otpCode, { 'attr':  {
-                                            'class': 'form-control'
-                                        }})
-                                    }}
-                                    <small>Veuillez composer sur votre téléphone portable le code : <strong>#150*4*4#</strong> afin d'obtenir votre code OTP</small>
-                                </div>
-                            </div>
-                            
-                        </div>
+<div class="max-w-3xl mx-auto -m-5 sm:-m-6">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-                        {% endif %}
-                        <div style="margin-top: 1.5rem" class="form-group">
-                            <div class="col-lg-offset-6 col-lg-2">
-                                <input type="submit" name="submit" class="btn btn-warning" value="Payer" />
-                            </div>                
-                        </div>
-                    {{form_end(form)}}
-            </div>
-
-                    <!-- Summary -->
-            <div class="col-md-12">
-                <div class="card table-responsive">
-                    <div class="card-header bg-dark text-white d-flex">
-                        <h5>Les packs commandés</h5>
-                    </div>
-
-                    <table class="table table-condensed table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Pack de souscription</th>
-                                <th>Quantité</th>
-                                <th>Prix</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th colspan="2">Total</th>
-                            <th class="info">{{total}}</th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                            {% for packName, summary in summaries %}
-                                <tr>
-                                    <td>{{packName}}</td>
-                                    <td>{{summary['quantity']}}</td>
-                                    <td>{{summary['price']}}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>            
-            </div>
-
+    {# Payment Form #}
+    <div class="lg:col-span-3">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-jessica-50 flex items-center justify-center">
+            {% if operateur == 1 %}
+              <img src="{{ asset('img/MTN-Mobile-Money.png') }}" alt="MTN" class="w-6 h-6 object-contain">
+            {% elseif operateur == 2 %}
+              <img src="{{ asset('img/orange-money.jpg') }}" alt="Orange" class="w-6 h-6 object-contain">
+            {% else %}
+              <img src="{{ asset('img/logoeu.jpg') }}" alt="EU" class="w-6 h-6 object-contain">
+            {% endif %}
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-gray-800">Paiement mobile</h2>
+            <p class="text-xs text-gray-400">Entrez vos informations de paiement</p>
+          </div>
         </div>
-	</div>
+        <div class="p-6">
+          {{ form_start(form) }}
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.telephone.vars.label }}</label>
+              {{ form_widget(form.telephone, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.telephone.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+              {{ form_help(form.telephone) }}
+              {% if not form.telephone.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.telephone) }}</p>{% endif %}
+            </div>
+            {% if form.otpCode is defined %}
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.otpCode.vars.label }}</label>
+              {{ form_widget(form.otpCode, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+              <p class="text-xs text-gray-400 mt-1">Composez <strong class="text-jessica-500">#150*4*4#</strong> pour obtenir votre code OTP</p>
+            </div>
+            {% endif %}
+            <div class="flex gap-3 pt-2">
+              <a href="{{ path('summary_subscription_cart') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour
+              </a>
+              <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+                <i data-lucide="credit-card" class="w-4 h-4"></i> Payer
+              </button>
+            </div>
+          </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+
+    {# Order Summary #}
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-24">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+            <i data-lucide="receipt" class="w-4 h-4 text-jessica-500"></i>
+            Packs commandes
+          </h3>
+        </div>
+        <div class="divide-y divide-gray-100">
+          {% for packName, summary in summaries %}
+          <div class="flex items-center justify-between px-5 py-3">
+            <div>
+              <div class="text-sm font-semibold text-gray-800">{{ packName }}</div>
+              <div class="text-xs text-gray-400">x{{ summary['quantity'] }}</div>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{{ summary['price']|number_format(0, ',', '.') }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="px-5 py-4 bg-gray-50 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-gray-800">Total</span>
+            <span class="text-lg font-bold text-jessica-500">{{ total|number_format(0, ',', '.') }} <span class="text-xs text-gray-400">FCFA</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

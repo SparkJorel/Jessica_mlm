@@ -1,103 +1,117 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	Jessica Total Wellness Concept - Nos produits
-{% endblock %}
-
-{% block page_title %}
-	Nos produits 
-{% endblock %}
+{% block title %}Nos produits - RACS Health Global{% endblock %}
+{% block page_title %}Nos produits{% endblock %}
 
 {% block main %}
-	<div class="col-lg-12">
-		<div class="content-panel">
-		    {% for type, messages in app.session.flashbag.all() %}
-                {% for message in messages %}
-                    <div class="alert alert-{{type}}">{{message}}</div>
-                {% endfor %}
-            {% endfor %}
-			<h4>
-				{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
-					<a href="{{ path('product_new') }}">
-						<button type="button" class="btn btn-primary">
-							<span class="fa fa-plus-circle"></span>Ajouter un produit
-						</button>
-					</a>
-				{% endif %}
-            </h4>
-			<section id="unseen">
-				<table class="table table-bordered table-striped table-condensed">
-					<thead>
-						<tr>
-							<th>Code</th>
-							<th>Nom</th>
-							<th class="numeric">Prix distributeur(XAF)</th>
-							<th class="numeric">Prix client(XAF)</th>
-							<th class="numeric">SV Binaire</th>
-							<th class="numeric">SV AP</th>
-							<th class="numeric">Quote</th>
-							{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
-								<th>Actions</th>
-							{% endif %}
-						</tr>
-					</thead>
-					<tbody>
-						{% for product in products %}
-							<tr>
-								<td>{{ product.code }}</td>
-								<td>{{ product.name }}</td>
-								<td class="numeric">{{ product.distributorPrice|number_format(2, ',', ' ') }}</td>
-								<td class="numeric">{{ product.clientPrice|number_format(2, ',', ' ') }}</td>
-								<td class="numeric">{{ product.productSV|number_format(2, ',', ' ') }}</td>
-								<td class="numeric">{{ product.productSVBPA|number_format(2, ',', ' ') }}</td>
-								<td class="numeric">{{ product.productCote|number_format(2, ',', ' ') }}</td>
-								{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
-									<td>
-										<a href="{{ path('product_edit', {'id': product.id})}}" title="Edit" class="btn btn-info btn-xs">
-											<span class="fa fa-edit"></span>
-										</a>
-										{% if is_granted('ROLE_JTWC_ADMIN') %}
-											<button
-												type="button"
-												class="btn btn-danger btn-xs"
-												title="Delete"
-												data-toggle="modal"
-												data-target="#productDeleteDialog{{product.id}}">
-												<span class="fa fa-remove"></span>
-											</button>
-											<div
-												class="modal fade"
-												id="productDeleteDialog{{product.id}}"
-												tabindex="-1"
-												role="dialog"
-												aria-labelledby="myModalLabel"
-												aria-hidden="true">
-												<div class="modal-dialog">
-													<div class="modal-content">
-														<div class="modal-header">
-															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-															<h4 class="modal-title" id="myModalLabel">Confirmation requise</h4>
-														</div>
-														<div class="modal-body">
-															Voulez vous vraiment supprimer ce produit ?
-														</div>
-														<div class="modal-footer">
-															<button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
-															<form action="{{ path('product_delete', {'id': product.id }) }}" method="post">
-																<button type="button" class="btn btn-danger">Confirmer</button>
-																<input type="hidden" name="_jtwc_product_token" value="{{ csrf_token('jtwc_product-delete'~product.id) }}"/>
-															</form>
-														</div>
-													</div>
-												</div>
-											</div>
-										{% endif %}
-									</td>
-								{% endif %}
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</section>
-		</div>
-	</div>
+<div class="space-y-5 -m-5 sm:-m-6">
+
+  {# Flash Messages #}
+  {% for type, messages in app.session.flashbag.all() %}
+    {% for message in messages %}
+      <div class="mx-5 px-4 py-3 rounded-lg text-sm font-medium {% if type == 'success' %}bg-green-50 text-green-700{% elseif type == 'danger' %}bg-red-50 text-red-700{% else %}bg-blue-50 text-blue-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endfor %}
+
+  {# Action Bar #}
+  <div class="flex flex-wrap items-center gap-3 px-5">
+    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+      <a href="{{ path('product_new') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+        Ajouter un produit
+      </a>
+    {% endif %}
+  </div>
+
+  {# Data Table #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Code</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix distributeur (XAF)</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">Prix client (XAF)</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV Binaire</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV AP</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden xl:table-cell">Quote</th>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+              <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for product in products %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{{ product.code }}</span>
+              </td>
+              <td class="px-4 py-3 font-medium text-gray-800">{{ product.name }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ product.distributorPrice|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{{ product.clientPrice|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ product.productSV|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ product.productSVBPA|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600 hidden xl:table-cell">{{ product.productCote|number_format(2, ',', ' ') }}</td>
+              {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-center gap-1">
+                    <a href="{{ path('product_edit', {'id': product.id}) }}" title="Modifier" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors">
+                      <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </a>
+                    {% if is_granted('ROLE_JTWC_ADMIN') %}
+                      <button type="button" title="Supprimer" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors" onclick="openModal('delete-{{ product.id }}')">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                      {# Delete Modal #}
+                      <div id="modal-delete-{{ product.id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 p-6">
+                          <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                              <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800">Supprimer ce produit ?</h3>
+                          </div>
+                          <p class="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer ce produit ?</p>
+                          <div class="flex gap-3 justify-end">
+                            <button onclick="closeModal('delete-{{ product.id }}')" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Annuler</button>
+                            <form action="{{ path('product_delete', {'id': product.id}) }}" method="post" class="inline">
+                              <input type="hidden" name="_jtwc_product_token" value="{{ csrf_token('jtwc_product-delete'~product.id) }}">
+                              <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors">Supprimer</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </td>
+              {% endif %}
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="8" class="px-4 py-12 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i>
+                  <p class="text-sm text-gray-500">Aucun produit enregistre pour l'instant</p>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) {
+  const m = document.getElementById('modal-' + id);
+  if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+}
+function closeModal(id) {
+  const m = document.getElementById('modal-' + id);
+  if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+}
+</script>
 {% endblock %}

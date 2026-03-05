@@ -1,59 +1,39 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	JTWC - Les produits du réseau
-{% endblock %}
-{% block page_title %}
-	Les produits du réseau
-{% endblock %}
+{% block title %}Nos produits - RACS Health Global{% endblock %}
+{% block page_title %}Les produits du reseau{% endblock %}
+{% block nav_shop %}bg-jessica-500 text-white{% endblock %}
+
 {% block main %}
-	<div class="body-productPage col-lg-12">
-            <div class="container-productPage">
-             {% for product in products %}
-                <div class="card-productPage">
-                    <div class="imgBx">
-                        <img src="{{ vich_uploader_asset(product, 'imageFile')|imagine_filter('reduc_accueil') }}" alt="{{ product.name }}" />
-                        <ul class="action-productPage">
-                            <li>
-                                <a href="{{ path('product_show', {'id': product.id}) }}">
-                                    <i class="fa fa-heart" aria-hidden="true"></i>
-                                    <span>Add to Wishlist</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ path('product_show', {'id': product.id}) }}">
-                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                    <span>Add to Cart</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ path('product_show', {'id': product.id}) }}">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                    <span>Consulter les détails</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="content-productPage">
-                        <div class="productName">
-                            <h3>{{ product.name }}</h3>
-                        </div>
-                        <div class="price_rating">
-                            <h2>{{ product.distributorPrice|number_format(2, ',', ' ') }} FCFA</h2>
-                            <div class="rating">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa grey fa-star" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
-	</div>
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('page_product') }}
+<div class="-m-5 sm:-m-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    {% for product in products %}
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+      <div class="relative aspect-square bg-gray-100 overflow-hidden">
+        {% if product.imageName %}
+          <img src="{{ vich_uploader_asset(product, 'imageFile')|imagine_filter('reduc_accueil') }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        {% else %}
+          <div class="w-full h-full flex items-center justify-center">
+            <i data-lucide="package" class="w-16 h-16 text-gray-300"></i>
+          </div>
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+          <a href="{{ path('product_show', {'id': product.id}) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-800 text-sm font-semibold rounded-lg shadow-lg hover:bg-jessica-50 transition-colors">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            Voir les details
+          </a>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm font-bold text-gray-800 truncate">{{ product.name }}</h3>
+        <div class="flex items-center justify-between mt-2">
+          <span class="text-lg font-bold text-jessica-500">{{ product.distributorPrice|number_format(0, ',', '.') }} <span class="text-xs text-gray-400 font-normal">FCFA</span></span>
+          <a href="{{ path('product_show', {'id': product.id}) }}" class="p-2 rounded-lg bg-jessica-50 text-jessica-500 hover:bg-jessica-100 transition-colors">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

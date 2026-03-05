@@ -1,283 +1,642 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="JTWC">
-    <meta name="keyword" content="JTWC, MLM">
-    <title>{% block title %}{% endblock %}</title>
-    <!-- Favicons -->
-    <link href="{{ asset('img/favicon.png') }}" rel="icon">
-    <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    <meta name="description" content="RACS Health Global - Sante & Bien-etre">
+    <meta name="author" content="RACS Health Global">
+    <title>{% block title %}RACS Health Global{% endblock %}</title>
+    <link id="favicon" rel="icon" href="{{ asset('img/logo_racs.jpg') }}">
+    <link href="{{ asset('img/logo_racs.jpg') }}" rel="apple-touch-icon">
+    <script>
+      (function(){
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          var s = 64, c = document.createElement('canvas');
+          c.width = s; c.height = s;
+          var ctx = c.getContext('2d');
+          ctx.beginPath(); ctx.arc(s/2, s/2, s/2, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+          ctx.drawImage(img, 0, 0, s, s);
+          var link = document.getElementById('favicon');
+          link.type = 'image/png';
+          link.href = c.toDataURL('image/png');
+        };
+        img.src = '{{ asset('img/logo_racs.jpg') }}';
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              jessica: {
+                50: '#E8F5EC', 100: '#C8E6C9', 200: '#81C784', 300: '#4CAF50',
+                400: '#27A854', 500: '#1B7A3D', 600: '#0D5A2B', 700: '#0A4722',
+                800: '#073518', 900: '#04220F',
+              },
+              accent: {
+                50: '#FFF3E0', 100: '#FFE0B2', 200: '#FFCC80', 300: '#FFB74D',
+                400: '#FF9800', 500: '#E8621A', 600: '#BF3A00', 700: '#8B2900',
+              },
+              sidebar: { DEFAULT: '#0F172A', light: '#1E293B' }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="{{ asset('css/jessica-modern.css') }}">
     {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-    {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_link_tags('app') }}
     {% endblock %}
+    <style>
+      [x-cloak] { display: none !important; }
+      .sidebar-scrollbar::-webkit-scrollbar { width: 4px; }
+      .sidebar-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .sidebar-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+      /* Toast animations */
+      @keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      @keyframes toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+      .toast-enter { animation: toast-in 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards; }
+      .toast-exit { animation: toast-out 0.3s ease-in forwards; }
+
+      /* KnpPaginator modern styling */
+      .navigation .pagination { display: flex; gap: 4px; list-style: none; padding: 0; margin: 0; flex-wrap: wrap; justify-content: center; }
+      .navigation .pagination li { display: inline-flex; }
+      .navigation .pagination li a,
+      .navigation .pagination li span {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 36px; height: 36px; padding: 0 10px;
+        font-size: 13px; font-weight: 600; border-radius: 8px;
+        border: 1px solid #e5e7eb; background: white; color: #374151;
+        text-decoration: none; transition: all 0.15s ease;
+      }
+      .navigation .pagination li a:hover { border-color: #1B7A3D; color: #1B7A3D; background: #E8F5EC; }
+      .navigation .pagination li .current,
+      .navigation .pagination li .active > span {
+        background: #1B7A3D !important; color: white !important; border-color: #1B7A3D !important;
+      }
+      .navigation .pagination li.disabled span { opacity: 0.4; cursor: not-allowed; }
+
+      /* Smooth page transitions */
+      .j-card { animation: fade-up 0.3s ease-out; }
+      @keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+      /* Table sort links */
+      .sortable a { color: inherit; text-decoration: none; }
+      .sortable a:hover { color: #1B7A3D; }
+    </style>
 </head>
-<body>
-    <section id="container">
-        <header class="header black-bg">
-            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
-                <div class="sidebar-toggle-box">
-                    <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-                </div>
-            {% endif %}
-            <!--logo start-->
-            <a href="#" class="logo"><b>JT<span>WC</span></b></a>
-            <!--logo end-->
-            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="nav notify-row" id="top_menu">
-                <!--  notification start -->
-                <ul class="nav top-menu">
-                <!-- notification dropdown start-->
-                <li id="header_cart_notification" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle">
-                        <i class="fa fa-shopping-cart"></i>
-                        <span class="badge bg-light" id="notification-cart-count">
-                            <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu extended notification list-group" id="cart-content">
-                    </ul>
-                </li>
-                <!-- notification dropdown end -->
-                <!-- inbox dropdown start-->
-                <li id="header-cart-subscription-notification" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle">
-                        <i class="fa fa-cubes"></i>
-                        <span class="badge bg-light" id="notification-cart-subscription-count">
-                            <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu extended notification list-group" id="cart-subscription-content">
-                    </ul>
-                </li>
-                <!-- inbox dropdown end -->                
-                </ul>
-                <!--  notification end -->
-            </div>
-            {% endif %}
-            <div class="top-menu">
-                <ul class="nav pull-right top-menu">
-                    <li>
-                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <a class="logout" href="{{ path('jtwc_app_logout') }}"><i class="fa fa-power-off"></i>  Logout</a>
-                        {% else %}
-                            Bonjour cher(e) invité(e) <i class="fa fa-smile-o"></i>
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
-        </header>
-        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
-            <aside>
-                <div id="sidebar" class="nav-collapse">
-                    <ul class="sidebar-menu" id="nav-accordion">
-                        <p class="centered">
-                            <a href="#">
-                                <img src="{{ asset(app.user.specificDirectory(upload_base_directory) ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="img-circle" width="80" />
-                            </a>
-                        </p>
-                        <h5 class="centered">{{ app.user.fullname }}</h5>
-                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                        <li>
-                            <a href="{{ path('user_list_all') }}">
-                                <i class="fa fa-users"></i>
-                                <span>Membres</span>
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-level-up"></i>
-                                <span>Upgrade</span>
-                            </a>
-                            <ul class="sub">
-                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                                <li><a href="{{ path('membership_subscription_list') }}">Souscriptions</a></li>
-                                {% endif %}
-                                <li><a href="{{ path('personal_membership_subscription') }}">Upgrade</a></li>
-                                {% if is_granted('ROLE_JTWC_ADMIN') %}
-                                    <li><a href="{{ path('users_grade_list') }}">Grades</a></li>
-                                {% endif %}
-                                <li><a href="{{ path('personal_grade_list') }}">Mes Grades</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-tree"></i>
-                                <span>Downline</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{{ path('genealogy_tree') }}">Genealogy</a></li>
-                                <li><a href="{{ path('user_list') }}">Downline List</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="{{ path('user_new_from_known_sponsor') }}">
-                                <i class="fa fa-user-plus"></i>
-                                <span>Ajouter un membre</span>
-                            </a>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>Commander</span>
-                            </a>
-                            <ul class="sub">
-                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                                    <li><a href="{{ path('list_all_user_commands') }}">Les commandes du réseau</a></li>
-                                {% endif %}
-                                <li><a href="{{ path('user_command_list') }}">Commandes de mon réseau</a></li>
-                                <li><a href="{{ path('user_personal_command_list') }}">Commandes personnelles</a></li>
-                                <li><a href="{{ path('products_all') }}">Nos produits</a></li>
-                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                                    <li><a href="{{ path('user_command_new') }}">Passer une commande</a></li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-gift"></i>
-                                <span>Bonus</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{{ path('bonus_parrainage_user') }}">Bonus Parrainage</a></li>
-                                <li><a href="{{ path('bonus_achat_personnel') }}">Bonus Achat personnel</a></li>
-                                <li><a href="{{ path('bonus_binaire') }}">Bonus Binaire</a></li>
-                                <li><a href="{{ path('bonus_generational') }}">Genérationnel</a></li>
-                                <li><a href="{{ path('user_indirect_bonus') }}">Indirect Bonus</a></li>
-                                <li><a href="{{ path('view_own_recap') }}">Récapitulatif des bonus</a></li>
-                            </ul>
-                        </li>
-                        {% if is_granted('ROLE_JTWC_ADMIN') %}
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-briefcase"></i>
-                                <span>Recapitulatif du cycle</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{{ path('bonus_sponsoring_cycle') }}">Récap du parrainage</a></li>
-                                <li><a href="{{ path('bonus_personal_purchase_cycle') }}">Récapitulatif des achats personnels</a></li>
-                                <li><a href="{{ path('bonus_binaire_cycle') }}">Récapitulatif du binaire</a></li>
-                                <li><a href="{{ path('network_indirect_bonus') }}">Récapitulatif indirect bonus</a></li>
-                            </ul>
-                        </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                            <li>
-                                <a href="{{ path('view_recap') }}">
-                                    <i class="fa fa-rotate-left"></i>
-                                    <span>Commissions</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_JTWC_ADMIN') %}
-                            <li>
-                                <a href="{{ path('turn_over_monthly') }}">
-                                    <i class="fa fa-gavel"></i>
-                                    <span>Rapport Cycle</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-cubes"></i>
-                                <span>Pack de souscription</span>
-                            </a>
-                            <ul class="sub">
-                                {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                                    <li><a href="{{ path('membership_list') }}">Administrer les packs</a></li>
-                                {% endif %}
-                                <li><a href="{{ path('packs_view_all') }}">Consulter nos packs</a></li>
-                            </ul>
-                        </li>
-                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                            <li> 
-                                <a href="{{ path('product_list') }}">
-                                    <i class="fa fa-star"></i>
-                                    <span>Administrer les produits</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-                        <li>
-                            <a href="{{ path('close_cycle_list') }}">
-                                <i class="fa fa-cog"></i>
-                                <span>Finaliser un cycle</span>
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="sub-menu">
-                            <a href="#">
-                                <i class="fa fa-cog"></i>
-                                <span>Paramétrage</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{{ path('cycle_list') }}">Cycle</a></li>
-                                <li><a href="{{ path('grade_list') }}">Grade</a></li>
-                                <li><a href="{{ path('composition_membership_product_list') }}">Composition pack</a></li>
-                                <li><a href="{{ path('grade_maintenance_list') }}">Maintenance</a></li>
-                                <li><a href="{{ path('grade_sv_list') }}">SV</a></li>
-                                <li><a href="{{ path('grade_level_list') }}">Niveau</a></li>
-                                <li><a href="{{ path('indirect_bonus_product_list') }}">Indirect Bonus: Produit</a></li>
-                                <li><a href="{{ path('indirect_bonus_membership_list') }}">Indirect Bonus: Pack</a></li>
-                                <li><a href="{{ path('grade_bg_list') }}">Bonus générationnel</a></li>
-                                <li><a href="{{ path('parameter_config_list') }}">Paramètres généraux</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="#">
-                                <i class="fa fa-user"></i>
-                                <span>Mon Profil</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{{ path('change_password') }}">Modifier le mot de passe</a></li>
-                                <li><a href="{{ path('change_username') }}">Modifier l'identifiant</a></li>
-                                <li><a href="{{ path('user_update_details') }}">Profil</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-        {% endif %}
-            <section id="main-content">
-                <section class="wrapper site-min-height">
-                    <h3><i class="fa fa-angle-right"></i>{% block page_title %}{% endblock %}</h3>
-                    <div class="row">
-                        {% block main %} 
-                        
-                        {% endblock %}
-                    </div>
-                </section>
-                <!-- /wrapper -->
-            </section>
-            <footer class="site-footer">
-                <div class="text-center">
-                    <p>
-                        &copy; Copyrights
-                        <strong>RACS Health Global</strong>. All Rights Reserved
-                    </p>
-                    <div class="credits">
-                        Created by RACS Health Global
-                    </div>
-                    <a href="#" class="go-top">
-                        <i class="fa fa-angle-up"></i>
-                    </a>
-                </div>
-            </footer>
-    </section>
-{% block body %}
+<body class="font-sans bg-gray-50 text-gray-800 min-h-screen antialiased">
+{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+{# ================================================================
+   AUTHENTICATED LAYOUT — Sidebar + Header + Content
+   ================================================================ #}
+<div class="flex min-h-screen" id="app-layout">
 
-{% endblock %}
+  {# --- Mobile overlay --- #}
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  {# --- SIDEBAR --- #}
+  <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-[260px] bg-sidebar text-white z-50 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+
+    {# Brand #}
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-white/[0.08]">
+      <img src="{{ asset('img/logo_racs.jpg') }}" alt="RACS Health Global" class="w-9 h-9 rounded-lg object-cover">
+      <div>
+        <div class="font-bold text-sm tracking-tight">RACS <span class="text-accent-500">Health</span> Global</div>
+        <div class="text-[10px] text-gray-500 uppercase tracking-wider">Sante & Bien-etre</div>
+      </div>
+    </div>
+
+    {# User profile #}
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-white/[0.08]">
+      {% if app.user.imageName %}
+        <img src="{{ asset('uploads/users/' ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-jessica-500">
+      {% else %}
+        <div class="w-9 h-9 rounded-full bg-white/10 ring-2 ring-white/20 flex items-center justify-center">
+          <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+        </div>
+      {% endif %}
+      <div class="min-w-0">
+        <div class="text-sm font-semibold truncate">{{ app.user.fullname }}</div>
+        <div class="text-xs text-gray-400">
+          {% if is_granted('ROLE_JTWC_ADMIN') %}Administrateur
+          {% elseif is_granted('ROLE_JTWC_USER_SECRET') %}Super Utilisateur
+          {% else %}Distributeur{% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Navigation #}
+    <nav class="flex-1 overflow-y-auto sidebar-scrollbar py-3 px-3">
+
+      {# Dashboard #}
+      <div class="mb-1">
+        <a href="{{ path('jtwc_app_redirect') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 {% block nav_dashboard %}{% endblock %}">
+          <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
+          <span>Tableau de bord</span>
+        </a>
+      </div>
+
+      {# --- RESEAU --- #}
+      <div class="mt-4 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Reseau</div>
+      </div>
+
+      {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      <a href="{{ path('user_list_all') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 {% block nav_members %}{% endblock %}">
+        <i data-lucide="users" class="w-[18px] h-[18px]"></i>
+        <span>Membres</span>
+      </a>
+      {% endif %}
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="git-branch" class="w-[18px] h-[18px]"></i>
+          <span>Downline</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          <a href="{{ path('genealogy_tree') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Arbre genealogique</a>
+          <a href="{{ path('user_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Liste downline</a>
+        </div>
+      </div>
+
+      <a href="{{ path('user_new_from_known_sponsor') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+        <i data-lucide="user-plus" class="w-[18px] h-[18px]"></i>
+        <span>Ajouter un membre</span>
+      </a>
+
+      {# --- BUSINESS --- #}
+      <div class="mt-5 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Business</div>
+      </div>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="arrow-up-circle" class="w-[18px] h-[18px]"></i>
+          <span>Upgrade</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+          <a href="{{ path('membership_subscription_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Souscriptions</a>
+          {% endif %}
+          <a href="{{ path('personal_membership_subscription') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mon upgrade</a>
+          {% if is_granted('ROLE_JTWC_ADMIN') %}
+          <a href="{{ path('users_grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
+          {% endif %}
+          <a href="{{ path('personal_grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes grades</a>
+        </div>
+      </div>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="shopping-cart" class="w-[18px] h-[18px]"></i>
+          <span>Commandes</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+          <a href="{{ path('list_all_user_commands') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes du reseau</a>
+          {% endif %}
+          <a href="{{ path('user_command_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes de mon reseau</a>
+          <a href="{{ path('user_personal_command_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes commandes</a>
+          <a href="{{ path('products_all') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Nos produits</a>
+          {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+          <a href="{{ path('user_command_new') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Passer commande</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# --- BONUS --- #}
+      <div class="mt-5 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Bonus & Commissions</div>
+      </div>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="gift" class="w-[18px] h-[18px]"></i>
+          <span>Mes bonus</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          <a href="{{ path('bonus_parrainage_user') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
+          <a href="{{ path('bonus_achat_personnel') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achat personnel</a>
+          <a href="{{ path('bonus_binaire') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
+          <a href="{{ path('bonus_generational') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Generationnel</a>
+          <a href="{{ path('user_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
+          <a href="{{ path('view_own_recap') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Recapitulatif</a>
+        </div>
+      </div>
+
+      {% if is_granted('ROLE_JTWC_ADMIN') %}
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
+          <span>Recap du cycle</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          <a href="{{ path('bonus_sponsoring_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
+          <a href="{{ path('bonus_personal_purchase_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achats personnels</a>
+          <a href="{{ path('bonus_binaire_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
+          <a href="{{ path('network_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      <a href="{{ path('view_recap') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+        <i data-lucide="receipt" class="w-[18px] h-[18px]"></i>
+        <span>Commissions</span>
+      </a>
+      {% endif %}
+
+      {% if is_granted('ROLE_JTWC_ADMIN') %}
+      <a href="{{ path('turn_over_monthly') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+        <i data-lucide="file-text" class="w-[18px] h-[18px]"></i>
+        <span>Rapport cycle</span>
+      </a>
+      {% endif %}
+
+      {# --- CATALOGUE --- #}
+      <div class="mt-5 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Catalogue</div>
+      </div>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="package" class="w-[18px] h-[18px]"></i>
+          <span>Packs</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+          <a href="{{ path('membership_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Administrer les packs</a>
+          {% endif %}
+          <a href="{{ path('packs_view_all') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Consulter nos packs</a>
+        </div>
+      </div>
+
+      {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      <a href="{{ path('product_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+        <i data-lucide="star" class="w-[18px] h-[18px]"></i>
+        <span>Produits</span>
+      </a>
+      {% endif %}
+
+      {# --- ADMINISTRATION (admin only) --- #}
+      {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+      <div class="mt-5 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Administration</div>
+      </div>
+
+      <a href="{{ path('close_cycle_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+        <i data-lucide="rotate-ccw" class="w-[18px] h-[18px]"></i>
+        <span>Finaliser un cycle</span>
+      </a>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="settings" class="w-[18px] h-[18px]"></i>
+          <span>Parametrage</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          <a href="{{ path('cycle_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Cycles</a>
+          <a href="{{ path('grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
+          <a href="{{ path('composition_membership_product_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Composition pack</a>
+          <a href="{{ path('grade_maintenance_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Maintenance</a>
+          <a href="{{ path('grade_sv_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">SV</a>
+          <a href="{{ path('grade_level_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Niveaux</a>
+          <a href="{{ path('indirect_bonus_product_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Produit</a>
+          <a href="{{ path('indirect_bonus_membership_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Pack</a>
+          <a href="{{ path('grade_bg_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Bonus generationnel</a>
+          <a href="{{ path('parameter_config_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parametres generaux</a>
+        </div>
+      </div>
+      {% endif %}
+
+      {# --- PROFIL --- #}
+      <div class="mt-5 mb-1">
+        <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Mon compte</div>
+      </div>
+
+      <div class="nav-group" data-nav-group>
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+          <i data-lucide="user-cog" class="w-[18px] h-[18px]"></i>
+          <span>Mon profil</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
+        </button>
+        <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
+          <a href="{{ path('user_update_details') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Informations</a>
+          <a href="{{ path('change_password') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mot de passe</a>
+        </div>
+      </div>
+
+    </nav>
+
+    {# Sidebar footer - Logout #}
+    <div class="px-4 py-4 border-t border-white/[0.08]">
+      <button type="button" onclick="openModal('logout-confirm')" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 text-sm font-medium transition-all duration-150 w-full text-left">
+        <i data-lucide="log-out" class="w-[18px] h-[18px]"></i>
+        <span>Deconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  {# --- MAIN AREA --- #}
+  <div class="flex-1 lg:ml-[260px] min-h-screen flex flex-col transition-all duration-300">
+
+    {# --- HEADER --- #}
+    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-lg border-b border-gray-200/80 h-16 flex items-center px-4 lg:px-6 gap-4">
+      {# Mobile menu toggle #}
+      <button onclick="toggleSidebar()" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-gray-100 transition-colors">
+        <i data-lucide="menu" class="w-5 h-5 text-gray-600"></i>
+      </button>
+
+      {# Breadcrumb / Page Title #}
+      <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
+        <i data-lucide="home" class="w-4 h-4 flex-shrink-0"></i>
+        <span class="hidden sm:inline">/</span>
+        <span class="font-semibold text-gray-800 truncate">{% block page_title %}Dashboard{% endblock %}</span>
+      </div>
+
+      {# Spacer #}
+      <div class="flex-1"></div>
+
+      {# Header actions #}
+      <div class="flex items-center gap-2">
+        {# Cart notifications #}
+        <a href="{{ path('user_cart_create') }}" class="relative flex items-center justify-center w-10 h-10 rounded-xl hover:bg-gray-100 transition-colors" title="Panier">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-600"></i>
+          <span id="notification-cart-count-new" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-accent-500 text-white text-[11px] font-bold flex items-center justify-center px-1 hidden">0</span>
+        </a>
+
+        {# User menu (desktop) #}
+        <div class="hidden sm:flex items-center gap-2 pl-2 ml-2 border-l border-gray-200">
+          {% if app.user.imageName %}
+            <img src="{{ asset('uploads/users/' ~ app.user.imageName) }}" alt="" class="w-8 h-8 rounded-full object-cover">
+          {% else %}
+            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+            </div>
+          {% endif %}
+          <span class="text-sm font-semibold text-gray-700 max-w-[120px] truncate">{{ app.user.fullname }}</span>
+        </div>
+      </div>
+    </header>
+
+    {# --- CONTENT --- #}
+    <main class="flex-1 p-4 lg:p-6">
+      {# Toast Notifications (top-right fixed) #}
+      <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+        {% for label, messages in app.flashes %}
+          {% for message in messages %}
+            <div class="toast-enter pointer-events-auto flex items-start gap-3 rounded-xl px-4 py-3 text-sm border shadow-lg backdrop-blur-sm max-w-sm
+              {% if label == 'success' %}bg-green-50/95 border-green-200 text-green-800
+              {% elseif label == 'danger' or label == 'error' %}bg-red-50/95 border-red-200 text-red-800
+              {% elseif label == 'warning' %}bg-amber-50/95 border-amber-200 text-amber-800
+              {% else %}bg-blue-50/95 border-blue-200 text-blue-800{% endif %}
+            " data-toast>
+              {% if label == 'success' %}<i data-lucide="check-circle-2" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              {% elseif label == 'danger' or label == 'error' %}<i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              {% elseif label == 'warning' %}<i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              {% else %}<i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>{% endif %}
+              <span class="flex-1">{{ message }}</span>
+              <button onclick="dismissToast(this)" class="flex-shrink-0 p-0.5 rounded hover:bg-black/10 transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+
+      {# Page Content #}
+      <div class="j-card">
+        <div class="j-card-body">
+          {% block main %}{% endblock %}
+        </div>
+      </div>
+    </main>
+
+    {# --- FOOTER --- #}
+    <footer class="px-6 py-5 text-center text-xs text-gray-400 border-t border-gray-100 mt-auto">
+      &copy; {{ "now"|date("Y") }} <strong class="text-jessica-500 font-semibold">RACS Health Global</strong>. Tous droits reserves.
+    </footer>
+  </div>
+</div>
+
+{# ===== LOGOUT CONFIRMATION MODAL ===== #}
+<div id="modal-logout-confirm" class="hidden fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm items-center justify-center p-4" onclick="if(event.target===this)closeModal('logout-confirm')">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden animate-[fade-up_0.2s_ease-out]">
+    <div class="px-6 pt-7 pb-2 text-center">
+      <div class="mx-auto w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+        <i data-lucide="log-out" class="w-7 h-7 text-red-500"></i>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900">Se deconnecter ?</h3>
+      <p class="text-sm text-gray-500 mt-2 leading-relaxed">Vous etes sur le point de quitter votre session. Vous devrez vous reconnecter pour acceder a votre espace.</p>
+    </div>
+    <div class="px-6 pb-6 pt-4 flex gap-3">
+      <button type="button" onclick="closeModal('logout-confirm')" class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">
+        Annuler
+      </button>
+      <a href="{{ path('jtwc_app_logout') }}" class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-500 rounded-xl hover:bg-red-600 transition-colors text-center">
+        Deconnexion
+      </a>
+    </div>
+  </div>
+</div>
+
+{% else %}
+{# ================================================================
+   NON-AUTHENTICATED — just render body block (login page, etc.)
+   ================================================================ #}
+{% block body %}{% endblock %}
+{% endif %}
+
+{# Scripts #}
 {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-{{ encore_entry_script_tags('app') }}
-{{ encore_entry_script_tags('cart') }}
-{{ encore_entry_script_tags('cart-subscription') }}
-
-{#{{ encore_entry_script_tags('cart-subscription') }}#}
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Sidebar toggle (mobile)
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  }
+
+  // Nav group toggle (sub-menus) with persistence
+  function getOpenGroups() {
+    try { return JSON.parse(sessionStorage.getItem('sidebarOpen') || '[]'); } catch(e) { return []; }
+  }
+  function saveOpenGroups(list) {
+    try { sessionStorage.setItem('sidebarOpen', JSON.stringify(list)); } catch(e) {}
+  }
+
+  function toggleNavGroup(btn) {
+    const group = btn.closest('.nav-group');
+    const sub = group.querySelector('.nav-sub');
+    const chevron = btn.querySelector('.nav-chevron');
+    const idx = Array.from(document.querySelectorAll('.nav-group')).indexOf(group);
+    var open = getOpenGroups();
+
+    if (sub.classList.contains('hidden')) {
+      sub.classList.remove('hidden');
+      chevron.style.transform = 'rotate(90deg)';
+      if (open.indexOf(idx) === -1) open.push(idx);
+    } else {
+      sub.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+      open = open.filter(function(i) { return i !== idx; });
+    }
+    saveOpenGroups(open);
+  }
+
+  // On page load: auto-expand group containing the active link + restore persisted state
+  (function() {
+    var currentPath = window.location.pathname;
+    var groups = document.querySelectorAll('.nav-group');
+    var open = getOpenGroups();
+    var activeGroupIdx = -1;
+
+    // 1) Find and highlight the active link, expand its parent group
+    document.querySelectorAll('#sidebar nav a').forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (!href) return;
+      // Exact match or starts-with for nested routes
+      if (currentPath === href || (href !== '/' && currentPath.startsWith(href))) {
+        link.classList.add('bg-white/[0.08]', 'text-white');
+        link.classList.remove('text-gray-400', 'text-gray-300');
+        // If inside a nav-group, expand it
+        var parentGroup = link.closest('.nav-group');
+        if (parentGroup) {
+          activeGroupIdx = Array.from(groups).indexOf(parentGroup);
+          if (open.indexOf(activeGroupIdx) === -1) open.push(activeGroupIdx);
+        }
+      }
+    });
+
+    // 2) Restore all persisted open groups
+    open.forEach(function(idx) {
+      var group = groups[idx];
+      if (!group) return;
+      var sub = group.querySelector('.nav-sub');
+      var chevron = group.querySelector('.nav-chevron');
+      if (sub) sub.classList.remove('hidden');
+      if (chevron) chevron.style.transform = 'rotate(90deg)';
+    });
+
+    saveOpenGroups(open);
+  })();
+
+  // Close sidebar on mobile when clicking a link
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 1024) {
+        toggleSidebar();
+      }
+    });
+  });
+
+  // --- Toast notifications ---
+  function dismissToast(btn) {
+    const toast = btn.closest('[data-toast]');
+    if (!toast) return;
+    toast.classList.remove('toast-enter');
+    toast.classList.add('toast-exit');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  }
+
+  // Auto-dismiss toasts after 5s
+  document.querySelectorAll('[data-toast]').forEach(toast => {
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-exit');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+      }
+    }, 5000);
+  });
+
+  // --- Modal helpers ---
+  function openModal(id) {
+    const m = document.getElementById('modal-' + id) || document.getElementById(id);
+    if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+  }
+  function closeModal(id) {
+    const m = document.getElementById('modal-' + id) || document.getElementById(id);
+    if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+  }
+
+  // --- Wizard stepper (replaces jQuery fieldset plugin) ---
+  (function() {
+    var steps = document.querySelectorAll('fieldset.wizard-step');
+    if (!steps.length) return;
+    var indicators = document.querySelectorAll('.step-indicator');
+    var current = 0;
+
+    function showStep(idx) {
+      steps.forEach(function(s, i) {
+        if (i === idx) { s.classList.remove('hidden'); } else { s.classList.add('hidden'); }
+      });
+      indicators.forEach(function(ind, i) {
+        var circle = ind.querySelector('span');
+        if (i <= idx) {
+          ind.classList.add('text-jessica-600');
+          ind.classList.remove('text-gray-400');
+          if (circle) { circle.classList.add('bg-jessica-500', 'text-white'); circle.classList.remove('bg-gray-200', 'text-gray-500'); }
+        } else {
+          ind.classList.remove('text-jessica-600');
+          ind.classList.add('text-gray-400');
+          if (circle) { circle.classList.remove('bg-jessica-500', 'text-white'); circle.classList.add('bg-gray-200', 'text-gray-500'); }
+        }
+      });
+      current = idx;
+    }
+
+    document.querySelectorAll('.next').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (current < steps.length - 1) showStep(current + 1);
+      });
+    });
+
+    document.querySelectorAll('.previous').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (current > 0) showStep(current - 1);
+      });
+    });
+
+    indicators.forEach(function(ind, i) {
+      ind.addEventListener('click', function() { if (i <= current) showStep(i); });
+    });
+
+    showStep(0);
+  })();
+
+  // Re-init Lucide after dynamic content
+  document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+  });
+</script>
 </body>
 </html>

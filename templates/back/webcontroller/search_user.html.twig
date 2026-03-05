@@ -1,15 +1,13 @@
-<div class="form-group">
-    {{ form_widget(form.fullname) }}
+<div class="flex flex-wrap items-end gap-3">
+  <div class="flex-1 min-w-[200px]">
+    <label class="block text-xs font-medium text-gray-500 mb-1">Nom</label>
+    {{ form_widget(form.fullname, {'attr': {'class': 'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition', 'placeholder': 'Rechercher par nom...'}}) }}
+  </div>
+  <div class="flex-1 min-w-[200px]">
+    <label class="block text-xs font-medium text-gray-500 mb-1">Ville</label>
+    {{ form_widget(form.city, {'attr': {'class': 'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition', 'placeholder': 'Filtrer par ville...'}}) }}
+  </div>
+  <div>
+    {{ form_widget(form.recherche, {'attr': {'class': 'inline-flex items-center gap-2 px-4 py-2 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors cursor-pointer'}}) }}
+  </div>
 </div>
-<div class="form-group">
-    {{ form_widget(form.city, { 'attr':  {
-        'class': 'form-control'
-    }}) }}
-</div>
-<div class="form-group">
-    {{ form_widget(form.recherche, { 'attr':  {
-        'class': 'btn btn-info'
-    }}) }}
-</div>
-
-

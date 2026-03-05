@@ -4,13 +4,15 @@ namespace App\Services;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class FileUploader
 {
     public function upload(UploadedFile $file, string $directory)
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+        $slugger = new AsciiSlugger();
+        $safeFilename = strtolower($slugger->slug($originalFilename));
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
         try {

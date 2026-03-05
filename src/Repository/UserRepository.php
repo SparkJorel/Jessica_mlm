@@ -197,6 +197,32 @@ class UserRepository extends NestedTreeRepository
             ->getResult();
     }
 
+    /**
+     * @return User[]|null
+     */
+    public function getAllActivatedMembers(string $search = ''): ?array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->addSelect('m')
+            ->innerJoin('u.membership', 'm')
+            ->andWhere('u.activated = :activated')
+            ->setParameter('activated', true)
+            ->orderBy('u.fullname', 'ASC')
+            ->setMaxResults(100);
+
+        if ($search) {
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like('u.fullname', ':term'),
+                    $qb->expr()->like('u.email', ':term'),
+                    $qb->expr()->like('u.username', ':term')
+                )
+            )->setParameter('term', '%' . $search . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 
 
     /**

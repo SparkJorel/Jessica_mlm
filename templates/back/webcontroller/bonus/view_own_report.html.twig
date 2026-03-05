@@ -1,53 +1,97 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Rapport activité du cycle {% endblock %}
-{% block page_title %} Les commissions du cycle {% endblock %}
-{% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            <form class="form-inline" role="form" style="margin: 30px 0;">
-                <div class="form-group">
-                    {{ form_widget(form.period) }}
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Afficher</button>
-                </div>
-            </form>
-        </div>
-        <div class="content-panel">
-            <section id="unseen" class="adv-table">
-                <table class="display table table-bordered table-condensed" id="table-info">
-                    <tr>
-                        <th rowspan="2">ACTIF</th>
-                        <th>Parrainage</th>
-                        <td>{% if report['parrainage'] is defined %}{{ report['parrainage'] }}{% endif %}</td>
-                        <td rowspan="2">{{ report['commissionsActif'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Achat Personnel</th>
-                        <td>{% if report['achat_personal'] is defined %}{{ report['achat_personal'] }}{% endif %}</td>
-                    </tr>                    
-                    <tr>
-                        <th rowspan="3">PASSIF</th>
-                        <th>Binaire</th>
-                        <td>{% if report['binaire'] is defined %}{{ report['binaire'] }}{% endif %}</td>
-                        <td rowspan="3">{{ report['commissionsPassif'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Générationnel</th>
-                        <td>{% if report['generationnel'] is defined %}{{ report['generationnel'] }}{% endif %}</td>
-                    </tr>
-                    <tr>
-                        <th>Indirect Bonus</th>
-                        <td>{% if report['indirect_bonus'] is defined %}{{ report['indirect_bonus'] }}{% endif %}</td>
-                    </tr>
-                    <tr>
-                        <th colspan="3">Total</th>
-                        <td>{{ report['commissions'] }}</td>
-                    </tr>
-                </table>
-                <p><strong>1 VA = 1SV = 600FCFA = 1 Dollar US</strong></p>
-            </section>
-        </div>
-    </div>
-{% endblock %}
+{% block title %}Mes commissions - RACS Health Global{% endblock %}
+{% block page_title %}Mes commissions du cycle{% endblock %}
+{% block nav_bonus %}bg-jessica-500 text-white{% endblock %}
 
+{% block main %}
+<div class="space-y-5 -m-5 sm:-m-6">
+
+  {# Period Filter #}
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <form class="flex flex-wrap items-end gap-3">
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-xs font-medium text-gray-500 mb-1">Periode</label>
+        {{ form_widget(form.period, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+      </div>
+      <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+        <i data-lucide="filter" class="w-4 h-4"></i> Afficher
+      </button>
+    </form>
+  </div>
+
+  {# Commission Cards #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+      <i data-lucide="bar-chart-3" class="w-5 h-5 text-jessica-500"></i>
+      <h3 class="text-sm font-bold text-gray-800">Recapitulatif des commissions</h3>
+    </div>
+    <div class="divide-y divide-gray-100">
+      {# ACTIF Section #}
+      <div class="p-5">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-jessica-50 text-jessica-600">ACTIF</span>
+          <span class="text-sm font-bold text-gray-800">{{ report['commissionsActif'] }}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="gift" class="w-4 h-4 text-jessica-500"></i>
+              <span class="text-sm text-gray-600">Parrainage</span>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{% if report['parrainage'] is defined %}{{ report['parrainage'] }}{% else %}0{% endif %}</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="shopping-bag" class="w-4 h-4 text-blue-600"></i>
+              <span class="text-sm text-gray-600">Achat Personnel</span>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{% if report['achat_personal'] is defined %}{{ report['achat_personal'] }}{% else %}0{% endif %}</span>
+          </div>
+        </div>
+      </div>
+
+      {# PASSIF Section #}
+      <div class="p-5">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">PASSIF</span>
+          <span class="text-sm font-bold text-gray-800">{{ report['commissionsPassif'] }}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="git-merge" class="w-4 h-4 text-purple-600"></i>
+              <span class="text-sm text-gray-600">Binaire</span>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{% if report['binaire'] is defined %}{{ report['binaire'] }}{% else %}0{% endif %}</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-accent-500"></i>
+              <span class="text-sm text-gray-600">Generationnel</span>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{% if report['generationnel'] is defined %}{{ report['generationnel'] }}{% else %}0{% endif %}</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="share-2" class="w-4 h-4 text-gray-600"></i>
+              <span class="text-sm text-gray-600">Indirect</span>
+            </div>
+            <span class="text-sm font-bold text-gray-800">{% if report['indirect_bonus'] is defined %}{{ report['indirect_bonus'] }}{% else %}0{% endif %}</span>
+          </div>
+        </div>
+      </div>
+
+      {# Total #}
+      <div class="p-5 bg-gradient-to-r from-jessica-50 to-white">
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-gray-800">Total Commissions</span>
+          <span class="text-2xl font-black text-jessica-500">{{ report['commissions'] }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="px-5 py-3 border-t border-gray-100">
+      <p class="text-xs text-gray-400"><strong>1 VA = 1 SV = 600 FCFA = 1 Dollar US</strong></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,19 +1,53 @@
-<div class="container">
-    <h1>Informations détaillées</h1>
+{% extends 'base.html.twig' %}
+{% block title %}Detail cout membership - RACS Health Global{% endblock %}
+{% block page_title %}Informations detaillees{% endblock %}
+
+{% block main %}
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="px-5">
     {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-        <a href="{{ path('membership_cost_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
+      <a href="{{ path('membership_cost_list') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Retour a la liste
+      </a>
     {% endif %}
-    {% if mbship_cost is defined %}
-        <table>
-            <tr><th>Membership</th><th>Coût</th><th>Statut</th><th>View</th></tr>
-            <tr>
-                <td>{{ mbship_cost.membership.name }}</td>
-                <td>{{ mbship_cost.value }}</td>
-                <td>{% if mbship_cost.state %} Activé {% else %} Désactivé {% endif %}</td>
-                <td></td>
-            </tr>
-        </table>
-    {% else %}
-        <p>Le prix client du produit sélectionné a été supprimé</p>
-    {% endif %}
+  </div>
+
+  {% if mbship_cost is defined %}
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <h3 class="text-base font-bold text-gray-800">Details</h3>
+      </div>
+      <div class="p-6">
+        <dl class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div>
+            <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Membership</dt>
+            <dd class="mt-1 text-sm font-medium text-gray-800">{{ mbship_cost.membership.name }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cout</dt>
+            <dd class="mt-1 text-sm font-medium text-gray-800">{{ mbship_cost.value }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Statut</dt>
+            <dd class="mt-1">
+              {% if mbship_cost.state %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">Active</span>
+              {% else %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600">Desactive</span>
+              {% endif %}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  {% else %}
+    <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
+      <div class="flex flex-col items-center gap-3">
+        <i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i>
+        <p class="text-sm text-gray-500">Le prix client du produit selectionne a ete supprime</p>
+      </div>
+    </div>
+  {% endif %}
 </div>
+{% endblock %}

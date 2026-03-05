@@ -1,32 +1,35 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Modification du code d'authentification {% endblock %}
-{% block page_title %} Modification du code d'authentification {% endblock %}
+{% block title %}Modifier le code d'authentification - RACS Health Global{% endblock %}
+{% block page_title %}Modifier le code d'authentification{% endblock %}
+{% block nav_account %}bg-jessica-500 text-white{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-        {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div id="user_id" class="form-group" data-id="{{id_user}}">
-                {{ form_label(form.username, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.username, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-                <div class="col-lg-offset-2 col-lg-10">
-                    <div class="small">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-10 col-lg-2">
-                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
-                </div>
-            </div>
-        {{ form_end(form) }}
-        </div>
+<div class="max-w-lg mx-auto -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-jessica-50 flex items-center justify-center">
+        <i data-lucide="at-sign" class="w-5 h-5 text-jessica-500"></i>
+      </div>
+      <div>
+        <h2 class="text-sm font-bold text-gray-800">Code d'authentification</h2>
+        <p class="text-xs text-gray-400">Modifier votre identifiant de connexion</p>
+      </div>
     </div>
+    <div class="p-6">
+      {{ form_start(form, {attr: {'id': 'form', 'class': 'space-y-5'}}) }}
+        <div id="user_id" data-id="{{ id_user }}">
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.username.vars.label }}</label>
+          {{ form_widget(form.username, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+            <i data-lucide="check" class="w-4 h-4"></i> Enregistrer
+          </button>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

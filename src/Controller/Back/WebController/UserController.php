@@ -220,6 +220,196 @@ class UserController
         return new JsonResponse($repo);
     }
 
+    #[Route('/api/genealogy/tree', name: 'api_genealogy_tree', methods: ['GET'], options: ['expose' => true])]
+    public function getGenealogyTreeJson(Request $request, GetDownlinesGenealogyView $graph): JsonResponse
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->token->getToken()->getUser();
+
+        $maxDepth = (int) $request->query->get('depth', 3);
+        $rootId = $request->query->get('root');
+
+        /** @var UserRepository $repository */
+        $repository = $this->manager->getRepository(User::class);
+
+        // Determine root user
+        $rootUser = $currentUser;
+        if ($rootId) {
+            $roles = $this->token->getToken()->getRoleNames();
+            $isAdmin = in_array('ROLE_JTWC_ADMIN', $roles) || in_array('ROLE_JTWC_USER_SECRET', $roles);
+
+            $requestedUser = $repository->find((int) $rootId);
+            if ($requestedUser) {
+                // Admin can view any network; regular users can only view within their own
+                if ($isAdmin || ($requestedUser->getLft() >= $currentUser->getLft() && $requestedUser->getRgt() <= $currentUser->getRgt())) {
+                    $rootUser = $requestedUser;
+                }
+            }
+        }
+
+        // Flat query: get root + all descendants with membership name joined
+        $rows = $this->manager->createQueryBuilder()
+            ->select('u.id, u.fullname, u.username, u.position, u.activated, u.lft, u.rgt, u.lvl, m.name as membership_name')
+            ->from(User::class, 'u')
+            ->innerJoin('u.membership', 'm')
+            ->where('u.lft >= :lft AND u.rgt <= :rgt')
+            ->setParameter('lft', $rootUser->getLft())
+            ->setParameter('rgt', $rootUser->getRgt())
+            ->orderBy('u.lft', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        // Build binary tree from flat lft/rgt sorted rows
+        // Each user's direct binary children are those with upline = this user
+        // But since we don't have upline in query, use a stack-based parent lookup
+        // Actually, simpler: query upline_id too
+        $rows = $this->manager->createQueryBuilder()
+            ->select('u.id, u.fullname, u.username, u.position, u.activated, u.lft, u.rgt, u.lvl, m.name as membership_name, IDENTITY(u.upline) as upline_id')
+            ->from(User::class, 'u')
+            ->innerJoin('u.membership', 'm')
+            ->where('u.lft >= :lft AND u.rgt <= :rgt')
+            ->setParameter('lft', $rootUser->getLft())
+            ->setParameter('rgt', $rootUser->getRgt())
+            ->orderBy('u.lft', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        // Index by id, then build tree
+        $indexed = [];
+        foreach ($rows as $row) {
+            $row['__left'] = null;
+            $row['__right'] = null;
+            $indexed[$row['id']] = $row;
+        }
+        foreach ($indexed as &$row) {
+            $pid = $row['upline_id'];
+            if ($pid && isset($indexed[$pid])) {
+                if ($row['position'] === 'Left') {
+                    $indexed[$pid]['__left'] = $row['id'];
+                } elseif ($row['position'] === 'Right') {
+                    $indexed[$pid]['__right'] = $row['id'];
+                }
+            }
+        }
+        unset($row);
+
+        $rootId = $rootUser->getId();
+
+        $buildNode = function (int $nodeId, int $depth) use (&$buildNode, &$indexed, $maxDepth) {
+            if (!isset($indexed[$nodeId])) return null;
+            $node = $indexed[$nodeId];
+
+            $descendantCount = (int)(($node['rgt'] - $node['lft'] - 1) / 2);
+            $leftId = $node['__left'];
+            $rightId = $node['__right'];
+
+            $result = [
+                'id' => $node['id'],
+                'fullname' => $node['fullname'] ?? '',
+                'username' => $node['username'] ?? '',
+                'position' => $node['position'] ?? null,
+                'activated' => $node['activated'] ?? false,
+                'membership' => $node['membership_name'] ?? null,
+                'descendants' => $descendantCount,
+                'left_free' => $leftId === null,
+                'right_free' => $rightId === null,
+            ];
+
+            if ($depth < $maxDepth) {
+                $result['left'] = $leftId ? $buildNode($leftId, $depth + 1) : null;
+                $result['right'] = $rightId ? $buildNode($rightId, $depth + 1) : null;
+            } else {
+                $result['left'] = $leftId ? $this->truncatedNode($indexed[$leftId], 'Left') : null;
+                $result['right'] = $rightId ? $this->truncatedNode($indexed[$rightId], 'Right') : null;
+            }
+
+            return $result;
+        };
+
+        $tree = isset($indexed[$rootId]) ? $buildNode($rootId, 0) : null;
+
+        return new JsonResponse($tree);
+    }
+
+    private function truncatedNode(array $node, string $position): array
+    {
+        $desc = isset($node['lft'], $node['rgt']) ? (int)(($node['rgt'] - $node['lft'] - 1) / 2) : 0;
+        return [
+            'id' => $node['id'],
+            'fullname' => $node['fullname'] ?? '',
+            'username' => $node['username'] ?? '',
+            'activated' => $node['activated'] ?? false,
+            'membership' => $node['membership_name'] ?? null,
+            'position' => $position,
+            'descendants' => $desc,
+            'truncated' => true,
+        ];
+    }
+
+    #[Route('/api/user/{id}/details', name: 'api_user_details', methods: ['GET'], options: ['expose' => true], requirements: ['id' => '\d+'])]
+    public function getUserDetails(User $user): JsonResponse
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->token->getToken()->getUser();
+
+        // Security: only show users in own network (within lft/rgt range) or if admin
+        $roles = $this->token->getToken()->getRoleNames();
+        $isAdmin = in_array('ROLE_JTWC_ADMIN', $roles) || in_array('ROLE_JTWC_USER_SECRET', $roles);
+
+        $isSelf = $user->getId() === $currentUser->getId();
+        $isInNetwork = $user->getLft() >= $currentUser->getLft() && $user->getRgt() <= $currentUser->getRgt();
+
+        if (!$isAdmin && !$isSelf && !$isInNetwork) {
+            return new JsonResponse(['error' => 'Access denied'], 403);
+        }
+
+        /** @var UserRepository $repository */
+        $repository = $this->manager->getRepository(User::class);
+        $leftTaken = $repository->validateUserPosition($user, 'Left');
+        $rightTaken = $repository->validateUserPosition($user, 'Right');
+
+        $networkSize = 0;
+        if ($user->getLft() && $user->getRgt()) {
+            $networkSize = (int)(($user->getRgt() - $user->getLft() - 1) / 2);
+        }
+
+        $directCount = (int) $this->manager->createQuery(
+            'SELECT COUNT(u.id) FROM App\Entity\User u WHERE u.sponsor = :user'
+        )->setParameter('user', $user)->getSingleScalarResult();
+
+        $data = [
+            'id' => $user->getId(),
+            'fullname' => $user->getFullname(),
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'phone' => $user->getMobilePhone(),
+            'gender' => $user->getGender(),
+            'title' => $user->getTitle(),
+            'city' => $user->getCity(),
+            'country' => $user->getCountry(),
+            'position' => $user->getPosition(),
+            'activated' => $user->getActivated(),
+            'state' => $user->getState(),
+            'membership' => $user->getMembership() ? $user->getMembership()->getName() : null,
+            'membershipCode' => $user->getMembership() ? $user->getMembership()->getCode() : null,
+            'sponsor' => $user->getSponsor() ? $user->getSponsor()->getFullname() . ' (' . $user->getSponsor()->getUsername() . ')' : null,
+            'upline' => $user->getUpline() ? $user->getUpline()->getFullname() . ' (' . $user->getUpline()->getUsername() . ')' : null,
+            'entryDate' => $user->getEntryDate() ? $user->getEntryDate()->format('d/m/Y') : null,
+            'dateActivation' => $user->getDateActivation() ? $user->getDateActivation()->format('d/m/Y') : null,
+            'dateOfBirth' => $user->getDateOfBirth() ? $user->getDateOfBirth()->format('d/m/Y') : null,
+            'imageName' => $user->getImageName(),
+            'codeDistributor' => $user->getCodeDistributor(),
+            'grade' => $user->getGrade(),
+            'networkSize' => $networkSize,
+            'directCount' => $directCount,
+            'left_free' => !$leftTaken,
+            'right_free' => !$rightTaken,
+            'nextOfKin' => $user->getNextOfKin(),
+        ];
+
+        return new JsonResponse($data);
+    }
+
     #[Route('/admin/sponsor/autocomplete', name: 'sponsor_autocomplete', methods: ['GET', 'POST'], options: ['expose' => true])]
     public function sponsorAutocomplete(Request $request)
     {
@@ -293,6 +483,60 @@ class UserController
         $response->setData($names);
 
         return $response;
+    }
+
+    #[Route('/admin/upline/available', name: 'upline_available_list', methods: ['GET'], options: ['expose' => true])]
+    public function availableUplines(Request $request): JsonResponse
+    {
+        $search = trim(strip_tags($request->get('q', '')));
+
+        /** @var User $currentUser */
+        $currentUser = $this->token->getToken()->getUser();
+
+        /** @var UserRepository $repository */
+        $repository = $this->manager->getRepository(User::class);
+
+        $roles = $this->token->getToken()->getRoleNames();
+        $isAdmin = in_array('ROLE_JTWC_ADMIN', $roles) || in_array('ROLE_JTWC_USER_SECRET', $roles);
+
+        if ($isAdmin) {
+            $users = $repository->getAllActivatedMembers($search);
+        } else {
+            $users = $repository->getSponsorOrUplineList(
+                $search ?: '%',
+                $currentUser->getLft(),
+                $currentUser->getRgt(),
+                true
+            );
+        }
+
+        $results = [];
+        if ($users) {
+            foreach ($users as $user) {
+                $leftTaken = $repository->validateUserPosition($user, 'Left');
+                $rightTaken = $repository->validateUserPosition($user, 'Right');
+
+                if ($leftTaken && $rightTaken) {
+                    continue; // Skip users with both positions taken
+                }
+
+                $positions = [];
+                if (!$leftTaken) $positions[] = 'Left';
+                if (!$rightTaken) $positions[] = 'Right';
+
+                $results[] = [
+                    'id' => $user->getId(),
+                    'fullname' => $user->getFullname(),
+                    'username' => $user->getUsername(),
+                    'left_free' => !$leftTaken,
+                    'right_free' => !$rightTaken,
+                    'positions' => $positions,
+                    'label' => $user->getFullname() . ' (' . $user->getUsername() . ')',
+                ];
+            }
+        }
+
+        return new JsonResponse($results);
     }
 
     #[Route('/users/{code}/add', name: 'add_user_quickly', methods: ['GET', 'POST'], requirements: ['code' => '[a-zA-Z]+'])]

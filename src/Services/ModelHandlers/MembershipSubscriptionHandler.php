@@ -172,31 +172,42 @@ class MembershipSubscriptionHandler extends ModelSingleEntityAbstract implements
 
         $membershipSubscription = $this->getMembershipSubscription()->setMember($createdBy);
 
-        if (!$this->isExistsUnpaidUpgrade($membershipSubscription) && $this->isTokenOk($csrf, $request, '_jtwc_membership_upgrade_token', $token)) {
-            $membershipSubscription
-                                ->setCreatedBy($createdBy)
-                                ->setState(false)
-                                ->setPaid(false)
-                                ->setTotalSVBinaire($membershipSubscription->getMembership()->getMembershipGroupeSV() - $createdBy->getMembership()->getMembershipGroupeSV())
-                                ->setUpgraded(true)
-                                ->setPrice($membershipSubscription->getMembership()->getMembershipCost() - $createdBy->getMembership()->getMembershipCost())
-                                ;
+        // Must be POST
+        if (!$request->isMethod('POST')) {
+            return $this->redirectAfterSubmit('packs_view_all', 'warning', 'Requête invalide');
+        }
 
-            $this->manager->persist($membershipSubscription);
-            $this->manager->flush();
-
-            return $this->redirectAfterSubmit(
-                'membership_subscription_paid',
-                'success',
-                'Opération de changement de grade réussie'
-            );
-        } else {
+        // Check for existing unpaid upgrade
+        if ($this->isExistsUnpaidUpgrade($membershipSubscription)) {
             return $this->redirectAfterSubmit(
                 'packs_view_all',
                 'warning',
-                'Echec operation de changement de pack de souscription'
+                'Vous avez déjà un changement de pack en attente de paiement. Veuillez le payer ou le supprimer avant d\'en créer un nouveau.'
             );
         }
+
+        // Validate CSRF
+        if (!$this->isTokenOk($csrf, $request, '_jtwc_membership_upgrade_token', $token)) {
+            return $this->redirectAfterSubmit('packs_view_all', 'danger', 'Token de sécurité invalide. Veuillez réessayer.');
+        }
+
+        $membershipSubscription
+                            ->setCreatedBy($createdBy)
+                            ->setState(false)
+                            ->setPaid(false)
+                            ->setTotalSVBinaire($membershipSubscription->getMembership()->getMembershipGroupeSV() - $createdBy->getMembership()->getMembershipGroupeSV())
+                            ->setUpgraded(true)
+                            ->setPrice($membershipSubscription->getMembership()->getMembershipCost() - $createdBy->getMembership()->getMembershipCost())
+                            ;
+
+        $this->manager->persist($membershipSubscription);
+        $this->manager->flush();
+
+        return $this->redirectAfterSubmit(
+            'summary_subscription_cart',
+            'success',
+            'Opération de changement de grade réussie'
+        );
     }
 
     private function isExistsUnpaidUpgrade(MembershipSubscription $membershipSubscription)

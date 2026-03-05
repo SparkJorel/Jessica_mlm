@@ -1,187 +1,318 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Enregistrement d'un nouvel utilisateur {% endblock %}
-{% block page_title %} Enregistrement d'un nouvel utilisateur {% endblock %}
-{% block main %}
-<div class="col-lg-12">
-    <div class="form-panel">
-        <div class="alert alert-success hide"></div>
-        {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-        <!-- progressbar -->
-        <ul id="progressbar">
-            <li class="active">Informations personnelles</li>
-            <li>Addresse du distributeur</li>
-        </ul>
-        <fieldset>
-            <h2 class="fs-title">Informations personnelles</h2>
-            <div class="form-group">
-                {{ form_label(form.title, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.title, { 'attr':  {
-                        'class': 'form-control' ~ (form.title.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.title) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.fullname, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
+{% block title %}Mon profil - RACS Health Global{% endblock %}
+{% block page_title %}Mon profil{% endblock %}
+{% block nav_account %}bg-jessica-500 text-white{% endblock %}
 
-                <div class="col-lg-10">
-                    {{ form_widget(form.fullname, { 'attr':  {
-                        'class': 'form-control' ~ (form.fullname.vars.valid ? '' : ' is-invalid' )
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.fullname) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.dateOfBirth, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.dateOfBirth, { 'attr':  {
-                        'class': 'form-control' ~ (form.dateOfBirth.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.dateOfBirth) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.gender, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.gender, { 'attr':  {
-                        'class': 'form-control' ~ (form.gender.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.gender) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.documentType, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.documentType, { 'attr':  {
-                        'class': 'form-control' ~ (form.documentType.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.documentType) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.cni, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.cni, { 'attr':  {
-                        'class': 'form-control' ~ (form.cni.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.cni) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.imageFile, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.imageFile) }}
-                    {{ form_widget(form.imageFile, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.nextOfKin, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.nextOfKin) }}
-                    {{ form_widget(form.nextOfKin, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <input type="button" name="next" class="next action-button" value="Suivant" />
-        </fieldset>
-        <fieldset>
-            <h2 class="fs-title">Addresse du distributeur</h2>
-            <div class="form-group">
-                {{ form_label(form.email, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}            
-                <div class="col-lg-10">
-                    {{ form_widget(form.email, { 'attr':  {
-                        'class': 'form-control'~(form.email.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.email) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.mobilePhone, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.mobilePhone, { 'attr':  {
-                        'class': 'form-control' ~ (form.mobilePhone.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                     <div class="invalid-feedback">
-                       {{ form_errors(form.mobilePhone) }}
-                    </div>
-                </div>
-            </div>                       
-            <div class="form-group">
-                    {{ form_label(form.city, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.city, { 'attr':  {
-                        'class': 'form-control' ~ (form.city.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.city) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.country, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.country, { 'attr':  {
-                        'class': 'form-control' ~ (form.country.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.country) }}
-                    </div>
-                </div>
-            </div>            
-            <input type="button" name="previous" class="previous action-button" value="Préc" />
-            <input type="submit" name="submit" class="submit action-button" value="Enregistrer" />
-        </fieldset>
-        {{ form_end(form) }}
-    </div>
-</div>
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('fieldset') }}
-{% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('fieldset') }}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+  <style>
+    .cropper-view-box, .cropper-face { border-radius: 50%; }
+  </style>
+{% endblock %}
+
+{% block main %}
+{{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'profile-form', 'enctype': 'multipart/form-data'}}) }}
+<div class="max-w-4xl mx-auto -m-5 sm:-m-6 space-y-6">
+
+  {# ===== PROFILE HEADER CARD ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="h-28 bg-gradient-to-r from-jessica-600 via-jessica-500 to-accent-500 relative">
+      <div class="absolute -bottom-12 left-6">
+        <div id="avatar-wrapper" class="w-24 h-24 rounded-full border-4 border-white bg-gray-100 overflow-hidden shadow-lg cursor-pointer relative group" onclick="document.getElementById('photo-input').click()">
+          {% if app.user.imageName %}
+            <img src="{{ asset('uploads/users/' ~ app.user.imageName) }}" alt="" class="w-full h-full object-cover" id="avatar-img">
+          {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gray-200" id="avatar-img">
+              <i data-lucide="user" class="w-10 h-10 text-gray-400"></i>
+            </div>
+          {% endif %}
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+            <i data-lucide="camera" class="w-6 h-6 text-white"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-16 pb-5 px-6">
+      <h2 class="text-lg font-bold text-gray-900">{{ app.user.fullname }}</h2>
+      <p class="text-sm text-gray-500 flex items-center gap-1.5 mt-0.5">
+        <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+        {{ app.user.email }}
+      </p>
+    </div>
+    {# Hidden file input #}
+    <input type="file" id="photo-input" accept="image/jpeg,image/png" class="hidden">
+  </div>
+
+  {# ===== IDENTITY (READ-ONLY) ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="fingerprint" class="w-4 h-4 text-jessica-500"></i>
+        Identite
+      </h3>
+      <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded">Non modifiable</span>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-5">
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Titre</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.title|default('—') }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Nom complet</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.fullname }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Sexe</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.gender|default('—') }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Date de naissance</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.dateOfBirth ? app.user.dateOfBirth|date('d/m/Y') : '—' }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Type de document</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.documentType|default('—') }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">N° Document</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.cni|default('—') }}</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Email</span>
+          <span class="text-sm font-medium text-gray-800">{{ app.user.email }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ===== EDITABLE PERSONAL INFO ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="pen-line" class="w-4 h-4 text-jessica-500"></i>
+        Informations modifiables
+      </h3>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Successeur / Personne de confiance</label>
+          {{ form_widget(form.nextOfKin, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="mt-2 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              Designez la personne qui heritera de votre compte et de votre reseau en cas de deces ou d'incapacite. Cette personne pourra reprendre la gestion de votre activite et percevoir vos bonus. Renseignez son nom complet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ===== CONTACT & ADDRESS CARD ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="map-pin" class="w-4 h-4 text-jessica-500"></i>
+        Contact & adresse
+      </h3>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Telephone</label>
+          {{ form_widget(form.mobilePhone, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          {{ form_errors(form.mobilePhone) }}
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Ville</label>
+          {{ form_widget(form.city, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          {{ form_errors(form.city) }}
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Pays</label>
+          {{ form_widget(form.country, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          {{ form_errors(form.country) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ===== SECURITY CARD ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="shield" class="w-4 h-4 text-jessica-500"></i>
+        Securite
+      </h3>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-800">Mot de passe</p>
+          <p class="text-xs text-gray-400 mt-0.5">Modifiez votre mot de passe pour securiser votre compte</p>
+        </div>
+        <a href="{{ path('change_password') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-jessica-600 bg-jessica-50 rounded-lg hover:bg-jessica-100 transition-colors">
+          <i data-lucide="key-round" class="w-4 h-4"></i>
+          Modifier
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {# ===== SUBMIT BAR ===== #}
+  <div class="bg-white rounded-xl border border-gray-200 px-6 py-4 flex items-center justify-between">
+    <p class="text-xs text-gray-400 hidden sm:block">Les champs modifies seront enregistres</p>
+    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+      <i data-lucide="save" class="w-4 h-4"></i>
+      Enregistrer les modifications
+    </button>
+  </div>
+
+</div>
+
+{# ===== CROP MODAL ===== #}
+<div id="crop-modal" class="hidden fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="crop" class="w-4 h-4 text-jessica-500"></i>
+        Recadrer la photo
+      </h3>
+      <button type="button" id="btn-crop-close" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+        <i data-lucide="x" class="w-4 h-4 text-gray-400"></i>
+      </button>
+    </div>
+    <div class="bg-gray-900 flex items-center justify-center" style="height:320px">
+      <img id="crop-image" src="" alt="" style="max-height:100%;display:block;">
+    </div>
+    <div class="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
+      <div class="flex gap-1.5">
+        <button type="button" id="btn-rot-left" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors" title="Rotation gauche">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-gray-600"></i>
+        </button>
+        <button type="button" id="btn-rot-right" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors" title="Rotation droite">
+          <i data-lucide="rotate-cw" class="w-4 h-4 text-gray-600"></i>
+        </button>
+        <button type="button" id="btn-rot-reset" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors" title="Reinitialiser">
+          <i data-lucide="refresh-cw" class="w-4 h-4 text-gray-600"></i>
+        </button>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" id="btn-crop-cancel" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Annuler</button>
+        <button type="button" id="btn-crop-apply" class="px-4 py-2 text-sm font-semibold text-white bg-jessica-500 rounded-lg hover:bg-jessica-600 transition-colors">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Render remaining hidden form fields (imageFile widget + csrf) #}
+<div class="hidden">{{ form_rest(form) }}</div>
+{{ form_end(form, {render_rest: false}) }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var cropperInstance = null;
+    var photoInput = document.getElementById('photo-input');
+    var cropImage = document.getElementById('crop-image');
+    var cropModal = document.getElementById('crop-modal');
+    var avatarWrapper = document.getElementById('avatar-wrapper');
+
+    // Find the real Symfony file input (rendered by form_rest)
+    var symfonyFileInput = document.querySelector('input[type="file"][id$="_imageFile"]') || document.querySelector('input[type="file"][name$="[imageFile]"]');
+
+    function openCropModal() {
+      cropModal.classList.remove('hidden');
+      cropModal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeCropModal() {
+      cropModal.classList.add('hidden');
+      cropModal.classList.remove('flex');
+      if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+    }
+
+    function initCropper() {
+      if (cropperInstance) cropperInstance.destroy();
+      cropperInstance = new Cropper(cropImage, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.85,
+        cropBoxResizable: true,
+        cropBoxMovable: true,
+        guides: false,
+        center: true,
+        highlight: false,
+        background: false
+      });
+    }
+
+    // Handle file selection from our custom button
+    photoInput.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file || !file.type.match('image.*')) return;
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        // Replace src and wait for load
+        cropImage.onload = function() {
+          openCropModal();
+          // Small delay to let modal render before Cropper measures
+          setTimeout(initCropper, 100);
+          cropImage.onload = null;
+        };
+        cropImage.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Buttons
+    document.getElementById('btn-crop-close').addEventListener('click', closeCropModal);
+    document.getElementById('btn-crop-cancel').addEventListener('click', closeCropModal);
+    document.getElementById('btn-rot-left').addEventListener('click', function() { if(cropperInstance) cropperInstance.rotate(-90); });
+    document.getElementById('btn-rot-right').addEventListener('click', function() { if(cropperInstance) cropperInstance.rotate(90); });
+    document.getElementById('btn-rot-reset').addEventListener('click', function() { if(cropperInstance) cropperInstance.reset(); });
+
+    document.getElementById('btn-crop-apply').addEventListener('click', function() {
+      if (!cropperInstance) return;
+
+      var canvas = cropperInstance.getCroppedCanvas({
+        width: 400,
+        height: 400,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+      });
+
+      // Update avatar preview with circular version
+      var previewUrl = canvas.toDataURL('image/jpeg', 0.9);
+      avatarWrapper.innerHTML = '<img src="' + previewUrl + '" class="w-full h-full object-cover">' +
+        '<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">' +
+        '<i data-lucide="camera" class="w-6 h-6 text-white"></i></div>';
+      lucide.createIcons();
+
+      // Inject cropped file into the Symfony form file input
+      canvas.toBlob(function(blob) {
+        if (!blob) return;
+        var croppedFile = new File([blob], 'profile.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+        var dt = new DataTransfer();
+        dt.items.add(croppedFile);
+        if (symfonyFileInput) {
+          symfonyFileInput.files = dt.files;
+        }
+      }, 'image/jpeg', 0.9);
+
+      closeCropModal();
+    });
+  });
+  </script>
 {% endblock %}

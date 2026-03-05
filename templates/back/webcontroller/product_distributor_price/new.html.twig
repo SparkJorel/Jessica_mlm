@@ -1,39 +1,32 @@
-{% extends 'admin_dashboard.html.twig' %}
-{% block title %} JTWC - Enregistrement du prix distributeur d'un produit {% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Enregistrement du prix distributeur d'un produit - RACS Health Global{% endblock %}
+{% block page_title %}Enregistrement du prix distributeur d'un produit{% endblock %}
+
 {% block main %}
-    <h3><i class="fa fa-angle-right"></i>Enregistrement du prix distributeur d'un produit</h3>
-    <div class="row mb">
-        <div class="form-panel">
-            <div class="alert alert-success hide"></div>
-            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div class="form-group">
-                {{ form_label(form.product, null, { 'label_attr':  {
-                    'class': 'col-lg-3 control-label'
-                }}) }}
-                <div class="col-lg-9">
-                    {{ form_errors(form.product) }}
-                    {{ form_widget(form.product, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.price, null, { 'label_attr':  {
-                    'class': 'col-lg-3 control-label'
-                }}) }}
-                <div class="col-lg-9">
-                    {{ form_errors(form.price) }}
-                    {{ form_widget(form.price, { 'attr':  {
-                        'class': 'form-control'
-                    }}) }}
-                </div>
-            </div>
-            <input type="submit" name="submit" class="submit action-button" value="Submit" />
-            {{ form_end(form) }}
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    {{ form_start(form, {attr: {'id': 'form'}}) }}
+    <div class="p-6 space-y-5">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.product.vars.label }}</label>
+          {{ form_widget(form.product, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.product) }}</div>
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.price.vars.label }}</label>
+          {{ form_widget(form.price, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.price) }}</div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+          <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+        </button>
+      </div>
     </div>
+    {{ form_end(form) }}
+  </div>
+</div>
 {% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('validate') }}
-{% endblock %}
+{% block javascripts %}{{ parent() }}{{ encore_entry_script_tags('validate') }}{% endblock %}

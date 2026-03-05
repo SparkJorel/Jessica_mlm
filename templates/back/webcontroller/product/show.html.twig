@@ -1,48 +1,57 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	JTWC - Fiche technique du produit : {{ entity.name }}
-{% endblock %}
-{% block page_title %}
-	Fiche technique du produit : {{ entity.name }}
-{% endblock %}
+{% block title %}Fiche technique du produit : {{ entity.name }} - RACS Health Global{% endblock %}
+{% block page_title %}Fiche technique du produit : {{ entity.name }}{% endblock %}
+
 {% block main %}
+<div class="space-y-5 -m-5 sm:-m-6">
 
-	<div class="col-lg-12">
-		<a href="{{ path('products_all') }}">
-			<button type="button" class="btn btn-primary">
-				<span class="fa fa-arrow-right"></span>Voir les produits</button>
-		</a>
+  {# Back Button #}
+  <div class="px-5">
+    <a href="{{ path('products_all') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Voir les produits
+    </a>
+  </div>
 
-		<div class="row">
-			<div class="col-md-7">
-				<img src="{{ vich_uploader_asset(entity, 'imageFile')|imagine_filter('reduc_detail') }}" alt="{{ entity.name }}"/>
-			</div>
-			<div class="col-md-5" style="padding: 2.8rem; ">
-				<h1 class="mt-4 mt-md-0">{{ entity.name }}</h1>
-				<h2>{{ entity.distributorPrice|number_format(2, ',', ' ') }} FCFA</h2>
-				<hr>
-				<div style="padding: 0.5rem; text-align: justify; font-size: 1.5rem; font-style: italic; ">
-					<b>Description:
-					</b>
-					{{ entity.description|raw }}
-				</div>
+  {# Product Detail Card #}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+      {# Product Image #}
+      <div class="p-6 flex items-center justify-center bg-gray-50">
+        {% if entity.imageName %}
+          <img src="{{ vich_uploader_asset(entity, 'imageFile')|imagine_filter('reduc_detail') }}" alt="{{ entity.name }}" class="max-w-full h-auto rounded-lg shadow-sm"/>
+        {% else %}
+          <div class="flex items-center justify-center py-12"><i data-lucide="package" class="w-24 h-24 text-gray-300"></i></div>
+        {% endif %}
+      </div>
 
-				{{ form_start(form, {'attr': {'class': 'mt-4 p-4 bg-light'}}) }}
-				<div class="form-group">
-					{{ form_label(form.quantity) }}
-					{{ form_widget(form.quantity, {
-						'attr': {
-							'class': 'form-control ' ~ (form.quantity.vars.valid ? '' : 'is-invalid')
-						}
-					}) }}
-					<div class="invalid-feedback">
-						{{ form_errors(form.quantity) }}
-					</div>
-				</div>
-				{{ form_widget(form.add, {'attr': {'class': 'btn btn-warning w-50'}}) }}
-				{{ form_end(form) }}
-			</div>
-		</div>
-	</div>
+      {# Product Info #}
+      <div class="p-6 space-y-5">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">{{ entity.name }}</h1>
+          <p class="text-xl font-semibold text-jessica-600 mt-2">{{ entity.distributorPrice|number_format(2, ',', ' ') }} FCFA</p>
+        </div>
 
+        <hr class="border-gray-200">
+
+        <div>
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Description</h3>
+          <div class="text-sm text-gray-600 leading-relaxed">{{ entity.description|raw }}</div>
+        </div>
+
+        {# Add to Cart Form #}
+        <div class="bg-gray-50 rounded-lg p-4 mt-4">
+          {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.quantity.vars.label }}</label>
+            {{ form_widget(form.quantity, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+            <div class="text-red-500 text-xs mt-1">{{ form_errors(form.quantity) }}</div>
+          </div>
+          {{ form_widget(form.add, {'attr': {'class': 'inline-flex items-center gap-2 px-6 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors w-full justify-center'}}) }}
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

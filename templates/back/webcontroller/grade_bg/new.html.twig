@@ -1,76 +1,42 @@
 {% extends 'base.html.twig' %}
-{% block title %} JTWC - Enregistrement des bonus générationnels lié à un Grade {% endblock %}
-{% block page_title %} Enregistrement des bonus générationnels lié à un Grade {% endblock %}
+{% block title %}Enregistrement des bonus generationnels lie a un Grade - RACS Health Global{% endblock %}
+{% block page_title %}Enregistrement des bonus generationnels lie a un Grade{% endblock %}
+
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div class="form-group">
-                {{ form_label(form.grade, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.grade) }}
-                    {{ form_widget(form.grade, { 'attr':  {
-                        'class': 'form-control' ~ (form.grade.vars.valid ? '' : 'is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.grade) }}
-                    </div>                    
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.lvl, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.lvl) }}
-                    {{ form_widget(form.lvl, { 'attr':  {
-                        'class': 'form-control' ~ (form.lvl.vars.valid ? '' : 'is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.lvl) }}
-                    </div>                    
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.name, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.name) }}
-                    {{ form_widget(form.name, { 'attr':  {
-                        'class': 'form-control' ~ (form.name.vars.valid ? '' : 'is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.name) }}
-                    </div>                                        
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.value, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_errors(form.value) }}
-                    {{ form_widget(form.value, { 'attr':  {
-                        'class': 'form-control' ~ (form.value.vars.valid ? '' : 'is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.value) }}
-                    </div>                    
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-10 col-lg-2">
-                    <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
-                </div>
-            </div>
-            {{ form_end(form) }}
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    {{ form_start(form, {attr: {'id': 'form'}}) }}
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.grade.vars.label }}</label>
+          {{ form_widget(form.grade, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.grade) }}</div>
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.lvl.vars.label }}</label>
+          {{ form_widget(form.lvl, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.lvl) }}</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.name.vars.label }}</label>
+          {{ form_widget(form.name, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.name) }}</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.value.vars.label }}</label>
+          {{ form_widget(form.value, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.value) }}</div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+          <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+        </button>
+      </div>
     </div>
+    {{ form_end(form) }}
+  </div>
+</div>
 {% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('validate') }}
-{% endblock %}
+{% block javascripts %}{{ parent() }}{{ encore_entry_script_tags('validate') }}{% endblock %}

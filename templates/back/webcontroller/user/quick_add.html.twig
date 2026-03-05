@@ -1,168 +1,309 @@
 {% extends 'base.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Enregistrement d'un nouvel utilisateur {% endblock %}
-{% block page_title %} Enregistrement d'un nouvel utilisateur {% endblock %}
-{% block main %}
-<div class="col-lg-12">
-    <div class="form-panel">
-        <div class="alert alert-success hide"></div>
-        {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-        <!-- progressbar -->
-        <ul id="progressbar">
-            <li class="active">Sponsor, Upline & Package</li>
-            <li>Informations personnelles du distributeur</li>
-        </ul>
-        <fieldset>
-            <h2 class="fs-title">Sponsor, Upline & Package</h2>
-            <div class="form-group">
-                {{ form_label(form.sponsor, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.sponsor, { 'attr':  {
-                        'class': 'form-control' ~ (form.sponsor.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">{{ form_errors(form.sponsor) }}</div>
-                </div>
-            </div>
-            {% if form.upline is defined %}
-                <div class="form-group">
-                    {{ form_label(form.upline, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                    <div class="col-lg-10">
-                        {{ form_errors(form.upline) }}
-                        {{ form_widget(form.upline, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>
-            {% endif %}
-            <div class="form-group">
-                {{ form_label(form.position, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.position, { 'attr':  {
-                        'class': 'form-control'~(form.position.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    {{ form_help(form.position) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.position) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.membership, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.membership, { 'attr':  {
-                        'class': 'form-control' ~ (form.membership.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.membership) }}
-                    </div>
-                </div>
-            </div>
-            <input type="button" name="next" class="next action-button" value="Suivant" />
-        </fieldset>
-        <fieldset>
-            <h2 class="fs-title">Informations personnelles du distributeur</h2>
-            <div class="form-group">
-                {{ form_label(form.fullname, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
+{% block title %}Inscription rapide - RACS Health Global{% endblock %}
+{% block page_title %}Inscription rapide{% endblock %}
+{% block nav_members %}bg-jessica-500 text-white{% endblock %}
 
-                <div class="col-lg-10">
-                    {{ form_widget(form.fullname, { 'attr':  {
-                        'class': 'form-control' ~ (form.fullname.vars.valid ? '' : ' is-invalid' )
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.fullname) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.gender, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.gender, { 'attr':  {
-                        'class': 'form-control' ~ (form.gender.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.gender) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.email, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}            
-                <div class="col-lg-10">
-                    {{ form_widget(form.email, { 'attr':  {
-                        'class': 'form-control'~(form.email.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    {{ form_help(form.email) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.email) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.mobilePhone, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.mobilePhone, { 'attr':  {
-                        'class': 'form-control' ~ (form.mobilePhone.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                     <div class="invalid-feedback">
-                       {{ form_errors(form.mobilePhone) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.city, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.city, { 'attr':  {
-                        'class': 'form-control' ~ (form.city.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.city) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                    {{ form_label(form.country, null, { 'label_attr':  {
-                        'class': 'col-lg-2 control-label'
-                    }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.country, { 'attr':  {
-                        'class': 'form-control' ~ (form.country.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.country) }}
-                    </div>
-                </div>
-            </div>            
-            <input type="button" name="previous" class="previous action-button" value="Préc" />
-            <input type="submit" name="submit" class="submit action-button" value="Enregistrer" />
-            <input type="submit" name="submit_and_paid" class="submit action-button" value="Payer" />
-        </fieldset>
-        {{ form_end(form) }}
+{% block main %}
+<div class="max-w-3xl mx-auto -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+
+    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'wizard-form'}}) }}
+
+    {# Stepper #}
+    <div class="border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <button type="button" class="step-indicator active flex items-center gap-2 text-sm font-semibold text-jessica-600" data-step="0">
+          <span class="w-7 h-7 rounded-full bg-jessica-500 text-white flex items-center justify-center text-xs font-bold">1</span>
+          <span class="hidden sm:inline">Reseau & Pack</span>
+        </button>
+        <div class="flex-1 h-px bg-gray-200 mx-3"></div>
+        <button type="button" class="step-indicator flex items-center gap-2 text-sm font-medium text-gray-400" data-step="1">
+          <span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold">2</span>
+          <span class="hidden sm:inline">Informations</span>
+        </button>
+      </div>
     </div>
+
+    {# Step 1: Network & Package #}
+    <fieldset class="wizard-step p-6 space-y-5" data-step="0">
+      <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="users" class="w-5 h-5 text-jessica-500"></i>
+        Reseau & Package
+      </h2>
+      <div class="space-y-4">
+        {# Sponsor #}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.sponsor.vars.label }}</label>
+          {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
+            {{ form_widget(form.sponsor, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.sponsor.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% else %}
+            {{ form_widget(form.sponsor, {'attr': {'class': 'w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-500 cursor-not-allowed', 'readonly': 'readonly'}}) }}
+          {% endif %}
+          {% if not form.sponsor.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.sponsor) }}</p>{% endif %}
+          <div class="mt-1.5 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              Le sponsor est la personne qui parraine le nouveau membre. C'est lui qui l'a recrute dans le reseau. Le sponsor recoit des bonus de parrainage direct.
+            </p>
+          </div>
+        </div>
+
+        {# Upline #}
+        {% if form.upline is defined %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.upline.vars.label }}</label>
+          {# Hidden Symfony field to keep the transformer working #}
+          <div class="hidden">{{ form_widget(form.upline, {'attr': {'id': 'upline-hidden'}}) }}</div>
+          {# Visual searchable select #}
+          <div class="relative">
+            <input type="text" id="upline-search" placeholder="Rechercher un upline..." autocomplete="off"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition">
+            <div id="upline-dropdown" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+          </div>
+          {% if not form.upline.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.upline) }}</p>{% endif %}
+          <div id="upline-position-status" class="hidden mt-1.5 flex items-center gap-2 text-xs"></div>
+          <div class="mt-1.5 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              L'upline est la personne sous laquelle le nouveau membre sera place dans l'arbre binaire. Seuls les membres ayant au moins une position libre (gauche ou droite) sont affiches. Si laisse vide, le systeme placera automatiquement le membre.
+            </p>
+          </div>
+        </div>
+        {% endif %}
+
+        {# Position #}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.position.vars.label }}</label>
+          {{ form_widget(form.position, {'attr': {'id': 'position-select', 'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.position.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.position.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.position) }}</p>{% endif %}
+          <div class="mt-1.5 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              Chaque membre de l'arbre binaire a deux positions : Gauche (Left) et Droite (Right). Lorsque vous choisissez un upline, la position disponible sera automatiquement selectionnee. Si les deux sont libres, vous pouvez choisir.
+            </p>
+          </div>
+        </div>
+
+        {# Package #}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.membership.vars.label }}</label>
+          {{ form_widget(form.membership, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.membership.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.membership.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.membership) }}</p>{% endif %}
+          <div class="mt-1.5 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              Le package determine le niveau de souscription du membre. Un pack plus eleve donne acces a plus de produits et a des pourcentages de bonus superieurs.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button type="button" class="next inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+          Suivant <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </fieldset>
+
+    {# Step 2: Personal Info #}
+    <fieldset class="wizard-step p-6 space-y-5 hidden" data-step="1">
+      <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <i data-lucide="user" class="w-5 h-5 text-jessica-500"></i>
+        Informations personnelles
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.fullname.vars.label }}</label>
+          {{ form_widget(form.fullname, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.fullname.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.fullname.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.fullname) }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.gender.vars.label }}</label>
+          {{ form_widget(form.gender, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.gender.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.gender.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.gender) }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.email.vars.label }}</label>
+          {{ form_widget(form.email, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.email.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {{ form_help(form.email) }}
+          {% if not form.email.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.email) }}</p>{% endif %}
+          <div class="mt-1.5 flex items-start gap-1.5">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="shrink-0 mt-0.5 p-0.5 rounded-full text-gray-400 hover:text-jessica-500 hover:bg-jessica-50 transition-colors">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </button>
+            <p class="hidden text-xs text-gray-500 leading-relaxed">
+              L'email sera utilise comme identifiant et mot de passe de connexion par defaut. Le membre pourra le changer apres sa premiere connexion.
+            </p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.mobilePhone.vars.label }}</label>
+          {{ form_widget(form.mobilePhone, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.mobilePhone.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.mobilePhone.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.mobilePhone) }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.city.vars.label }}</label>
+          {{ form_widget(form.city, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.city.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.city.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.city) }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.country.vars.label }}</label>
+          {{ form_widget(form.country, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.country.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {% if not form.country.vars.valid %}<p class="text-xs text-red-500 mt-1">{{ form_errors(form.country) }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-between gap-3 pt-2">
+        <button type="button" class="previous inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Precedent
+        </button>
+        <div class="flex gap-3">
+          <button type="submit" name="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors shadow-sm">
+            <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+          </button>
+          <button type="submit" name="submit_and_paid" class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors shadow-sm">
+            <i data-lucide="credit-card" class="w-4 h-4"></i> Payer
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
+    {{ form_end(form) }}
+  </div>
 </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('autocomplete') }}
-    {{ encore_entry_script_tags('fieldset') }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var searchInput = document.getElementById('upline-search');
+      var dropdown = document.getElementById('upline-dropdown');
+      var hiddenInput = document.getElementById('upline-hidden');
+      var positionSelect = document.getElementById('position-select');
+      var statusDiv = document.getElementById('upline-position-status');
+
+      if (!searchInput || !hiddenInput || !positionSelect) return;
+
+      var debounceTimer = null;
+      var allUplines = [];
+
+      // Load available uplines on page load
+      fetch('{{ path("upline_available_list") }}')
+        .then(function(r) { return r.json(); })
+        .then(function(data) { allUplines = data; });
+
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          var q = searchInput.value.trim().toLowerCase();
+          if (q.length < 1) { dropdown.classList.add('hidden'); return; }
+
+          var filtered = allUplines.filter(function(u) {
+            return u.fullname.toLowerCase().indexOf(q) !== -1 ||
+                   u.username.toLowerCase().indexOf(q) !== -1;
+          }).slice(0, 20);
+
+          if (!filtered.length) {
+            dropdown.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400">Aucun upline disponible</div>';
+            dropdown.classList.remove('hidden');
+            return;
+          }
+
+          dropdown.innerHTML = filtered.map(function(u) {
+            var posInfo = '';
+            if (u.left_free && u.right_free) {
+              posInfo = '<span class="text-green-600">G + D libres</span>';
+            } else if (u.left_free) {
+              posInfo = '<span class="text-green-600">G libre</span> · <span class="text-red-400">D occupee</span>';
+            } else {
+              posInfo = '<span class="text-red-400">G occupee</span> · <span class="text-green-600">D libre</span>';
+            }
+            return '<button type="button" data-label="' + u.label + '" data-left="' + u.left_free + '" data-right="' + u.right_free + '" ' +
+              'class="upline-option w-full text-left px-4 py-2.5 hover:bg-jessica-50 transition-colors border-b border-gray-50 last:border-0">' +
+              '<div class="text-sm font-medium text-gray-800">' + u.fullname + '</div>' +
+              '<div class="text-xs text-gray-400 flex items-center gap-2">' + u.username + ' · ' + posInfo + '</div>' +
+              '</button>';
+          }).join('');
+
+          dropdown.classList.remove('hidden');
+        }, 200);
+      });
+
+      // Select an upline
+      dropdown.addEventListener('click', function(e) {
+        var btn = e.target.closest('.upline-option');
+        if (!btn) return;
+
+        var label = btn.getAttribute('data-label');
+        var leftFree = btn.getAttribute('data-left') === 'true';
+        var rightFree = btn.getAttribute('data-right') === 'true';
+
+        // Set the hidden Symfony input
+        hiddenInput.value = label;
+        searchInput.value = label;
+        dropdown.classList.add('hidden');
+
+        // Auto-select position
+        if (leftFree && !rightFree) {
+          positionSelect.value = 'Left';
+        } else if (rightFree && !leftFree) {
+          positionSelect.value = 'Right';
+        }
+
+        // Show position status
+        statusDiv.classList.remove('hidden');
+        var html = '';
+        if (leftFree && rightFree) {
+          html = '<span class="inline-flex items-center gap-1 text-green-600"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Gauche et Droite libres — choisissez la position</span>';
+        } else if (leftFree) {
+          html = '<span class="inline-flex items-center gap-1 text-green-600"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Gauche libre</span>' +
+                 '<span class="inline-flex items-center gap-1 text-red-400 ml-2"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Droite occupee</span>' +
+                 '<span class="text-jessica-500 font-medium ml-2">→ Position auto : Gauche</span>';
+        } else {
+          html = '<span class="inline-flex items-center gap-1 text-red-400"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Gauche occupee</span>' +
+                 '<span class="inline-flex items-center gap-1 text-green-600 ml-2"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Droite libre</span>' +
+                 '<span class="text-jessica-500 font-medium ml-2">→ Position auto : Droite</span>';
+        }
+        statusDiv.innerHTML = html;
+        lucide.createIcons();
+      });
+
+      // Clear selection
+      searchInput.addEventListener('focus', function() {
+        if (searchInput.value) {
+          searchInput.select();
+        }
+      });
+
+      // Close dropdown on outside click
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('#upline-search') && !e.target.closest('#upline-dropdown')) {
+          dropdown.classList.add('hidden');
+        }
+      });
+
+      // Pre-fill from query params (from genealogy tree)
+      var params = new URLSearchParams(window.location.search);
+      var prefillUpline = params.get('upline');
+      var prefillPosition = params.get('position');
+      if (prefillUpline) {
+        hiddenInput.value = prefillUpline;
+        searchInput.value = prefillUpline;
+      }
+      if (prefillPosition && (prefillPosition === 'Left' || prefillPosition === 'Right')) {
+        positionSelect.value = prefillPosition;
+      }
+    });
+    </script>
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('autocomplete') }}
-    {{ encore_entry_link_tags('fieldset') }}
 {% endblock %}

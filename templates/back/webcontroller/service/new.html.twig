@@ -1,72 +1,70 @@
-{% extends 'admin_dashboard.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Enregistrement d'un nouveau service et ses examens {% endblock %}
-{% block main %}
-    <h3><i class="fa fa-angle-right"></i>Enregistrement d'un nouveau service et ses examens</h3>
-    <div class="row mb">
-        <div class="form-panel">
-            <div class="alert alert-success hide"></div>
-            {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <!-- progressbar -->
-            <ul id="progressbar">
-                <li class="active">Step 1: Informations sur le service</li>
-                <li>Step 2: Création des différents examens du service</li>
-            </ul>
-            <fieldset>
-                <h2 class="fs-title">Step 1: Informations sur le service</h2>
-                <div class="form-group">
-                    {{ form_label(form.type, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-                    <div class="col-lg-9">
-                        {{ form_errors(form.type) }}
-                        {{ form_widget(form.type, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.code, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-                    <div class="col-lg-9">
-                        {{ form_errors(form.code) }}
-                        {{ form_widget(form.code, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.description, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-                    <div class="col-lg-9">
-                        {{ form_errors(form.description) }}
-                        {{ form_widget(form.description, { 'attr':  {
-                            'class': 'form-control'
-                        }}) }}
-                    </div>
-                </div>
-                <input type="button" name="next" class="next action-button" value="Suivant" />
-            </fieldset>
-            <fieldset>
-                <h2 class="fs-title">Step 2: Création des différents examens du service</h2>
-                <div class="collections" data-prototype="{{ form_widget(form.mlmValueServices.vars.prototype)|e('html_attr') }}">
-                </div>
-                <input type="button" name="previous" class="previous action-button" value="Précédent" />
-                <input type="submit" name="submit" class="submit action-button" value="Enregistrer" />
-            </fieldset>
-            {{ form_end(form) }}
-        </div>
-    </div>
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('fieldset') }}
-    {{ encore_entry_script_tags('collection') }}
-{% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('fieldset') }}
-    {{ encore_entry_link_tags('collection') }}
-{% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Enregistrement d'un nouveau service - RACS Health Global{% endblock %}
+{% block page_title %}Enregistrement d'un nouveau service et ses examens{% endblock %}
 
+{% block main %}
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form', 'class': 'divide-y divide-gray-100'}}) }}
+
+    <div class="px-6 py-4 bg-gray-50">
+      <div class="flex items-center gap-4 text-sm">
+        <span class="step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-jessica-500 text-white font-semibold" id="step-ind-1"><span>1</span> Infos service</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+        <span class="step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 text-gray-600 font-medium" id="step-ind-2"><span>2</span> Examens du service</span>
+      </div>
+    </div>
+
+    <div id="step-1" class="p-6 space-y-5">
+      <h3 class="text-base font-bold text-gray-800">Informations sur le service</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.type.vars.label }}</label>
+          {{ form_widget(form.type, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.type) }}</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.code.vars.label }}</label>
+          {{ form_widget(form.code, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.code) }}</div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.description.vars.label }}</label>
+          {{ form_widget(form.description, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+          <div class="text-red-500 text-xs mt-1">{{ form_errors(form.description) }}</div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button type="button" onclick="showStep(2)" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+          Suivant <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="step-2" class="p-6 space-y-5 hidden">
+      <h3 class="text-base font-bold text-gray-800">Creation des differents examens du service</h3>
+      <div class="collections space-y-3" data-prototype="{{ form_widget(form.mlmValueServices.vars.prototype)|e('html_attr') }}"></div>
+      <div class="flex justify-between pt-2">
+        <button type="button" onclick="showStep(1)" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Precedent
+        </button>
+        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+          <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+        </button>
+      </div>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+<script>
+function showStep(step) {
+  document.getElementById('step-1').classList.toggle('hidden', step !== 1);
+  document.getElementById('step-2').classList.toggle('hidden', step !== 2);
+  document.getElementById('step-ind-1').className = step === 1 ? 'step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-jessica-500 text-white font-semibold' : 'step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 text-gray-600 font-medium';
+  document.getElementById('step-ind-2').className = step === 2 ? 'step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-jessica-500 text-white font-semibold' : 'step-indicator inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 text-gray-600 font-medium';
+}
+</script>
+{% endblock %}
+{% block javascripts %}{{ parent() }}{{ encore_entry_script_tags('fieldset') }}{{ encore_entry_script_tags('collection') }}{% endblock %}
+{% block stylesheets %}{{ parent() }}{{ encore_entry_link_tags('fieldset') }}{{ encore_entry_link_tags('collection') }}{% endblock %}

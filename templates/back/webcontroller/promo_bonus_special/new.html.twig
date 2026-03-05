@@ -1,60 +1,45 @@
-{% extends 'admin_dashboard.html.twig' %}
-{% block title %} JTWC - Enregistrement d'une promotion concernant un bonus spécial {% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Nouvelle promotion bonus special - RACS Health Global{% endblock %}
+{% block page_title %}Nouvelle promotion bonus special{% endblock %}
 {% block main %}
-    <h3><i class="fa fa-angle-right"></i>Enregistrement d'une promotion concernant un bonus spécial</h3>
-    <div class="row mb">
-        <div class="form-panel">
-            <div class="alert alert-success hide"></div>
-            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div class="form-group">
-                <div class="d-flex justify-content-start">
-                    {{ form_label(form.startedAt, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-
-                    {{ form_errors(form.startedAt) }}
-                    {{ form_widget(form.startedAt, { 'attr':  {
-                        'class': 'form-control col-lg-8'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="d-flex justify-content-start">
-                    {{ form_label(form.endedAt, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-
-                    {{ form_errors(form.endedAt) }}
-                    {{ form_widget(form.endedAt, { 'attr':  {
-                        'class': 'form-control col-lg-8'
-                    }}) }}
-                </div>
-            </div>
-            <div class="form-group" style="text-align: left">
-                {{ form_errors(form.status) }}
-                {{ form_widget(form.status, { 'attr':  {
-                    'class': '', 'style': 'text-align: right'
-                }}) }}
-            </div>
-            <div class="form-group">
-                <div class="d-flex justify-content-start">
-                    {{ form_label(form.bonusSpecial, null, { 'label_attr':  {
-                        'class': 'col-lg-3 control-label'
-                    }}) }}
-                    {{ form_errors(form.bonusSpecial) }}
-                    {{ form_widget(form.bonusSpecial, { 'attr':  {
-                        'class': 'form-control col-lg-8'
-                    }}) }}
-                </div>
-            </div>
-            <div class="col-lg-offset-5 col-lg-5">
-                <input type="submit" name="submit" class="btn btn-theme" value="Submit" />
-            </div>
-            {{ form_end(form) }}
-        </div>
+<div class="space-y-5 -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
+      <h2 class="text-base font-semibold text-gray-800">Enregistrement d'une promotion</h2>
     </div>
+    <div class="p-6">
+      {{ form_start(form, {attr: {'id': 'form', 'class': 'space-y-5'}}) }}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.startedAt.vars.label }}</label>
+          {{ form_errors(form.startedAt) }}
+          {{ form_widget(form.startedAt, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.endedAt.vars.label }}</label>
+          {{ form_errors(form.endedAt) }}
+          {{ form_widget(form.endedAt, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        {{ form_errors(form.status) }}
+        {{ form_widget(form.status) }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.bonusSpecial.vars.label }}</label>
+        {{ form_errors(form.bonusSpecial) }}
+        {{ form_widget(form.bonusSpecial, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-jessica-500 focus:ring-1 focus:ring-jessica-500'}}) }}
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+        <a href="{{ path('promo_bonus_special_list') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">Annuler</a>
+        <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-jessica-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-jessica-600 transition"><i data-lucide="save" class="w-4 h-4"></i>Enregistrer</button>
+      </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('validate') }}
+  {{ parent() }}
+  {{ encore_entry_script_tags('validate') }}
 {% endblock %}

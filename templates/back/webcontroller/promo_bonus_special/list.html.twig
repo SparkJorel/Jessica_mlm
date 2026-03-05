@@ -1,91 +1,102 @@
-{% extends 'admin_dashboard.html.twig' %}
-{% block title %} Jessica Total Wellness Concept - Promotions du bonus spécial {% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Promotions du bonus special - RACS Health Global{% endblock %}
+{% block page_title %}Promotions du bonus special{% endblock %}
 {% block main %}
-    <h3><i class="fa fa-angle-right"></i>Historique des promotions du bonus spécial</h3>
-    <div class="row mb">
-        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-            <a href="{{ path('product_sv_new') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
-        {% endif %}
-        <div class="content-panel">
-            <div class="adv-table">
-                <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="table-info">
-                    <thead>
-                    <tr>
-                        <th>Bonus</th>
-                        <th>Début</th>
-                        <th>Fin</th>
-                        <th>Etat</th>
-                        <th>Soumise à condition</th>
-                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                            <th>Actions</th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for promotion in promotions %}
-                        <tr>
-                            <td>{{ promotion.bonusSpecial.name }}</td>
-                            <td>{{ promotion.startedAt | date('d/m/Y H:i:s') }}</td>
-                            <td>{{ promotion.endedAt | date('d/m/Y H:i:s') }}</td>
-                            <td>
-                                <input data-id="{{ promotion.id }}"
-                                       data-toggle="toggle" data-on="Activé"
-                                       data-off="Désactivé" class="status"
-                                       type="checkbox"
-                                        {% if promotion.status %} checked {% endif %} />
-                            </td>
-                            <td>
-                                <input data-toggle="toggle" data-on="Oui"
-                                       data-off="Non" class="condition"
-                                       type="checkbox"
-                                        {% if promotion.underCondition %} checked {% endif %} />
-                            </td>
-                            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-                                <td>
-                                    <a href="{{ path('promo_bonus_special_edit', {'id': promotion.id})}}" title="Edit" class="btn btn-info btn-xs"><span class="fa fa-edit"></span></a>
-                                    <button type="button" class="btn btn-danger btn-xs" title="Delete" data-toggle="modal" data-target="#promoBonusSpecialDeleteDialog{{promotion.id}}"><span class="fa fa-remove"></span>
-                                    </button>
-                                    <div class="modal fade" id="promoBonusSpecialDeleteDialog{{promotion.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    <h4 class="modal-title" id="myModalLabel">Confirmation needed</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Voulez vous vraiment supprimer cette promo sur le bonus spécial ?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Abandonner</button>
-                                                    <form action="{{ path('promo_bonus_special_delete', {'id': promotion.id }) }}" method="post">
-                                                        <button type="button" class="btn btn-danger">Confirmer</button>
-                                                        <input type="hidden" name="_jtwc_promo_bonus_special_token"  value="{{ csrf_token('jtwc_promo_bonus_special-delete'~promotion.id) }}" />
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% else %}
-                        <tr><td {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %} colspan="5" {% else %} colspan="4" {% endif %}>Aucune promotion sur le bonus spécial sauvegardée</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="space-y-5 -m-5 sm:-m-6">
+  {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+  <div class="flex items-center justify-between px-5 sm:px-6 pt-5 sm:pt-6">
+    <div></div>
+    <a href="{{ path('product_sv_new') }}" class="inline-flex items-center gap-2 rounded-lg bg-jessica-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-jessica-600 transition"><i data-lucide="plus" class="w-4 h-4"></i>Ajouter</a>
+  </div>
+  {% endif %}
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left" id="table-info">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-4 py-3 font-semibold text-gray-700">Bonus</th>
+            <th class="px-4 py-3 font-semibold text-gray-700">Debut</th>
+            <th class="px-4 py-3 font-semibold text-gray-700">Fin</th>
+            <th class="px-4 py-3 font-semibold text-gray-700">Etat</th>
+            <th class="px-4 py-3 font-semibold text-gray-700">Soumise a condition</th>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <th class="px-4 py-3 font-semibold text-gray-700 text-right">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for promotion in promotions %}
+          <tr class="hover:bg-gray-50 transition">
+            <td class="px-4 py-3 text-gray-800 font-medium">{{ promotion.bonusSpecial.name }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ promotion.startedAt | date('d/m/Y H:i:s') }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ promotion.endedAt | date('d/m/Y H:i:s') }}</td>
+            <td class="px-4 py-3">
+              <input data-id="{{ promotion.id }}"
+                     data-toggle="toggle" data-on="Active"
+                     data-off="Desactive" class="status"
+                     type="checkbox"
+                     {% if promotion.status %} checked {% endif %} />
+            </td>
+            <td class="px-4 py-3">
+              <input data-toggle="toggle" data-on="Oui"
+                     data-off="Non" class="condition"
+                     type="checkbox"
+                     {% if promotion.underCondition %} checked {% endif %} />
+            </td>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+            <td class="px-4 py-3 text-right">
+              <div class="inline-flex items-center gap-1">
+                <a href="{{ path('promo_bonus_special_edit', {'id': promotion.id}) }}" class="p-1.5 rounded-md text-gray-500 hover:text-jessica-600 hover:bg-jessica-50 transition" title="Modifier"><i data-lucide="pencil" class="w-4 h-4"></i></a>
+                <button type="button" onclick="openModal('deleteModal{{ promotion.id }}')" class="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 transition" title="Supprimer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </div>
+              <!-- Delete Modal -->
+              <div id="deleteModal{{ promotion.id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"><i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i></div>
+                    <h3 class="text-lg font-semibold text-gray-900">Confirmation de suppression</h3>
+                  </div>
+                  <p class="text-sm text-gray-600 mb-6">Voulez-vous vraiment supprimer cette promo sur le bonus special ?</p>
+                  <div class="flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeModal('deleteModal{{ promotion.id }}')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">Abandonner</button>
+                    <form action="{{ path('promo_bonus_special_delete', {'id': promotion.id }) }}" method="post">
+                      <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition">Confirmer</button>
+                      <input type="hidden" name="_jtwc_promo_bonus_special_token" value="{{ csrf_token('jtwc_promo_bonus_special-delete'~promotion.id) }}" />
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </td>
+            {% endif %}
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="{% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}6{% else %}5{% endif %}" class="px-4 py-12 text-center">
+              <div class="flex flex-col items-center gap-3"><i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i><p class="text-sm text-gray-500">Aucune promotion sur le bonus special sauvegardee</p></div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
+
+<script>
+function openModal(id){document.getElementById(id).classList.remove('hidden');}
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
+</script>
 {% endblock %}
 {% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('datatable') }}
-    {{ encore_entry_script_tags('toggle_checkbox') }}
-    {{ encore_entry_script_tags('toggle_boolean_button') }}
+  {{ parent() }}
+  {{ encore_entry_script_tags('datatable') }}
+  {{ encore_entry_script_tags('toggle_checkbox') }}
+  {{ encore_entry_script_tags('toggle_boolean_button') }}
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('datatable') }}
-    {{ encore_entry_link_tags('toggle_checkbox') }}
-    {{ encore_entry_link_tags('toggle_boolean_button') }}
+  {{ parent() }}
+  {{ encore_entry_link_tags('datatable') }}
+  {{ encore_entry_link_tags('toggle_checkbox') }}
+  {{ encore_entry_link_tags('toggle_boolean_button') }}
 {% endblock %}

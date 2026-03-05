@@ -1,56 +1,38 @@
 {% extends 'base.html.twig' %}
-{% block title %} JTWC - Paramétrer la quantité de ce produit pour le pack sélectionné {% endblock %}
-{% block page_title %} Paramétrer la quantité de ce produit pour le pack sélectionné {% endblock %}
+{% block title %}Parametrage produit pack - RACS Health Global{% endblock %}
+{% block page_title %}Parametrer la quantite de ce produit pour le pack selectionne{% endblock %}
 {% block main %}
-    <div class="col-lg-12">
-        <div class="form-panel">
-            {{ form_start(form, {attr: {'id': 'form', 'class': 'form-horizontal style-form'}}) }}
-            <div class="form-group">
-                {{ form_label(form.name, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.name, { 'attr':  {
-                        'class': 'form-control'~(form.name.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class"invalid-feedback">
-                        {{ form_errors(form.name) }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.product, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.product, { 'attr':  {
-                        'class': 'form-control'~(form.product.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.product) }}                    
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.quantity, null, { 'label_attr':  {
-                    'class': 'col-lg-2 control-label'
-                }}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.quantity, { 'attr':  {
-                        'class': 'form-control'~(form.quantity.vars.valid ? '' : ' is-invalid')
-                    }}) }}
-                    <div class="invalid-feedback">
-                        {{ form_errors(form.quantity) }}                    
-                    </div>
-                </div>
-            </div>            
-            <div class="form-group">
-                <div class="col-lg-offset-10 col-lg-2">
-                    <input type="submit" name="submit" class="btn btn-theme" value="Enregistrer" />
-                </div>
-            </div>
-            {{ form_end(form) }}
-        </div>
+<div class="max-w-2xl mx-auto -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
+      <h2 class="text-base font-semibold text-gray-800">Composition du pack</h2>
     </div>
+    <div class="p-6">
+      {{ form_start(form, {attr: {'id': 'form', 'class': 'space-y-5'}}) }}
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.name.vars.label }}</label>
+          {{ form_widget(form.name, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.name.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {{ form_errors(form.name) }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.product.vars.label }}</label>
+          {{ form_widget(form.product, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.product.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {{ form_errors(form.product) }}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.quantity.vars.label }}</label>
+          {{ form_widget(form.quantity, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition' ~ (form.quantity.vars.valid ? '' : ' border-red-400 bg-red-50')}}) }}
+          {{ form_errors(form.quantity) }}
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+        <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-jessica-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-jessica-600 transition">
+          <i data-lucide="save" class="w-4 h-4"></i> Enregistrer
+        </button>
+      </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
 {% endblock %}
-

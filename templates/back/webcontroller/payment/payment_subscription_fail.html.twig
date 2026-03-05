@@ -1,15 +1,18 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	JTWC - Echec du paiement de votre sélection de votre pack de souscription
-{% endblock %}
-{% block page_title %}
-    Echec du paiement de votre sélection de pack de souscription
-{% endblock %}
+{% block title %}Echec de la souscription - RACS Health Global{% endblock %}
+{% block page_title %}Echec de la souscription{% endblock %}
+
 {% block main %}
-	<div class="col-lg-12">
-        <div class="alert alert-danger">
-            <h1>{{message}}</h1>
-            <a href="{{path('summary_subscription_cart')}}">Consulter votre panier de souscription</a>
-        </div>
-	</div>
+<div class="max-w-lg mx-auto -m-5 sm:-m-6">
+  <div class="bg-white rounded-xl border border-gray-200 p-8 text-center">
+    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <i data-lucide="x-circle" class="w-8 h-8 text-red-500"></i>
+    </div>
+    <h2 class="text-xl font-bold text-gray-800 mb-2">Souscription echouee</h2>
+    <p class="text-sm text-gray-500 mb-6">{{ message }}</p>
+    <a href="{{ path('summary_subscription_cart') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
+      <i data-lucide="shopping-cart" class="w-4 h-4"></i> Retour au panier
+    </a>
+  </div>
+</div>
 {% endblock %}

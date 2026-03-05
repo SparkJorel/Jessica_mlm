@@ -1,19 +1,43 @@
-<div class="container">
-    <h1>Informations détaillées</h1>
-    {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
-        <a href="{{ path('membership_cost_list') }}"><button type="button" class="btn btn-primary"><span class="fa fa-plus-circle"></span>Ajouter</button></a>
-    {% endif %}
-    {% if mbship_cost is defined %}
-        <table>
-            <tr><th>Membership</th><th>Coût</th><th>Statut</th><th>View</th></tr>
-            <tr>
-                <td>{{ mbship_cost.membership.name }}</td>
-                <td>{{ mbship_cost.value }}</td>
-                <td>{% if mbship_cost.state %} Activé {% else %} Désactivé {% endif %}</td>
-                <td></td>
-            </tr>
-        </table>
-    {% else %}
-        <p>Le prix client du produit sélectionné a été supprimé</p>
-    {% endif %}
+{% extends 'base.html.twig' %}
+{% block title %}Detail volume commission - RACS Health Global{% endblock %}
+{% block page_title %}Detail volume commission{% endblock %}
+{% block main %}
+<div class="space-y-5 -m-5 sm:-m-6">
+  {% if mbship_cost is defined %}
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="border-b border-gray-200 bg-gray-50 px-6 py-4 flex items-center justify-between">
+      <h2 class="text-base font-semibold text-gray-800">Informations detaillees</h2>
+      {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
+      <a href="{{ path('membership_cost_list') }}" class="inline-flex items-center gap-2 rounded-lg bg-jessica-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-jessica-600 transition"><i data-lucide="plus" class="w-4 h-4"></i>Ajouter</a>
+      {% endif %}
+    </div>
+    <div class="p-6">
+      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Membership</dt>
+          <dd class="text-sm font-semibold text-gray-900">{{ mbship_cost.membership.name }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Cout</dt>
+          <dd class="text-sm font-semibold text-gray-900">{{ mbship_cost.value }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Statut</dt>
+          <dd>
+            {% if mbship_cost.state %}
+              <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
+            {% else %}
+              <span class="inline-flex items-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">Desactive</span>
+            {% endif %}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+  {% else %}
+  <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
+    <div class="flex flex-col items-center gap-3"><i data-lucide="inbox" class="w-10 h-10 text-gray-300"></i><p class="text-sm text-gray-500">Le prix client du produit selectionne a ete supprime</p></div>
+  </div>
+  {% endif %}
 </div>
+{% endblock %}
