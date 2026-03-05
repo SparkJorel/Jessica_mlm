@@ -126,6 +126,52 @@ Le projet Jessica MLM est une application de marketing multi-niveaux (MLM) en pr
   - Schema DB mis a jour
   - Page login : 200 OK
 
+## PHASE 7 : Corrections post-deploiement et Backup (Mars 2026) - TERMINEE
+
+### 7.1 Fix CI/CD 502 Bad Gateway
+- [x] `.github/workflows/deploy.yml` : ajout `--env-file .env.docker` a toutes les commandes docker compose
+- [x] Sans `--env-file`, les variables (DB_PASSWORD, etc.) etaient vides -> `Access denied for user`
+
+### 7.2 Fix routes double prefixe `/admin`
+- [x] `config/routes/annotations.yaml` ajoute automatiquement le prefixe `/admin` aux controllers `Back/WebController/`
+- [x] Suppression du `/admin` dans les annotations `#[Route]` de :
+  - `UserController.php` : `sponsor_autocomplete`, `upline_autocomplete`, `check_username`
+  - `ProductController.php` : `product/autocomplete`
+  - `TurnOverController.php` : `turn-over/monthly`
+
+### 7.3 Fix selection upline (distributeur)
+- [x] Nouveau endpoint optimise `availableUplines()` : single DQL avec LEFT JOIN + GROUP BY + HAVING
+  - Retourne les uplines avec positions gauche/droite libres
+  - Admin : tous les users actives
+  - Distributeur : uniquement son reseau (lft/rgt)
+- [x] Fix IDs HTML dupliques dans `form_widget` (suppression des `id` custom)
+- [x] JS utilise `{{ form.upline.vars.id }}` au lieu d'IDs hardcodes
+- [x] Dropdown upline s'ouvre au focus (pas seulement a la saisie)
+- [x] `encore_entry_script_tags('autocomplete')` conditionnel (admin uniquement)
+- [x] Applique aux deux templates : `new.html.twig` (admin) et `quick_add.html.twig` (distributeur)
+
+### 7.4 Fix `UserRepository::getSponsorOrUplineList()`
+- [x] `gt/lt` -> `gte/lte` pour inclure l'utilisateur connecte dans la liste
+
+### 7.5 Remplacement base de donnees
+- [x] Import de `docs/base de donnees/jessica_bd.sql` en local
+- [x] Migration roles CSV -> JSON (`scripts/fix_roles.sql`)
+- [x] `doctrine:schema:update --force` pour appliquer les changements de schema
+- [x] `doctrine:migrations:version --add --all` pour marquer toutes les migrations comme executees
+- [x] Fix colonne `sess_lifetime` : `mediumint` -> `int` (debordement numerique)
+- [x] Export local -> import en production (remplacement complet)
+
+### 7.6 Systeme de backup automatique
+- [x] Script `/home/ubuntu/backup_jessica_db.sh` :
+  - Dump MariaDB compresse (gzip)
+  - Conservation locale 7 jours (`/home/ubuntu/db_backups/`)
+  - Upload Google Drive via rclone (`jessica-drive:jessica_mlm_backups/`)
+- [x] rclone v1.73.1 configure avec Google Drive OAuth
+- [x] Cron job : execution quotidienne a 22h00
+
+### 7.7 Fix modal arbre genealogique
+- [x] `graph.html.twig` : ajout `min-w-0` + `title` pour troncature emails longs
+
 ---
 
 ## Risques et Mitigations
@@ -142,6 +188,10 @@ Le projet Jessica MLM est une application de marketing multi-niveaux (MLM) en pr
 | Docker env vars non transmises a PHP/Apache | MOYEN | Resolu - .env.local genere par entrypoint |
 | DoctrineProvider supprime en Symfony 6 | ELEVE | Resolu - cache type pool |
 | DB MySQL 5.7 -> MariaDB 10.4 | MOYEN | Resolu - dump + restore |
+| CI/CD sans --env-file .env.docker | CRITIQUE | Resolu - ajout dans deploy.yml |
+| Double prefixe /admin sur routes | ELEVE | Resolu - suppression /admin des annotations |
+| sess_lifetime mediumint overflow | MOYEN | Resolu - colonne changee en int |
+| Backup DB automatique | ELEVE | Resolu - rclone + Google Drive + cron 22h |
 
 ---
 
@@ -164,6 +214,9 @@ Docker: jessica_web (PHP 8.2 + Apache, port 8080)
 - `/etc/nginx/sites-enabled/jessica-mlm` : reverse proxy HTTPS
 - `/home/ubuntu/jessica_mlm/.env.docker` : variables d'env production
 - `/home/ubuntu/db_backup_before_migration.sql` : backup DB pre-migration
+- `/home/ubuntu/backup_jessica_db.sh` : script backup quotidien
+- `/home/ubuntu/.config/rclone/rclone.conf` : config rclone Google Drive
+- `/home/ubuntu/db_backups/` : backups locaux (7 jours) + backup.log
 
 ---
 
