@@ -229,7 +229,7 @@ img {
   padding: 10px 12px;
   border-radius: var(--radius-md);
   color: var(--j-gray-300);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   transition: all var(--transition-fast);
   cursor: pointer;
@@ -283,7 +283,7 @@ img {
 
 .j-nav-sub .j-nav-link {
   padding: 8px 12px 8px 44px;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 400;
   color: var(--j-gray-400);
 }
@@ -481,7 +481,7 @@ img {
 }
 
 .j-card-title {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--j-gray-800);
 }
@@ -580,7 +580,7 @@ img {
 .j-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .j-table thead {
@@ -591,7 +591,7 @@ img {
   padding: 12px 16px;
   text-align: left;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--j-gray-500);
@@ -627,7 +627,7 @@ img {
   padding: 10px 20px;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -715,7 +715,7 @@ img {
 
 .j-form-label {
   display: block;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--j-gray-700);
   margin-bottom: 6px;
@@ -777,7 +777,7 @@ select.j-form-control {
   gap: 12px;
   padding: 14px 18px;
   border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   margin-bottom: 16px;
   border: 1px solid;
 }
@@ -905,7 +905,7 @@ select.j-form-control {
 }
 
 .j-quick-action .action-label {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 600;
 }
 
@@ -1228,7 +1228,7 @@ select.j-form-control {
 .j-card table.dataTable {
   width: 100% !important;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .j-card .table th,
@@ -1236,7 +1236,7 @@ select.j-form-control {
   background: var(--j-gray-50);
   padding: 12px 16px;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--j-gray-500);

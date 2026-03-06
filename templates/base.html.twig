@@ -113,8 +113,8 @@
     <div class="flex items-center gap-3 px-5 py-5 border-b border-white/[0.08]">
       <img src="{{ asset('img/logo_racs.jpg') }}" alt="RACS Health Global" class="w-9 h-9 rounded-lg object-cover">
       <div>
-        <div class="font-bold text-sm tracking-tight">RACS <span class="text-accent-500">Health</span> Global</div>
-        <div class="text-[10px] text-gray-500 uppercase tracking-wider">Sante & Bien-etre</div>
+        <div class="font-bold text-lg tracking-tight">RACS <span class="text-accent-500">Health</span> Global</div>
+        <div class="text-[9px] text-gray-500 uppercase tracking-wider">Sante & Bien-etre</div>
       </div>
     </div>
 
@@ -142,7 +142,7 @@
 
       {# Dashboard #}
       <div class="mb-1">
-        <a href="{{ path('jtwc_app_redirect') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 {% block nav_dashboard %}{% endblock %}">
+        <a href="{{ path('jtwc_app_redirect') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 {% block nav_dashboard %}{% endblock %}">
           <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
           <span>Tableau de bord</span>
         </a>
@@ -154,25 +154,25 @@
       </div>
 
       {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-      <a href="{{ path('user_list_all') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 {% block nav_members %}{% endblock %}">
+      <a href="{{ path('user_list_all') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 {% block nav_members %}{% endblock %}">
         <i data-lucide="users" class="w-[18px] h-[18px]"></i>
         <span>Membres</span>
       </a>
       {% endif %}
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="git-branch" class="w-[18px] h-[18px]"></i>
           <span>Downline</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
-          <a href="{{ path('genealogy_tree') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Arbre genealogique</a>
-          <a href="{{ path('user_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Liste downline</a>
+          <a href="{{ path('genealogy_tree') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Arbre genealogique</a>
+          <a href="{{ path('user_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Liste downline</a>
         </div>
       </div>
 
-      <a href="{{ path('user_new_from_known_sponsor') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+      <a href="{{ path('user_new_from_known_sponsor') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150">
         <i data-lucide="user-plus" class="w-[18px] h-[18px]"></i>
         <span>Ajouter un membre</span>
       </a>
@@ -183,38 +183,38 @@
       </div>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="arrow-up-circle" class="w-[18px] h-[18px]"></i>
           <span>Upgrade</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
           {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-          <a href="{{ path('membership_subscription_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Souscriptions</a>
+          <a href="{{ path('membership_subscription_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Souscriptions</a>
           {% endif %}
-          <a href="{{ path('personal_membership_subscription') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mon upgrade</a>
+          <a href="{{ path('personal_membership_subscription') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mon upgrade</a>
           {% if is_granted('ROLE_JTWC_ADMIN') %}
-          <a href="{{ path('users_grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
+          <a href="{{ path('users_grade_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
           {% endif %}
-          <a href="{{ path('personal_grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes grades</a>
+          <a href="{{ path('personal_grade_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes grades</a>
         </div>
       </div>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="shopping-cart" class="w-[18px] h-[18px]"></i>
           <span>Commandes</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
           {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-          <a href="{{ path('list_all_user_commands') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes du reseau</a>
+          <a href="{{ path('list_all_user_commands') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes du reseau</a>
           {% endif %}
-          <a href="{{ path('user_command_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes de mon reseau</a>
-          <a href="{{ path('user_personal_command_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes commandes</a>
-          <a href="{{ path('products_all') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Nos produits</a>
+          <a href="{{ path('user_command_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Commandes de mon reseau</a>
+          <a href="{{ path('user_personal_command_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mes commandes</a>
+          <a href="{{ path('products_all') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Nos produits</a>
           {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-          <a href="{{ path('user_command_new') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Passer commande</a>
+          <a href="{{ path('user_command_new') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Passer commande</a>
           {% endif %}
         </div>
       </div>
@@ -225,46 +225,46 @@
       </div>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="gift" class="w-[18px] h-[18px]"></i>
           <span>Mes bonus</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
-          <a href="{{ path('bonus_parrainage_user') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
-          <a href="{{ path('bonus_achat_personnel') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achat personnel</a>
-          <a href="{{ path('bonus_binaire') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
-          <a href="{{ path('bonus_generational') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Generationnel</a>
-          <a href="{{ path('user_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
-          <a href="{{ path('view_own_recap') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Recapitulatif</a>
+          <a href="{{ path('bonus_parrainage_user') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
+          <a href="{{ path('bonus_achat_personnel') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achat personnel</a>
+          <a href="{{ path('bonus_binaire') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
+          <a href="{{ path('bonus_generational') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Generationnel</a>
+          <a href="{{ path('user_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
+          <a href="{{ path('view_own_recap') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Recapitulatif</a>
         </div>
       </div>
 
       {% if is_granted('ROLE_JTWC_ADMIN') %}
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
           <span>Recap du cycle</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
-          <a href="{{ path('bonus_sponsoring_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
-          <a href="{{ path('bonus_personal_purchase_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achats personnels</a>
-          <a href="{{ path('bonus_binaire_cycle') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
-          <a href="{{ path('network_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
+          <a href="{{ path('bonus_sponsoring_cycle') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parrainage</a>
+          <a href="{{ path('bonus_personal_purchase_cycle') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Achats personnels</a>
+          <a href="{{ path('bonus_binaire_cycle') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Binaire</a>
+          <a href="{{ path('network_indirect_bonus') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect bonus</a>
         </div>
       </div>
       {% endif %}
 
       {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-      <a href="{{ path('view_recap') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+      <a href="{{ path('view_recap') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150">
         <i data-lucide="receipt" class="w-[18px] h-[18px]"></i>
         <span>Commissions</span>
       </a>
       {% endif %}
 
       {% if is_granted('ROLE_JTWC_ADMIN') %}
-      <a href="{{ path('turn_over_monthly') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+      <a href="{{ path('turn_over_monthly') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150">
         <i data-lucide="file-text" class="w-[18px] h-[18px]"></i>
         <span>Rapport cycle</span>
       </a>
@@ -276,21 +276,21 @@
       </div>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="package" class="w-[18px] h-[18px]"></i>
           <span>Packs</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
           {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-          <a href="{{ path('membership_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Administrer les packs</a>
+          <a href="{{ path('membership_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Administrer les packs</a>
           {% endif %}
-          <a href="{{ path('packs_view_all') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Consulter nos packs</a>
+          <a href="{{ path('packs_view_all') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Consulter nos packs</a>
         </div>
       </div>
 
       {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
-      <a href="{{ path('product_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+      <a href="{{ path('product_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150">
         <i data-lucide="star" class="w-[18px] h-[18px]"></i>
         <span>Produits</span>
       </a>
@@ -302,28 +302,28 @@
         <div class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 px-3 mb-2">Administration</div>
       </div>
 
-      <a href="{{ path('close_cycle_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150">
+      <a href="{{ path('close_cycle_list') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150">
         <i data-lucide="rotate-ccw" class="w-[18px] h-[18px]"></i>
         <span>Finaliser un cycle</span>
       </a>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="settings" class="w-[18px] h-[18px]"></i>
           <span>Parametrage</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
-          <a href="{{ path('cycle_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Cycles</a>
-          <a href="{{ path('grade_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
-          <a href="{{ path('composition_membership_product_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Composition pack</a>
-          <a href="{{ path('grade_maintenance_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Maintenance</a>
-          <a href="{{ path('grade_sv_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">SV</a>
-          <a href="{{ path('grade_level_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Niveaux</a>
-          <a href="{{ path('indirect_bonus_product_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Produit</a>
-          <a href="{{ path('indirect_bonus_membership_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Pack</a>
-          <a href="{{ path('grade_bg_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Bonus generationnel</a>
-          <a href="{{ path('parameter_config_list') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parametres generaux</a>
+          <a href="{{ path('cycle_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Cycles</a>
+          <a href="{{ path('grade_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Grades</a>
+          <a href="{{ path('composition_membership_product_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Composition pack</a>
+          <a href="{{ path('grade_maintenance_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Maintenance</a>
+          <a href="{{ path('grade_sv_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">SV</a>
+          <a href="{{ path('grade_level_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Niveaux</a>
+          <a href="{{ path('indirect_bonus_product_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Produit</a>
+          <a href="{{ path('indirect_bonus_membership_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Indirect Bonus: Pack</a>
+          <a href="{{ path('grade_bg_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Bonus generationnel</a>
+          <a href="{{ path('parameter_config_list') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Parametres generaux</a>
         </div>
       </div>
       {% endif %}
@@ -334,14 +334,14 @@
       </div>
 
       <div class="nav-group" data-nav-group>
-        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-sm font-medium transition-all duration-150 w-full text-left">
+        <button onclick="toggleNavGroup(this)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/[0.06] hover:text-white text-[15px] font-medium transition-all duration-150 w-full text-left">
           <i data-lucide="user-cog" class="w-[18px] h-[18px]"></i>
           <span>Mon profil</span>
           <i data-lucide="chevron-right" class="w-4 h-4 ml-auto transition-transform duration-200 nav-chevron"></i>
         </button>
         <div class="nav-sub hidden pl-4 mt-0.5 space-y-0.5">
-          <a href="{{ path('user_update_details') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Informations</a>
-          <a href="{{ path('change_password') }}" class="block px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mot de passe</a>
+          <a href="{{ path('user_update_details') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Informations</a>
+          <a href="{{ path('change_password') }}" class="block px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all duration-150">Mot de passe</a>
         </div>
       </div>
 
@@ -349,7 +349,7 @@
 
     {# Sidebar footer - Logout #}
     <div class="px-4 py-4 border-t border-white/[0.08]">
-      <button type="button" onclick="openModal('logout-confirm')" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 text-sm font-medium transition-all duration-150 w-full text-left">
+      <button type="button" onclick="openModal('logout-confirm')" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 text-[15px] font-medium transition-all duration-150 w-full text-left">
         <i data-lucide="log-out" class="w-[18px] h-[18px]"></i>
         <span>Deconnexion</span>
       </button>
@@ -367,7 +367,7 @@
       </button>
 
       {# Breadcrumb / Page Title #}
-      <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
+      <div class="flex items-center gap-2 text-[15px] text-gray-500 min-w-0">
         <i data-lucide="home" class="w-4 h-4 flex-shrink-0"></i>
         <span class="hidden sm:inline">/</span>
         <span class="font-semibold text-gray-800 truncate">{% block page_title %}Dashboard{% endblock %}</span>
@@ -393,7 +393,7 @@
               <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
             </div>
           {% endif %}
-          <span class="text-sm font-semibold text-gray-700 max-w-[120px] truncate">{{ app.user.fullname }}</span>
+          <span class="text-[15px] font-semibold text-gray-700 max-w-[120px] truncate">{{ app.user.fullname }}</span>
         </div>
       </div>
     </header>
