@@ -63,7 +63,7 @@ RUN sed -i 's/APP_ENV=dev/APP_ENV=prod/' .env \
     && sed -i 's/APP_DEBUG=1/APP_DEBUG=0/' .env
 
 # Create required directories and set permissions
-RUN mkdir -p var/cache var/log var/sessions public/uploads \
+RUN mkdir -p var/cache var/log var/sessions public/uploads/images/users public/uploads/images/products \
     && chown -R www-data:www-data var/ public/uploads/ \
     && chmod -R 775 var/ public/uploads/
 

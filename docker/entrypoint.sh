@@ -59,6 +59,11 @@ php bin/console cache:clear --env=prod --no-debug 2>/dev/null || true
 php bin/console cache:warmup --env=prod --no-debug 2>/dev/null || true
 echo "Cache ready."
 
+# Ensure upload directories exist with correct permissions
+mkdir -p public/uploads/images/users public/uploads/images/products
+chown -R www-data:www-data public/uploads/
+chmod -R 775 public/uploads/
+
 # Fix permissions
 chown -R www-data:www-data var/
 
