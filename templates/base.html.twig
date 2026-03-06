@@ -121,7 +121,7 @@
     {# User profile #}
     <div class="flex items-center gap-3 px-5 py-4 border-b border-white/[0.08]">
       {% if app.user.imageName %}
-        <img src="{{ asset('uploads/users/' ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-jessica-500">
+        <img src="{{ asset('uploads/images/users/' ~ app.user.imageName) }}" alt="{{ app.user.username }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-jessica-500">
       {% else %}
         <div class="w-9 h-9 rounded-full bg-white/10 ring-2 ring-white/20 flex items-center justify-center">
           <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
@@ -387,7 +387,7 @@
         {# User menu (desktop) #}
         <div class="hidden sm:flex items-center gap-2 pl-2 ml-2 border-l border-gray-200">
           {% if app.user.imageName %}
-            <img src="{{ asset('uploads/users/' ~ app.user.imageName) }}" alt="" class="w-8 h-8 rounded-full object-cover">
+            <img src="{{ asset('uploads/images/users/' ~ app.user.imageName) }}" alt="" class="w-8 h-8 rounded-full object-cover">
           {% else %}
             <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
               <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
