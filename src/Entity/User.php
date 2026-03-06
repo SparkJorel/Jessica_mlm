@@ -855,11 +855,12 @@ class User implements
 
     public function getSpecificDirectory(string $baseDirectory, string $type = null): string
     {
-        if (!is_dir($baseDirectory."/users")) {
-            mkdir($baseDirectory."/users", 0644);
+        $directory = $baseDirectory."/images/users";
+        if (!is_dir($directory)) {
+            mkdir($directory, 0775, true);
         }
 
-        return $baseDirectory."/users";
+        return $directory;
     }
 
     /**

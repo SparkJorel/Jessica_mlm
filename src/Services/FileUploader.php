@@ -15,11 +15,7 @@ class FileUploader
         $safeFilename = strtolower($slugger->slug($originalFilename));
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
-        try {
-            $file->move($directory, $fileName);
-        } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
-        }
+        $file->move($directory, $fileName);
 
         return $fileName;
     }
