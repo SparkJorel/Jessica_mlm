@@ -188,6 +188,8 @@ class SaveUserCommand
     {
         if ($this->dateOp) {
             $userCommand->setDateCommand($this->dateOp);
+        } else {
+            $userCommand->setDateCommand(new DateTime("now", new \DateTimeZone("Africa/Douala")));
         }
 
         $user = $this->getUser($this->getUsernameFromName());

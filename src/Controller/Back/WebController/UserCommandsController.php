@@ -103,7 +103,7 @@ class UserCommandsController
     public function save(Request $request, SaveUserCommand $saveUserCommand, RouterInterface $router)
     {
         $command_id = $request->request->get('command_id');
-        $commands = $request->request->get('commands');
+        $commands = $request->request->all('commands');
         $user_query = $request->request->get('user');
         $date_op = $request->request->get('date_op');
 

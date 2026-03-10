@@ -126,13 +126,14 @@ class ProductController
         if ($prods) {
             /** @var Product $prod */
             foreach ($prods as $prod) {
-                $products[] = $prod->getCode().' ('. $prod->getDistributorPrice() . ')';
+                $products[] = [
+                    'code' => $prod->getCode(),
+                    'name' => $prod->getName(),
+                    'price' => $prod->getDistributorPrice(),
+                ];
             }
         }
 
-        $response = new JsonResponse();
-        $response->setData($products);
-
-        return $response;
+        return new JsonResponse($products);
     }
 }

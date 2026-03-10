@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Enregistrement d'une commande - RACS Health Global{% endblock %}
 {% block page_title %}Enregistrement d'une commande{% endblock %}
+{% block nav_orders %}bg-jessica-500 text-white{% endblock %}
 
 {% block main %}
 <div class="space-y-5 -m-5 sm:-m-6">
@@ -15,7 +16,7 @@
         </div>
         <div>
           <label for="date_op" class="block text-sm font-medium text-gray-700 mb-1">Date achat</label>
-          <input type="datetime-local" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="date_op" placeholder="Entrez la date de l'operation">
+          <input type="datetime-local" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="date_op">
         </div>
       </div>
     {% else %}
@@ -25,26 +26,37 @@
       </div>
     {% endif %}
 
-    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'id': 'form'}}) }}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.product.vars.label }}</label>
-        {{ form_widget(form.product, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
-        <div class="text-red-500 text-xs mt-1">{{ form_errors(form.product) }}</div>
+      <div class="relative">
+        <label for="product_search" class="block text-sm font-medium text-gray-700 mb-1">Produit</label>
+        <input type="text" id="product_search" autocomplete="off" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" placeholder="Rechercher un produit...">
+        <div id="autocomplete_dropdown" class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.quantity.vars.label }}</label>
-        {{ form_widget(form.quantity, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
-        <div class="text-red-500 text-xs mt-1">{{ form_errors(form.quantity) }}</div>
+        <label for="quantity_input" class="block text-sm font-medium text-gray-700 mb-1">Quantite</label>
+        <input type="number" id="quantity_input" min="1" value="1" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition">
       </div>
     </div>
+
+    {# Selected product preview #}
+    <div id="selected_product" class="hidden flex items-center gap-3 bg-jessica-50 border border-jessica-200 rounded-lg px-4 py-2.5">
+      <i data-lucide="package" class="w-5 h-5 text-jessica-500 flex-shrink-0"></i>
+      <div class="flex-1 min-w-0">
+        <span id="selected_name" class="text-sm font-semibold text-gray-800"></span>
+        <span id="selected_code" class="text-xs text-gray-500 ml-2"></span>
+      </div>
+      <span id="selected_price" class="text-sm font-bold text-jessica-600"></span>
+      <button type="button" id="clear_selection" class="p-1 rounded hover:bg-jessica-100 transition-colors">
+        <i data-lucide="x" class="w-4 h-4 text-gray-500"></i>
+      </button>
+    </div>
+
     <div class="flex justify-end">
-      <span id="add_cart" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors cursor-pointer">
+      <button type="button" id="add_cart" class="inline-flex items-center gap-2 px-4 py-2.5 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" disabled>
         <i data-lucide="shopping-cart" class="w-4 h-4"></i>
         Ajouter au panier
-      </span>
+      </button>
     </div>
-    {{ form_end(form) }}
   </div>
 
   {# Cart Table #}
@@ -61,17 +73,25 @@
           </tr>
         </thead>
         <tbody id="content_cart" class="divide-y divide-gray-100">
-          <tr id="total" class="bg-gray-50 font-semibold">
+          <tr id="empty_cart_row">
+            <td colspan="5" class="px-4 py-8 text-center text-gray-400">
+              <i data-lucide="shopping-cart" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              <p>Le panier est vide. Recherchez et ajoutez des produits ci-dessus.</p>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="bg-gray-50 font-semibold border-t border-gray-200">
             <td colspan="3" class="px-4 py-3 text-gray-800">Prix total</td>
-            <td id="price" class="px-4 py-3 text-right text-jessica-600">0</td>
+            <td id="price" class="px-4 py-3 text-right text-jessica-600">0 FCFA</td>
             <td class="px-4 py-3 text-center">
-              <button id="command" class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors">
+              <button type="button" id="command" class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                 <i data-lucide="send" class="w-4 h-4"></i>
                 Commander
               </button>
             </td>
           </tr>
-        </tbody>
+        </tfoot>
       </table>
     </div>
   </div>
@@ -80,9 +100,317 @@
 
 {% block javascripts %}
   {{ parent() }}
-  {{ encore_entry_script_tags('add_product') }}
-{% endblock %}
-{% block stylesheets %}
-  {{ parent() }}
-  {{ encore_entry_link_tags('add_product') }}
+<script>
+(function() {
+  'use strict';
+
+  var AUTOCOMPLETE_URL = '/admin/product/autocomplete';
+  var SAVE_URL = '/admin/commands/save';
+
+  var searchInput = document.getElementById('product_search');
+  var dropdown = document.getElementById('autocomplete_dropdown');
+  var quantityInput = document.getElementById('quantity_input');
+  var addCartBtn = document.getElementById('add_cart');
+  var cartBody = document.getElementById('content_cart');
+  var priceDisplay = document.getElementById('price');
+  var commandBtn = document.getElementById('command');
+  var clientInput = document.getElementById('client');
+  var dateInput = document.getElementById('date_op');
+  var selectedDiv = document.getElementById('selected_product');
+  var selectedName = document.getElementById('selected_name');
+  var selectedCode = document.getElementById('selected_code');
+  var selectedPrice = document.getElementById('selected_price');
+  var clearBtn = document.getElementById('clear_selection');
+  var emptyRow = document.getElementById('empty_cart_row');
+
+  // State
+  var cart = []; // [{code, name, price, quantity}]
+  var currentSelection = null; // {code, name, price}
+  var debounceTimer = null;
+
+  // Set default date to now
+  if (dateInput) {
+    var now = new Date();
+    var offset = now.getTimezoneOffset();
+    var local = new Date(now.getTime() - offset * 60000);
+    dateInput.value = local.toISOString().slice(0, 16);
+  }
+
+  // --- Autocomplete ---
+  searchInput.addEventListener('input', function() {
+    var term = this.value.trim();
+    clearTimeout(debounceTimer);
+    if (term.length < 1) {
+      hideDropdown();
+      return;
+    }
+    debounceTimer = setTimeout(function() {
+      fetchProducts(term);
+    }, 300);
+  });
+
+  searchInput.addEventListener('keydown', function(e) {
+    var items = dropdown.querySelectorAll('.ac-item');
+    var active = dropdown.querySelector('.ac-item.bg-jessica-50');
+    var idx = active ? Array.from(items).indexOf(active) : -1;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      if (active) active.classList.remove('bg-jessica-50');
+      idx = (idx + 1) % items.length;
+      items[idx].classList.add('bg-jessica-50');
+      items[idx].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      if (active) active.classList.remove('bg-jessica-50');
+      idx = idx <= 0 ? items.length - 1 : idx - 1;
+      items[idx].classList.add('bg-jessica-50');
+      items[idx].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (active) {
+        active.click();
+      }
+    } else if (e.key === 'Escape') {
+      hideDropdown();
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+      hideDropdown();
+    }
+  });
+
+  function fetchProducts(term) {
+    fetch(AUTOCOMPLETE_URL + '?term=' + encodeURIComponent(term))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        showDropdown(data);
+      })
+      .catch(function() {
+        hideDropdown();
+      });
+  }
+
+  function showDropdown(products) {
+    dropdown.innerHTML = '';
+    if (!products || products.length === 0) {
+      dropdown.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400 text-center">Aucun produit trouve</div>';
+      dropdown.classList.remove('hidden');
+      return;
+    }
+
+    products.forEach(function(p) {
+      var item = document.createElement('div');
+      item.className = 'ac-item px-4 py-2.5 cursor-pointer hover:bg-jessica-50 transition-colors flex items-center justify-between gap-3';
+      item.innerHTML = '<div class="min-w-0"><div class="text-sm font-medium text-gray-800 truncate">' + escapeHtml(p.name) + '</div>' +
+        '<div class="text-xs text-gray-400">' + escapeHtml(p.code) + '</div></div>' +
+        '<span class="text-sm font-bold text-jessica-600 whitespace-nowrap">' + formatPrice(p.price) + '</span>';
+      item.addEventListener('click', function() {
+        selectProduct(p);
+      });
+      dropdown.appendChild(item);
+    });
+    dropdown.classList.remove('hidden');
+  }
+
+  function hideDropdown() {
+    dropdown.classList.add('hidden');
+    dropdown.innerHTML = '';
+  }
+
+  function selectProduct(p) {
+    currentSelection = { code: p.code, name: p.name, price: p.price };
+    searchInput.value = '';
+    hideDropdown();
+
+    selectedName.textContent = p.name;
+    selectedCode.textContent = '(' + p.code + ')';
+    selectedPrice.textContent = formatPrice(p.price);
+    selectedDiv.classList.remove('hidden');
+    addCartBtn.disabled = false;
+
+    lucide.createIcons();
+    quantityInput.focus();
+  }
+
+  clearBtn.addEventListener('click', function() {
+    clearSelection();
+  });
+
+  function clearSelection() {
+    currentSelection = null;
+    selectedDiv.classList.add('hidden');
+    addCartBtn.disabled = true;
+    searchInput.value = '';
+  }
+
+  // --- Cart Management ---
+  addCartBtn.addEventListener('click', function() {
+    if (!currentSelection) return;
+
+    var qty = parseInt(quantityInput.value) || 1;
+    if (qty < 1) qty = 1;
+
+    // Check if product already in cart
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].code === currentSelection.code) {
+        existing = cart[i];
+        break;
+      }
+    }
+
+    if (existing) {
+      existing.quantity += qty;
+    } else {
+      cart.push({
+        code: currentSelection.code,
+        name: currentSelection.name,
+        price: currentSelection.price,
+        quantity: qty
+      });
+    }
+
+    clearSelection();
+    quantityInput.value = 1;
+    searchInput.focus();
+    renderCart();
+  });
+
+  function renderCart() {
+    // Clear cart body
+    cartBody.innerHTML = '';
+
+    if (cart.length === 0) {
+      var emptyTr = document.createElement('tr');
+      emptyTr.id = 'empty_cart_row';
+      emptyTr.innerHTML = '<td colspan="5" class="px-4 py-8 text-center text-gray-400">' +
+        '<i data-lucide="shopping-cart" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>' +
+        '<p>Le panier est vide. Recherchez et ajoutez des produits ci-dessus.</p></td>';
+      cartBody.appendChild(emptyTr);
+      priceDisplay.textContent = '0 FCFA';
+      commandBtn.disabled = true;
+      lucide.createIcons();
+      return;
+    }
+
+    var total = 0;
+    cart.forEach(function(item, idx) {
+      var lineTotal = item.price * item.quantity;
+      total += lineTotal;
+
+      var tr = document.createElement('tr');
+      tr.className = 'hover:bg-gray-50 transition-colors';
+      tr.innerHTML =
+        '<td class="px-4 py-3"><div class="font-medium text-gray-800">' + escapeHtml(item.name) + '</div>' +
+          '<div class="text-xs text-gray-400">' + escapeHtml(item.code) + '</div></td>' +
+        '<td class="px-4 py-3 text-right">' +
+          '<div class="inline-flex items-center gap-1">' +
+            '<button type="button" class="qty-minus w-7 h-7 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors text-lg font-bold" data-idx="' + idx + '">-</button>' +
+            '<span class="w-10 text-center font-semibold text-gray-700">' + item.quantity + '</span>' +
+            '<button type="button" class="qty-plus w-7 h-7 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors text-lg font-bold" data-idx="' + idx + '">+</button>' +
+          '</div>' +
+        '</td>' +
+        '<td class="px-4 py-3 text-right text-gray-600">' + formatPrice(item.price) + '</td>' +
+        '<td class="px-4 py-3 text-right font-semibold text-gray-800">' + formatPrice(lineTotal) + '</td>' +
+        '<td class="px-4 py-3 text-center">' +
+          '<button type="button" class="remove-item p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors" data-idx="' + idx + '" title="Supprimer">' +
+            '<i data-lucide="trash-2" class="w-4 h-4"></i>' +
+          '</button>' +
+        '</td>';
+      cartBody.appendChild(tr);
+    });
+
+    priceDisplay.textContent = formatPrice(total);
+    commandBtn.disabled = false;
+
+    // Bind cart actions
+    cartBody.querySelectorAll('.remove-item').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        cart.splice(parseInt(this.dataset.idx), 1);
+        renderCart();
+      });
+    });
+    cartBody.querySelectorAll('.qty-minus').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var i = parseInt(this.dataset.idx);
+        if (cart[i].quantity > 1) {
+          cart[i].quantity--;
+          renderCart();
+        }
+      });
+    });
+    cartBody.querySelectorAll('.qty-plus').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var i = parseInt(this.dataset.idx);
+        cart[i].quantity++;
+        renderCart();
+      });
+    });
+
+    lucide.createIcons();
+  }
+
+  // --- Submit Order ---
+  commandBtn.addEventListener('click', function() {
+    if (cart.length === 0) return;
+
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Envoi en cours...';
+
+    var formData = new FormData();
+    formData.append('user', clientInput.value);
+
+    if (dateInput && dateInput.value) {
+      formData.append('date_op', dateInput.value);
+    }
+
+    cart.forEach(function(item, idx) {
+      formData.append('commands[' + idx + '][0]', item.code);
+      formData.append('commands[' + idx + '][1]', item.quantity);
+    });
+
+    fetch(SAVE_URL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(function(response) {
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+      if (response.ok) {
+        window.location.href = '/admin/commands';
+        return;
+      }
+      throw new Error('Erreur serveur: ' + response.status);
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Commander';
+      lucide.createIcons();
+      alert('Erreur lors de la commande: ' + err.message);
+    });
+  });
+
+  // --- Helpers ---
+  function formatPrice(n) {
+    return Number(n).toLocaleString('fr-FR') + ' FCFA';
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Init
+  renderCart();
+})();
+</script>
 {% endblock %}

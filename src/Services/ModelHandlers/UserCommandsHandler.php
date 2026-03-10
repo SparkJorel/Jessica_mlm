@@ -74,11 +74,8 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
      */
     public function selectProduct()
     {
-        $form = $this->createForm();
         return new Response(
-            $this->twig->render('back/webcontroller/user_commands/new.html.twig', [
-                'form' => $form->createView(),
-            ])
+            $this->twig->render('back/webcontroller/user_commands/new.html.twig', [])
         );
     }
 
@@ -126,12 +123,10 @@ class UserCommandsHandler extends ModelCollectionEntityAbstract implements Model
      */
     public function updateCommandProduct()
     {
-        $form = $this->createForm();
         $infosCommandes = $this->getProductDistributorPrice($this->getEntity());
 
         return new Response(
             $this->twig->render('back/webcontroller/user_commands/edit_command.html.twig', [
-                'form' => $form->createView(),
                 'commands' => $infosCommandes[0],
                 'totalCommande' => $infosCommandes[1],
                 'id_commande' => $this->getEntity()->getId(),
