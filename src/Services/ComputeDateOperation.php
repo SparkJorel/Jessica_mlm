@@ -52,27 +52,24 @@ class ComputeDateOperation
             return $dateCommand;
         }
 
-        /**
-         * @var DateTime $startedAt 
-         */
-        $startedAt = $cycle->getStartedAt() ;
+        // Vérifier si la date tombe dans n'importe quel cycle existant (pas seulement le dernier)
+        $matchingCycle = $repository->getCycleByDate($dateCommand);
+        if ($matchingCycle) {
+            return $dateCommand;
+        }
 
         /**
-         * @var DateTime $endedAt 
+         * @var DateTime $endedAt
          */
         $endedAt = $cycle->getEndedAt();
 
-        if ($dateCommand >= $startedAt && $dateCommand <= $endedAt) {
-            return $dateCommand;
-        } else {
-            $repo = $this->manager->getRepository(ParameterConfig::class);
-            /**
-             * @var ParameterConfigRepository $repo
-             */
-            $value = $repo->getCycleInterval();
-            $interval = new DateInterval('PT'.(!$value ? 10 : $value).'M');
-            return (clone $endedAt)->add($interval);
-        }
+        $repo = $this->manager->getRepository(ParameterConfig::class);
+        /**
+         * @var ParameterConfigRepository $repo
+         */
+        $value = $repo->getCycleInterval();
+        $interval = new DateInterval('PT'.(!$value ? 10 : $value).'M');
+        return (clone $endedAt)->add($interval);
     }
 
     /**

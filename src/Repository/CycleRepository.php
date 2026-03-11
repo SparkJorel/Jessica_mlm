@@ -72,6 +72,27 @@ class CycleRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param \DateTimeInterface $date
+     * @return Cycle|null
+     */
+    public function getCycleByDate(\DateTimeInterface $date): ?Cycle
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        try {
+            return $qb
+                ->where($qb->expr()->lte('c.startedAt', ':date'))
+                ->andWhere($qb->expr()->gte('c.endedAt', ':date'))
+                ->setParameter('date', $date->format('Y-m-d H:i:s'))
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
      * @param Cycle $cycle
      * @return Cycle|null
      */

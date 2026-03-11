@@ -10,9 +10,10 @@
   <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
     {% if is_granted('ROLE_JTWC_ADMIN') %}
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+        <div class="relative">
           <label for="client" class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-          <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm bg-gray-50 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
+          <input type="text" autocomplete="off" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Rechercher un client...">
+          <div id="client_dropdown" class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
         </div>
         <div>
           <label for="date_op" class="block text-sm font-medium text-gray-700 mb-1">Date achat</label>
@@ -22,7 +23,7 @@
     {% else %}
       <div>
         <label for="client" class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-        <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm bg-gray-50 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" placeholder="Nom du client">
+        <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm bg-gray-50 focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition" id="client" value="{{ app.user.fullname~" ("~app.user.username~")" }}" readonly>
       </div>
     {% endif %}
 
@@ -105,6 +106,7 @@
   'use strict';
 
   var AUTOCOMPLETE_URL = '/admin/product/autocomplete';
+  var CLIENT_AUTOCOMPLETE_URL = '/admin/sponsor/autocomplete';
   var SAVE_URL = '/admin/commands/save';
 
   var searchInput = document.getElementById('product_search');
@@ -115,6 +117,7 @@
   var priceDisplay = document.getElementById('price');
   var commandBtn = document.getElementById('command');
   var clientInput = document.getElementById('client');
+  var clientDropdown = document.getElementById('client_dropdown');
   var dateInput = document.getElementById('date_op');
   var selectedDiv = document.getElementById('selected_product');
   var selectedName = document.getElementById('selected_name');
@@ -127,6 +130,7 @@
   var cart = []; // [{code, name, price, quantity}]
   var currentSelection = null; // {code, name, price}
   var debounceTimer = null;
+  var clientDebounceTimer = null;
 
   // Set default date to now
   if (dateInput) {
@@ -136,7 +140,100 @@
     dateInput.value = local.toISOString().slice(0, 16);
   }
 
-  // --- Autocomplete ---
+  // --- Client Autocomplete (admin only) ---
+  if (clientInput && clientDropdown) {
+    clientInput.addEventListener('focus', function() {
+      fetchClients(this.value.trim());
+    });
+
+    clientInput.addEventListener('input', function() {
+      var term = this.value.trim();
+      clearTimeout(clientDebounceTimer);
+      if (term.length < 1) {
+        hideClientDropdown();
+        return;
+      }
+      clientDebounceTimer = setTimeout(function() {
+        fetchClients(term);
+      }, 300);
+    });
+
+    clientInput.addEventListener('keydown', function(e) {
+      var items = clientDropdown.querySelectorAll('.cl-item');
+      var active = clientDropdown.querySelector('.cl-item.bg-jessica-50');
+      var idx = active ? Array.from(items).indexOf(active) : -1;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        if (active) active.classList.remove('bg-jessica-50');
+        idx = (idx + 1) % items.length;
+        items[idx].classList.add('bg-jessica-50');
+        items[idx].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        if (active) active.classList.remove('bg-jessica-50');
+        idx = idx <= 0 ? items.length - 1 : idx - 1;
+        items[idx].classList.add('bg-jessica-50');
+        items[idx].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (active) active.click();
+      } else if (e.key === 'Escape') {
+        hideClientDropdown();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!clientInput.contains(e.target) && !clientDropdown.contains(e.target)) {
+        hideClientDropdown();
+      }
+    });
+  }
+
+  function fetchClients(term) {
+    fetch(CLIENT_AUTOCOMPLETE_URL + '?term=' + encodeURIComponent(term))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        showClientDropdown(data);
+      })
+      .catch(function() {
+        hideClientDropdown();
+      });
+  }
+
+  function showClientDropdown(clients) {
+    clientDropdown.innerHTML = '';
+    if (!clients || clients.length === 0) {
+      clientDropdown.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400 text-center">Aucun client trouve</div>';
+      clientDropdown.classList.remove('hidden');
+      return;
+    }
+
+    clients.forEach(function(name) {
+      var item = document.createElement('div');
+      item.className = 'cl-item px-4 py-2.5 cursor-pointer hover:bg-jessica-50 transition-colors flex items-center gap-3';
+      item.innerHTML = '<i data-lucide="user" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>' +
+        '<span class="text-sm text-gray-800">' + escapeHtml(name) + '</span>';
+      item.addEventListener('click', function() {
+        clientInput.value = name;
+        hideClientDropdown();
+      });
+      clientDropdown.appendChild(item);
+    });
+    clientDropdown.classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  function hideClientDropdown() {
+    if (clientDropdown) {
+      clientDropdown.classList.add('hidden');
+      clientDropdown.innerHTML = '';
+    }
+  }
+
+  // --- Product Autocomplete ---
   searchInput.addEventListener('input', function() {
     var term = this.value.trim();
     clearTimeout(debounceTimer);

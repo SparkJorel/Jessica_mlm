@@ -37,7 +37,7 @@ class GenerateCodeSubscriber
         if (!is_string($code) || empty($code)) {
             throw new GenerateCodeException("The system was not able to generate the code. Please submit the form again.");
         }
-	  
+
 	  	$code = $entity->getUser()->getCodeDistributor().'-'.$code;
 
         $entity->setCode($code);

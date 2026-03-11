@@ -153,10 +153,13 @@
                   type="password"
                   id="password"
                   name="_password"
-                  class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 text-base placeholder-gray-400 focus:border-jessica-500 focus:ring-4 focus:ring-jessica-500/10 outline-none transition-all duration-200"
+                  class="w-full pl-11 pr-12 py-3 border-2 border-gray-200 rounded-xl text-gray-800 text-base placeholder-gray-400 focus:border-jessica-500 focus:ring-4 focus:ring-jessica-500/10 outline-none transition-all duration-200"
                   placeholder="Votre mot de passe"
                   required
                 >
+                <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors" tabindex="-1">
+                  <i data-lucide="eye" class="w-5 h-5"></i>
+                </button>
               </div>
             </div>
 
@@ -179,6 +182,21 @@
     </div>
   </div>
 
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+    var toggleBtn = document.getElementById('toggle-password');
+    var pwdInput = document.getElementById('password');
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', function() {
+        var isHidden = pwdInput.type === 'password';
+        pwdInput.type = isHidden ? 'text' : 'password';
+        toggleBtn.innerHTML = isHidden
+          ? '<i data-lucide="eye-off" class="w-5 h-5"></i>'
+          : '<i data-lucide="eye" class="w-5 h-5"></i>';
+        lucide.createIcons();
+        pwdInput.focus();
+      });
+    }
+  </script>
 </body>
 </html>

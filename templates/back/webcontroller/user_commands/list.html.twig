@@ -8,10 +8,13 @@
 
   {# Period Filter #}
   <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <form class="flex flex-wrap items-end gap-3">
+    <form id="cycle-filter-form" class="flex flex-wrap items-end gap-3">
       <div class="flex-1 min-w-[200px]">
         <label class="block text-xs font-medium text-gray-500 mb-1">Periode</label>
         {{ form_widget(form.period, {'attr': {'class': 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-jessica-500 focus:ring-2 focus:ring-jessica-500/20 focus:outline-none transition'}}) }}
+      </div>
+      <div id="cycle-loader" class="hidden">
+        <svg class="animate-spin w-5 h-5 text-jessica-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
       </div>
       <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-jessica-500 text-white text-sm font-semibold rounded-lg hover:bg-jessica-600 transition-colors">
         <i data-lucide="filter" class="w-4 h-4"></i> Afficher
@@ -28,7 +31,7 @@
   </div>
 
   {# Orders Table #}
-  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+  <div id="orders-table-container" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
@@ -158,5 +161,55 @@
 <script>
 function openModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
 function closeModal(id) { const m = document.getElementById('modal-' + id); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+
+(function() {
+  var select = document.getElementById('period');
+  var loader = document.getElementById('cycle-loader');
+  var container = document.getElementById('orders-table-container');
+  var form = document.getElementById('cycle-filter-form');
+
+  if (!select || !container) return;
+
+  function loadCycle() {
+    var period = select.value;
+    if (!period) return;
+
+    loader.classList.remove('hidden');
+    container.style.opacity = '0.5';
+    container.style.transition = 'opacity 0.2s';
+
+    var url = window.location.pathname + '?period=' + encodeURIComponent(period);
+
+    fetch(url)
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var newContainer = doc.getElementById('orders-table-container');
+
+        if (newContainer) {
+          container.innerHTML = newContainer.innerHTML;
+        }
+
+        history.replaceState(null, '', url);
+
+        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+      })
+      .catch(function() {
+        window.location.href = url;
+      })
+      .finally(function() {
+        loader.classList.add('hidden');
+        container.style.opacity = '1';
+      });
+  }
+
+  select.addEventListener('change', loadCycle);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    loadCycle();
+  });
+})();
 </script>
 {% endblock %}
