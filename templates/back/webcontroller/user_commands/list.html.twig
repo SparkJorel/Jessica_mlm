@@ -40,8 +40,8 @@
             <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Code</th>
             <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Date Commande</th>
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Paye</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV AP</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV AP</th>
             {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
             {% endif %}
@@ -53,6 +53,7 @@
             <td class="px-4 py-3">
               <div class="font-semibold text-gray-800">{{ command.user.fullname }}</div>
               <div class="text-xs text-gray-400 sm:hidden">{{ command.code }}</div>
+              <div class="text-xs text-gray-400 md:hidden">{{ command.dateCommand|date('d/m/Y') }}</div>
             </td>
             <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">
               <span class="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{{ command.code }}</span>
@@ -69,8 +70,8 @@
                 </span>
               {% endif %}
             </td>
-            <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{% if command.totalSVBinaire is not null %}{{ command.totalSVBinaire }}{% else %}{{ svUserCommands[command.code] }}{% endif %}</td>
-            <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{% if command.totalSVAP is not null %}{{ command.totalSVAP }}{% else %}{{ svAchatUserCommands[command.code] }}{% endif %}</td>
+            <td class="px-4 py-3 text-right text-gray-600">{% if command.totalSVBinaire is not null %}{{ command.totalSVBinaire }}{% else %}{% if svUserCommands is defined and svUserCommands[command.code] is defined %}{{ svUserCommands[command.code] }}{% else %}0{% endif %}{% endif %}</td>
+            <td class="px-4 py-3 text-right text-gray-600">{% if command.totalSVAP is not null %}{{ command.totalSVAP }}{% else %}{% if svAchatUserCommands is defined and svAchatUserCommands[command.code] is defined %}{{ svAchatUserCommands[command.code] }}{% else %}0{% endif %}{% endif %}</td>
             {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
             <td class="px-4 py-3">
               <div class="flex items-center justify-center gap-1">
