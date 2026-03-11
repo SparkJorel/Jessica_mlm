@@ -33,10 +33,10 @@
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Code</th>
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Cout (XAF)</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">Bonus Sponsoring (%)</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV du Binaire</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">Quote du pack</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden xl:table-cell">Description</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Bonus Sponsoring (%)</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV du Binaire</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Quote du pack</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Description</th>
             {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
               <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
             {% endif %}
@@ -50,10 +50,10 @@
               </td>
               <td class="px-4 py-3 font-medium text-gray-800">{{ membership.name }}</td>
               <td class="px-4 py-3 text-right text-gray-600">{{ membership.membershipCost|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{{ membership.membershipBonusBinairePourcent|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ membership.membershipGroupeSV|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ membership.membershipProductCote|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{{ membership.description }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ membership.membershipBonusBinairePourcent|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ membership.membershipGroupeSV|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ membership.membershipProductCote|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ membership.description }}</td>
               {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-center gap-1">

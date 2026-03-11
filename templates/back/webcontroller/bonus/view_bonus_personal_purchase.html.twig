@@ -26,7 +26,7 @@
         <thead>
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Code</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Date Commande</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Date Commande</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">SV AP</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Cout</th>
           </tr>
@@ -37,7 +37,7 @@
             <td class="px-4 py-3">
               <span class="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{{ command.code }}</span>
             </td>
-            <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">{{ command.dateCommand|date('d/m/Y H:i') }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ command.dateCommand|date('d/m/Y H:i') }}</td>
             <td class="px-4 py-3 text-right text-gray-800 font-semibold">{{ svPersonalPurchases[command.code] }}</td>
             <td class="px-4 py-3 text-right font-bold text-jessica-500">{{ svCosts[command.code] }}</td>
           </tr>

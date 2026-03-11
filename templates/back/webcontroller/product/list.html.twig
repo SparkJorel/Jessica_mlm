@@ -33,10 +33,10 @@
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Code</th>
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix distributeur (XAF)</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">Prix client (XAF)</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV Binaire</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden lg:table-cell">SV AP</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden xl:table-cell">Quote</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix client (XAF)</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV Binaire</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">SV AP</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Quote</th>
             {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
               <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
             {% endif %}
@@ -50,10 +50,10 @@
               </td>
               <td class="px-4 py-3 font-medium text-gray-800">{{ product.name }}</td>
               <td class="px-4 py-3 text-right text-gray-600">{{ product.distributorPrice|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{{ product.clientPrice|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ product.productSV|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden lg:table-cell">{{ product.productSVBPA|number_format(2, ',', ' ') }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden xl:table-cell">{{ product.productCote|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ product.clientPrice|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ product.productSV|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ product.productSVBPA|number_format(2, ',', ' ') }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ product.productCote|number_format(2, ',', ' ') }}</td>
               {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-center gap-1">

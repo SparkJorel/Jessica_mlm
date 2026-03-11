@@ -45,14 +45,14 @@
               </th>
             {% endif %}
             <th class="px-4 py-3 text-left font-semibold text-gray-600">{{ knp_pagination_sortable(users, 'Nom & Prenoms', 'u.fullname') }}</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden lg:table-cell">Position</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Email</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Telephone</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden lg:table-cell">Upline</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden xl:table-cell">Sponsor</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Position</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Email</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Telephone</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Upline</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Sponsor</th>
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Pack</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden xl:table-cell">Ville</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden xl:table-cell">Pays</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Ville</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Pays</th>
             {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET')) %}
               <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
             {% endif %}
@@ -79,16 +79,16 @@
                   </div>
                 </div>
               </td>
-              <td class="px-4 py-3 text-gray-600 hidden lg:table-cell">{{ user.position }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ user.email }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ user.mobilePhone }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden lg:table-cell">{% if user.upline %}{{ user.upline.fullname }}{% endif %}</td>
-              <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{% if user.sponsor %}{{ user.sponsor.fullname }}{% endif %}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.position }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.mobilePhone }}</td>
+              <td class="px-4 py-3 text-gray-600">{% if user.upline %}{{ user.upline.fullname }}{% endif %}</td>
+              <td class="px-4 py-3 text-gray-600">{% if user.sponsor %}{{ user.sponsor.fullname }}{% endif %}</td>
               <td class="px-4 py-3">
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{% if user.membership %}{{ user.membership.code }}{% else %}-{% endif %}</span>
               </td>
-              <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{{ user.city }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{{ user.country }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.city }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.country }}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center justify-center gap-1">
                   <a href="{{ path('user_edit', {'id': user.id}) }}" title="Modifier" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors">

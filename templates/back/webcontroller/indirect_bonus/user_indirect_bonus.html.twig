@@ -25,8 +25,8 @@
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Niveau</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">SV Achat</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden sm:table-cell">Cout Achat</th>
-            <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">Parrainage</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Cout Achat</th>
+            <th class="px-4 py-3 text-right font-semibold text-gray-600">Parrainage</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Total</th>
           </tr>
         </thead>
@@ -38,8 +38,8 @@
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-600">Niv. {{ key }}</span>
               </td>
               <td class="px-4 py-3 text-right text-gray-600">{% if result['purchase_sv'] is defined %}{{ result['purchase_sv'] }}{% endif %}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden sm:table-cell">{% if result['purchase_price'] is defined %}{{ result['purchase_price'] }}{% endif %}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{% if result['subscription_price'] is defined %}{{ result['subscription_price'] }}{% endif %}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{% if result['purchase_price'] is defined %}{{ result['purchase_price'] }}{% endif %}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{% if result['subscription_price'] is defined %}{{ result['subscription_price'] }}{% endif %}</td>
               <td class="px-4 py-3 text-right font-bold text-jessica-500">{% if result['total_level'] is defined %}{{ result['total_level'] }}{% endif %}</td>
             </tr>
             {% endif %}

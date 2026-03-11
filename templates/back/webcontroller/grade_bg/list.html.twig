@@ -29,8 +29,8 @@
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Valeur</th>
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Active</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Debut</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Fin</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Debut</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Fin</th>
             {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
               <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
             {% endif %}
@@ -45,8 +45,8 @@
               <td class="px-4 py-3 text-gray-600">{{ grade_bg.name }}</td>
               <td class="px-4 py-3 text-right text-gray-600">{{ grade_bg.value }}</td>
               <td class="px-4 py-3 text-center">{% if grade_bg.status %}<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">OUI</span>{% else %}<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600">NON</span>{% endif %}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ grade_bg.startedAt|date('d/m/Y') }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{% if grade_bg.endedAt is not null %}{{ grade_bg.endedAt|date('d/m/Y') }}{% endif %}</td>
+              <td class="px-4 py-3 text-gray-600">{{ grade_bg.startedAt|date('d/m/Y') }}</td>
+              <td class="px-4 py-3 text-gray-600">{% if grade_bg.endedAt is not null %}{{ grade_bg.endedAt|date('d/m/Y') }}{% endif %}</td>
               {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_JTWC_ADMIN') %}
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-center gap-1">

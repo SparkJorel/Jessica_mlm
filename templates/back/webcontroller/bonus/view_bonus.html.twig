@@ -26,8 +26,8 @@
         <thead>
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Downline</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Membership</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Date</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 ">Membership</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Date</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Montant</th>
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Statut</th>
           </tr>
@@ -46,10 +46,10 @@
                 </div>
               </div>
             </td>
-            <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">
+            <td class="px-4 py-3 text-gray-600">
               <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{{ bonusMontant.membership }}</span>
             </td>
-            <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ bonusMontant.dateActivation|date('d/m/Y') }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ bonusMontant.dateActivation|date('d/m/Y') }}</td>
             <td class="px-4 py-3 text-right font-bold text-jessica-500">{{ bonusMontant.value|number_format(0, ',', '.') }} F</td>
             <td class="px-4 py-3 text-center">
               {% if bonusMontant.paid %}

@@ -20,9 +20,9 @@
         <thead>
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-4 py-3 text-left font-semibold text-gray-600">{{ knp_pagination_sortable(mbship_subs, 'Utilisateur', 'u.fullname') }}</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Membership</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Membership</th>
             <th class="px-4 py-3 text-right font-semibold text-gray-600">Prix</th>
-            <th class="px-4 py-3 text-center font-semibold text-gray-600 hidden md:table-cell">Upgrade</th>
+            <th class="px-4 py-3 text-center font-semibold text-gray-600">Upgrade</th>
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Active</th>
             {% if is_granted('ROLE_JTWC_ADMIN') or is_granted('ROLE_JTWC_USER_SECRET') %}
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Paye</th>
@@ -42,11 +42,11 @@
                 </div>
               </div>
             </td>
-            <td class="px-4 py-3 hidden sm:table-cell">
+            <td class="px-4 py-3">
               <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{{ mbship_sub.membership.name }}</span>
             </td>
             <td class="px-4 py-3 text-right font-semibold text-gray-800">{% if mbship_sub.price is defined %}{{ mbship_sub.price|number_format(0, ',', '.') }}{% endif %}</td>
-            <td class="px-4 py-3 text-center hidden md:table-cell">
+            <td class="px-4 py-3 text-center">
               {% if mbship_sub.upgraded %}
                 <span class="text-green-500"><i data-lucide="check-circle-2" class="w-4 h-4 inline"></i></span>
               {% else %}

@@ -33,12 +33,12 @@
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-3 py-3 text-left font-semibold text-gray-600 text-xs">N</th>
             <th class="px-3 py-3 text-left font-semibold text-gray-600 text-xs">Noms et Prenoms</th>
-            <th class="px-3 py-3 text-left font-semibold text-gray-600 text-xs hidden md:table-cell">Tel.</th>
+            <th class="px-3 py-3 text-left font-semibold text-gray-600 text-xs">Tel.</th>
             <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs">Parrainage</th>
-            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs hidden sm:table-cell">Achat P.</th>
-            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs hidden lg:table-cell">Binaire</th>
-            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs hidden lg:table-cell">Generationnel</th>
-            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs hidden xl:table-cell">Indirect</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs">Achat P.</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs">Binaire</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs">Generationnel</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-600 text-xs">Indirect</th>
             <th class="px-3 py-3 text-right font-semibold text-gray-800 text-xs">Commissions</th>
           </tr>
         </thead>
@@ -47,12 +47,12 @@
           <tr class="hover:bg-gray-50 transition-colors">
             <td class="px-3 py-2.5 text-gray-400 text-xs">{{ report['id'] }}</td>
             <td class="px-3 py-2.5 font-semibold text-gray-800 text-xs">{{ report['fullname'] }}</td>
-            <td class="px-3 py-2.5 text-gray-500 text-xs hidden md:table-cell">{{ report['telephone'] }}</td>
+            <td class="px-3 py-2.5 text-gray-500 text-xs">{{ report['telephone'] }}</td>
             <td class="px-3 py-2.5 text-right text-xs">{% if report['parrainage'] is defined %}{{ report['parrainage'] }}{% endif %}</td>
-            <td class="px-3 py-2.5 text-right text-xs hidden sm:table-cell">{% if report['achat_personal'] is defined %}{{ report['achat_personal'] }}{% endif %}</td>
-            <td class="px-3 py-2.5 text-right text-xs hidden lg:table-cell">{% if report['binaire'] is defined %}{{ report['binaire'] }}{% endif %}</td>
-            <td class="px-3 py-2.5 text-right text-xs hidden lg:table-cell">{% if report['generationnel'] is defined %}{{ report['generationnel'] }}{% endif %}</td>
-            <td class="px-3 py-2.5 text-right text-xs hidden xl:table-cell">{% if report['indirect_bonus'] is defined %}{{ report['indirect_bonus'] }}{% endif %}</td>
+            <td class="px-3 py-2.5 text-right text-xs">{% if report['achat_personal'] is defined %}{{ report['achat_personal'] }}{% endif %}</td>
+            <td class="px-3 py-2.5 text-right text-xs">{% if report['binaire'] is defined %}{{ report['binaire'] }}{% endif %}</td>
+            <td class="px-3 py-2.5 text-right text-xs">{% if report['generationnel'] is defined %}{{ report['generationnel'] }}{% endif %}</td>
+            <td class="px-3 py-2.5 text-right text-xs">{% if report['indirect_bonus'] is defined %}{{ report['indirect_bonus'] }}{% endif %}</td>
             <td class="px-3 py-2.5 text-right font-bold text-jessica-500 text-xs">{{ report['commissions'] }}</td>
           </tr>
           {% endfor %}
@@ -61,7 +61,7 @@
           <tr class="bg-gray-50 border-t-2 border-gray-300 font-bold text-sm">
             <td colspan="3" class="px-3 py-3 text-right text-gray-700">TOTAL</td>
             <td colspan="2" class="px-3 py-3 text-center text-jessica-600">{{ actif }}</td>
-            <td colspan="3" class="px-3 py-3 text-center text-blue-600 hidden lg:table-cell">{{ passif }}</td>
+            <td colspan="3" class="px-3 py-3 text-center text-blue-600">{{ passif }}</td>
             <td class="px-3 py-3 text-right text-jessica-600 text-lg">{{ total }}</td>
           </tr>
         </tfoot>

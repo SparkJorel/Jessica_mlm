@@ -21,12 +21,12 @@
         <thead>
           <tr class="bg-gray-50 border-b border-gray-200">
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom & Prenoms</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Sexe</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Email</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Telephone</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Sexe</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Email</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Telephone</th>
             <th class="px-4 py-3 text-left font-semibold text-gray-600">Etat</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden lg:table-cell">Ville</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden lg:table-cell">Pays</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Ville</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600">Pays</th>
             <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
           </tr>
         </thead>
@@ -45,9 +45,9 @@
                   </div>
                 </div>
               </td>
-              <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">{{ user.gender }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ user.email }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ user.mobilePhone }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.gender }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.mobilePhone }}</td>
               <td class="px-4 py-3">
                 {% if user.activated %}
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">
@@ -59,8 +59,8 @@
                   </span>
                 {% endif %}
               </td>
-              <td class="px-4 py-3 text-gray-600 hidden lg:table-cell">{{ user.city }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden lg:table-cell">{{ user.country }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.city }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ user.country }}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center justify-center gap-1">
                   {% if user.entryDate %}

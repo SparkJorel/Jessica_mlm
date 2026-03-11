@@ -42,8 +42,8 @@
               {% endif %}
               <th class="px-4 py-3 text-left font-semibold text-gray-600">Beneficiaire</th>
               <th class="px-4 py-3 text-right font-semibold text-gray-600">Montant</th>
-              <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden sm:table-cell">SV Gain</th>
-              <th class="px-4 py-3 text-right font-semibold text-gray-600 hidden md:table-cell">CO</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-600">SV Gain</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-600">CO</th>
               <th class="px-4 py-3 text-center font-semibold text-gray-600">Statut</th>
             </tr>
           </thead>
@@ -59,8 +59,8 @@
               {% endif %}
               <td class="px-4 py-3 font-semibold text-gray-800">{{ bonus_binaire_cycle.user.fullname }}</td>
               <td class="px-4 py-3 text-right font-bold text-jessica-500">{{ bonus_binaire_cycle['gain'] }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden sm:table-cell">{{ bonus_binaire_cycle['binaire'] }}</td>
-              <td class="px-4 py-3 text-right text-gray-600 hidden md:table-cell">{{ bonus_binaire_cycle['n_co'] }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ bonus_binaire_cycle['binaire'] }}</td>
+              <td class="px-4 py-3 text-right text-gray-600">{{ bonus_binaire_cycle['n_co'] }}</td>
               <td class="px-4 py-3 text-center">
                 {% if bonus_binaire_cycle.status %}
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600">
