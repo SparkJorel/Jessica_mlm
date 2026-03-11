@@ -85,7 +85,7 @@
               <td class="px-4 py-3 text-gray-600 hidden lg:table-cell">{% if user.upline %}{{ user.upline.fullname }}{% endif %}</td>
               <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{% if user.sponsor %}{{ user.sponsor.fullname }}{% endif %}</td>
               <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{{ user.membership.code }}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-jessica-50 text-jessica-600">{% if user.membership %}{{ user.membership.code }}{% else %}-{% endif %}</span>
               </td>
               <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{{ user.city }}</td>
               <td class="px-4 py-3 text-gray-600 hidden xl:table-cell">{{ user.country }}</td>
