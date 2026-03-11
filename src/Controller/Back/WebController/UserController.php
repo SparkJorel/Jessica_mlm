@@ -23,6 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
 
@@ -50,17 +51,24 @@ class UserController
      */
     private $twig;
 
+    /**
+     * @var UserPasswordHasherInterface
+     */
+    private $encoder;
+
     public function __construct(
         UserHandler $userHandler,
         TokenStorageInterface $token,
         Environment $twig,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        UserPasswordHasherInterface $encoder
     )
     {
         $this->userHandler = $userHandler;
         $this->token = $token;
         $this->manager = $manager;
         $this->twig = $twig;
+        $this->encoder = $encoder;
     }
 
     #[IsGranted('ROLE_JTWC_ADMIN')]
@@ -193,6 +201,42 @@ class UserController
                     ->userHandler
                     ->setEntity($user)
                     ->changePassword($request);
+    }
+
+    #[IsGranted('ROLE_JTWC_ADMIN')]
+    #[Route('/users/{id}/reset-password', name: 'user_reset_password', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function resetPassword(Request $request, CsrfTokenManagerInterface $csrf, User $user, RequestStack $requestStack, UrlGeneratorInterface $generator): RedirectResponse
+    {
+        $token = $request->request->get('_jtwc_reset_password_token');
+        $csrfToken = new \Symfony\Component\Security\Csrf\CsrfToken('jtwc_reset_password-' . $user->getId(), $token);
+
+        $session = $requestStack->getSession();
+
+        if (!$csrf->isTokenValid($csrfToken)) {
+            if ($session instanceof FlashBagAwareSessionInterface) {
+                $session->getFlashBag()->add('danger', 'Token CSRF invalide.');
+            }
+            return new RedirectResponse($generator->generate('user_list_all'));
+        }
+
+        $newPassword = $request->request->get('new_password');
+
+        if (empty($newPassword) || strlen($newPassword) < 6) {
+            if ($session instanceof FlashBagAwareSessionInterface) {
+                $session->getFlashBag()->add('danger', 'Le mot de passe doit contenir au moins 6 caracteres.');
+            }
+            return new RedirectResponse($generator->generate('user_list_all'));
+        }
+
+        $hashedPassword = $this->encoder->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+        $this->manager->flush();
+
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add('success', 'Le mot de passe de ' . $user->getFullname() . ' a ete reinitialise avec succes.');
+        }
+
+        return new RedirectResponse($generator->generate('user_list_all'));
     }
 
     #[Route('/change/username', name: 'change_username', methods: ['GET', 'POST'])]
