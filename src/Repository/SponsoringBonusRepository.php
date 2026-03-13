@@ -56,7 +56,7 @@ class SponsoringBonusRepository extends ServiceEntityRepository
                         $qb->expr()->lte('b.dateActivation', ':end')
                     )
                 );
-        if ($paid) {
+        if ($paid !== null) {
             $qb->andWhere(
                 $qb->expr()->eq('b.paid', ':paid')
             )

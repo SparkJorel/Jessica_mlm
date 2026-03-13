@@ -147,7 +147,9 @@ class GetBonus
 
         if ($bonusMontants) {
             foreach ($bonusMontants as $bonusMontant) {
-                $total += $bonusMontant->getValue();
+                if ($bonusMontant->isPaid()) {
+                    $total += $bonusMontant->getValue();
+                }
                 $status &= $bonusMontant->isPaid();
             }
 

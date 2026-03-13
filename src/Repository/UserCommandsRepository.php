@@ -54,7 +54,7 @@ class UserCommandsRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
         }
 
-        if ($paid) {
+        if ($paid !== null) {
             $qb->andWhere(
                 $qb->expr()->eq('uc.paid', ':paid')
             )
@@ -91,7 +91,8 @@ class UserCommandsRepository extends ServiceEntityRepository
                 $qb->expr()->eq('u', ':user'),
                 $qb->expr()->gte('uc.dateCommand', ':start'),
                 $qb->expr()->lte('uc.dateCommand', ':end'),
-                $qb->expr()->eq('uc.motif', ':motif')
+                $qb->expr()->eq('uc.motif', ':motif'),
+                $qb->expr()->eq('uc.paid', ':paid')
             )
             ->orWhere(
                 $qb->expr()->andX(
@@ -99,7 +100,8 @@ class UserCommandsRepository extends ServiceEntityRepository
                     $qb->expr()->eq('m.coefficent', ':coefficent'),
                     $qb->expr()->gte('uc.dateCommand', ':start'),
                     $qb->expr()->lte('uc.dateCommand', ':end'),
-                    $qb->expr()->eq('uc.motif', ':motif')
+                    $qb->expr()->eq('uc.motif', ':motif'),
+                    $qb->expr()->eq('uc.paid', ':paid')
                 )
             );
       
@@ -109,6 +111,7 @@ class UserCommandsRepository extends ServiceEntityRepository
                 ->setParameter('start', $cycle->getStartedAt()->format('Y-m-d H:i:s'))
                 ->setParameter('end', $cycle->getEndedAt()->format('Y-m-d H:i:s'))
                 ->setParameter('motif', 'Achat')
+                ->setParameter('paid', true)
                 ->setParameter('user', $user)
                 ->setParameter('sponsor', $user)
                 ->setParameter('coefficent', 1)
@@ -251,7 +254,7 @@ class UserCommandsRepository extends ServiceEntityRepository
                 )
             );
 
-        if ($paid) {
+        if ($paid !== null) {
             $qb->andWhere(
                 $qb->expr()->eq('uc.paid', ':paid')
             )

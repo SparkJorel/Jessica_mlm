@@ -83,6 +83,6 @@ class ReferralBonusSubscriber implements EventSubscriberInterface
                         ->setValue($value);
 
         $this->manager->persist($bonusSponsoring);
-        //$this->manager->flush();
+        $this->manager->flush();
     }
 }
